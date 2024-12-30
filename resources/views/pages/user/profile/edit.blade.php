@@ -58,23 +58,12 @@
                             {{ csrf_field() }}
                             {{ method_field('put') }}
 
-                            @php
-                            $isPemilik = auth()->user()->hasRole('pemilik');
-                            $canEditAll = auth()
-                            ->user()
-                            ->hasAnyRole(['Superadmin', 'Admin', 'Pegawai Penyemak']);
-                            @endphp
-
                             <!-- Name Field -->
                             <div class="mb-3">
                                 <label for="name" class="form-label">Nama</label>
                                 <input type="text"
                                     class="form-control {{ $errors->has('name') ? 'is-invalid' : '' }}" id="name"
-                                    name="name" value="{{ $user->name }}"
-                                    {{ $canEditAll || $isPemilik ? '' : 'disabled' }}>
-                                @if (!($canEditAll || $isPemilik))
-                                <input type="hidden" name="name" value="{{ $user->name }}">
-                                @endif
+                                    name="name" value="{{ $user->name }}">
                                 @if ($errors->has('name'))
                                 <div class="invalid-feedback">
                                     @foreach ($errors->get('name') as $error)
@@ -89,11 +78,7 @@
                                 <label for="email" class="form-label">Alamat Emel</label>
                                 <input type="email"
                                     class="form-control {{ $errors->has('email') ? 'is-invalid' : '' }}" id="email"
-                                    name="email" value="{{ $user->email }}"
-                                    {{ $canEditAll || $isPemilik ? '' : 'disabled' }}>
-                                @if (!($canEditAll || $isPemilik))
-                                <input type="hidden" name="email" value="{{ $user->email }}">
-                                @endif
+                                    name="email" value="{{ $user->email }}">
                                 @if ($errors->has('email'))
                                 <div class="invalid-feedback">
                                     @foreach ($errors->get('email') as $error)
@@ -108,11 +93,7 @@
                                 <label for="staff_id" class="form-label">No. Pekerja</label>
                                 <input type="number"
                                     class="form-control {{ $errors->has('staff_id') ? 'is-invalid' : '' }}"
-                                    id="staff_id" name="staff_id" value="{{ $user->staff_id }}"
-                                    {{ $canEditAll || $isPemilik ? '' : 'disabled' }}>
-                                @if (!($canEditAll || $isPemilik))
-                                <input type="hidden" name="staff_id" value="{{ $user->staff_id }}">
-                                @endif
+                                    id="staff_id" name="staff_id" value="{{ $user->staff_id }}">
                                 @if ($errors->has('staff_id'))
                                 <div class="invalid-feedback">
                                     @foreach ($errors->get('staff_id') as $error)
@@ -126,8 +107,7 @@
                             <div class="mb-3">
                                 <label for="position_id" class="form-label">Jawatan</label>
                                 <select class="form-select {{ $errors->has('position_id') ? 'is-invalid' : '' }}"
-                                    id="position_id" name="position_id"
-                                    {{ $canEditAll || $isPemilik ? '' : 'disabled' }}>
+                                    id="position_id" name="position_id">
                                     @foreach ($positionList as $position)
                                     <option value="{{ $position->id }}"
                                         {{ old('position_id') == $position->id || ($user->position_id ?? '') == $position->id ? 'selected' : '' }}>
@@ -135,9 +115,6 @@
                                     </option>
                                     @endforeach
                                 </select>
-                                @if (!($canEditAll || $isPemilik))
-                                <input type="hidden" name="position_id" value="{{ $user->position_id }}">
-                                @endif
                                 @if ($errors->has('position_id'))
                                 <div class="invalid-feedback">
                                     @foreach ($errors->get('position_id') as $error)
@@ -153,8 +130,7 @@
                                 <input type="number"
                                     class="form-control {{ $errors->has('office_phone_no') ? 'is-invalid' : '' }}"
                                     id="office_phone_no" name="office_phone_no"
-                                    value="{{ old('office_phone_no', $user->office_phone_no) }}"
-                                    {{ $isPemilik ? 'disabled' : '' }}>
+                                    value="{{ old('office_phone_no', $user->office_phone_no) }}">
                                 @if ($errors->has('office_phone_no'))
                                 <div class="invalid-feedback">
                                     @foreach ($errors->get('office_phone_no') as $error)
@@ -184,8 +160,7 @@
                                 @endif
                             </div>
 
-                            <button type="submit" class="btn btn-primary"
-                                {{ $isPemilik ? 'disabled' : '' }}>Simpan</button>
+                            <button type="submit" class="btn btn-primary">Simpan</button>
 
                         </div>
                     </form>
