@@ -9,8 +9,8 @@
                 <div class="d-flex align-items-center justify-content-center flex-column flex-md-row mb-4">
                     <img src="{{ asset('public/assets/images/putih.png') }}" class="logo-icon-login" alt="logo icon">
                     <div class="ms-3">
-                        <h4 class="logo-text-login mb-0">COLMAS</h4>
-                        <h6 class="logo-subtitle-login mb-0">Computer Lab Management System</h6>
+                    <h4 class="logo-text-login mb-0">ITDASH</h4>
+                    <h6 class="logo-subtitle-login mb-0">Dashboard Prestasi IT</h6>
                     </div>
                 </div>
             </div>
