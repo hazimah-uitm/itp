@@ -41,6 +41,14 @@
         </a>
     </li>
 
+    <li class="menu-label">Pengurusan Rekod</li>
+
+    <li class="{{ Request::is('aduan*') ? 'mm-active' : '' }}">
+        <a href="{{ route('aduan') }}">
+            <div class="parent-icon"><i class='bx bx-message-dots' ></i></div>
+            <div class="menu-title">Aduan</div>
+        </a>
+    </li>
 
 
     <li class="menu-label">Tetapan</li>

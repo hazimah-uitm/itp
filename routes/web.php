@@ -99,4 +99,18 @@ Route::middleware('auth')->group(function () {
     Route::get('/position/trash', 'PositionController@trashList')->name('position.trash');
     Route::get('/position/{id}/restore', 'PositionController@restore')->name('position.restore');
     Route::delete('/position/{id}/force-delete', 'PositionController@forceDelete')->name('position.forceDelete');
+
+    
+    //Aduan
+    Route::get('aduan', 'AduanController@index')->name('aduan');
+    Route::get('aduan/view/{id}', 'AduanController@show')->name('aduan.show');
+    Route::get('/aduan/search', 'AduanController@search')->name('aduan.search');
+    Route::get('aduan/create', 'AduanController@create')->name('aduan.create');
+    Route::post('aduan/store', 'AduanController@store')->name('aduan.store');
+    Route::get('aduan/{id}/edit', 'AduanController@edit')->name('aduan.edit');
+    Route::post('aduan/{id}', 'AduanController@update')->name('aduan.update');
+    Route::delete('aduan/{id}', 'AduanController@destroy')->name('aduan.destroy');
+    Route::get('/aduan/trash', 'AduanController@trashList')->name('aduan.trash');
+    Route::get('/aduan/{id}/restore', 'AduanController@restore')->name('aduan.restore');
+    Route::delete('/aduan/{id}/force-delete', 'AduanController@forceDelete')->name('aduan.forceDelete');
 });
