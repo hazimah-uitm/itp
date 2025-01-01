@@ -68,11 +68,6 @@
                     </div>
                     <button type="submit" class="btn btn-info ms-2">Import</button>
                 </form>
-
-                <!-- Tambah Button -->
-                <a href="{{ route('aduan.create') }}" class="btn btn-primary">
-                    Tambah Staf
-                </a>
             </div>
         </div>
 
@@ -90,28 +85,28 @@
                     </tr>
                 </thead>
                 <tbody>
-                    @if (count($staffList) > 0)
-                    @foreach ($staffList as $staff)
+                    {{-- @if (count($aduanList) > 0)
+                    @foreach ($aduanList as $aduan)
                     <tr>
-                        <td>{{ ($staffList->currentPage() - 1) * $staffList->perPage() + $loop->iteration }}
+                        <td>{{ ($aduanList->currentPage() - 1) * $aduanList->perPage() + $loop->iteration }}
                         </td>
-                        <td>{{ ucfirst($staff->name) }}</td>
-                        <td>{{ $staff->no_pekerja }}</td>
-                        <td>{{ $staff->attendance }}</td>
-                        <td>{{ $staff->type }}</td>
+                        <td>{{ ucfirst($aduan->name) }}</td>
+                        <td>{{ $aduan->no_pekerja }}</td>
+                        <td>{{ $aduan->attendance }}</td>
+                        <td>{{ $aduan->type }}</td>
                         <td>
-                            @if ($staff->status == 'Belum Tempah')
+                            @if ($aduan->status == 'Belum Tempah')
                             <span class="badge bg-warning">Belum Tempah</span>
                             @else
                             <span class="badge bg-success">Selesai Tempah</span>
                             @endif
                         </td>
                         <td>
-                            <a href="{{ route('aduan.edit', $staff->id) }}" class="btn btn-info btn-sm"
+                            <a href="{{ route('aduan.edit', $aduan->id) }}" class="btn btn-info btn-sm"
                                 data-bs-toggle="tooltip" data-bs-placement="bottom" title="Kemaskini">
                                 <i class="bx bxs-edit"></i>
                             </a>
-                            <a href="{{ route('aduan.show', $staff->id) }}" class="btn btn-primary btn-sm"
+                            <a href="{{ route('aduan.show', $aduan->id) }}" class="btn btn-primary btn-sm"
                                 data-bs-toggle="tooltip" data-bs-placement="bottom" title="Papar">
                                 <i class="bx bx-show"></i>
                             </a>
@@ -119,15 +114,15 @@
                             <a type="button" data-bs-toggle="tooltip" data-bs-placement="bottom"
                                 data-bs-title="Padam">
                                 <span class="btn btn-danger btn-sm" data-bs-toggle="modal"
-                                    data-bs-target="#deleteModal{{ $staff->id }}"><i
+                                    data-bs-target="#deleteModal{{ $aduan->id }}"><i
                                         class="bx bx-trash"></i></span>
                             </a>
                         </td>
                     </tr>
                     @endforeach
-                    @else
+                    @else --}}
                     <td colspan="9">Tiada rekod</td>
-                    @endif
+                    {{-- @endif --}}
                 </tbody>
             </table>
         </div>
@@ -151,11 +146,11 @@
 
             <div class="d-flex justify-content-end align-items-center">
                 <span class="mx-2 mt-2 small text-muted">
-                    Menunjukkan {{ $staffList->firstItem() }} hingga {{ $staffList->lastItem() }} daripada
-                    {{ $staffList->total() }} rekod
+                    Menunjukkan {{ $aduanList->firstItem() }} hingga {{ $aduanList->lastItem() }} daripada
+                    {{ $aduanList->total() }} rekod
                 </span>
                 <div class="pagination-wrapper">
-                    {{ $staffList->appends([
+                    {{ $aduanList->appends([
                                 'search' => request('search'),
                                 'perPage' => request('perPage'),
                                 'type' => request('type'),
@@ -169,8 +164,8 @@
 </div>
 
 <!-- Delete Confirmation Modal -->
-@foreach ($staffList as $staff)
-<div class="modal fade" id="deleteModal{{ $staff->id }}" tabindex="-1" aria-labelledby="deleteModalLabel"
+@foreach ($aduanList as $aduan)
+<div class="modal fade" id="deleteModal{{ $aduan->id }}" tabindex="-1" aria-labelledby="deleteModalLabel"
     aria-hidden="true">
     <div class="modal-dialog modal-dialog-centered">
         <div class="modal-content">
@@ -179,15 +174,15 @@
                 <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
             </div>
             <div class="modal-body">
-                @isset($staff)
+                @isset($aduan)
                 Adakah anda pasti ingin memadam rekod <span style="font-weight: 600;">
-                    {{ ucfirst($staff->name) }}</span>?
+                    {{ ucfirst($aduan->name) }}</span>?
                 @else
                 Tiada maklumat Aduan.
                 @endisset
             </div>
             <div class="modal-footer">
-                <form action="{{ route('aduan.destroy', $staff->id) }}" method="POST">
+                <form action="{{ route('aduan.destroy', $aduan->id) }}" method="POST">
                     {{ method_field('delete') }}
                     {{ csrf_field() }}
                     <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Tutup</button>
@@ -220,7 +215,7 @@
 
         document.getElementById('resetButton').addEventListener('click', function() {
             // Redirect to the base route to clear query parameters
-            window.location.href = "{{ route('staff') }}";
+            window.location.href = "{{ route('aduan') }}";
         });
 
     });

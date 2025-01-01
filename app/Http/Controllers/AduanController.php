@@ -2,8 +2,11 @@
 
 namespace App\Http\Controllers;
 
+use App\Imports\AduanExport;
+use App\Imports\AduanImport;
 use App\Models\Aduan;
 use Illuminate\Http\Request;
+use Maatwebsite\Excel\Facades\Excel;
 
 class AduanController extends Controller
 {
@@ -31,7 +34,7 @@ class AduanController extends Controller
         $aduanList = $query->orderBy('name', 'asc')->paginate($perPage);
 
         return view('pages.aduan.index', [
-            'staffList' => $aduanList,
+            'aduanList' => $aduanList,
             'perPage' => $perPage,
             'type' => $type,
             'attendance' => $attendance,
@@ -47,7 +50,7 @@ class AduanController extends Controller
         ]);
 
         try {
-            Excel::import(new StaffImport, $request->file('file'));
+            Excel::import(new AduanImport, $request->file('file'));
 
             return redirect()->back()->with('success', 'Data telah berjaya di import');
         } catch (\Exception $e) {
@@ -57,11 +60,11 @@ class AduanController extends Controller
 
     public function export(Request $request)
     {
-        return Excel::download(new StaffExport(
+        return Excel::download(new AduanExport(
             $request->input('type'),
             $request->input('attendance'),
             $request->input('status')
-        ), 'Rekod-RSVP-Malam-Gala.xlsx');
+        ), 'Aduan-ICT.xlsx');
     }
 
     public function create()
@@ -94,14 +97,6 @@ class AduanController extends Controller
             'status.required' => 'Sila pilih Status',
         ]);
 
-        $existingStaff = Aduan::where('no_pekerja', strtoupper($request->input('no_pekerja')))
-            ->whereNull('deleted_at') 
-            ->first();
-
-        if ($existingStaff) {
-            return redirect()->back()->withErrors(['no_pekerja' => 'No. Pekerja telah wujud'])->withInput();
-        }
-
         $aduan = new Aduan();
 
         $aduan->fill($request->except(['name', 'no_pekerja']));
@@ -109,7 +104,7 @@ class AduanController extends Controller
         $aduan->no_pekerja = strtoupper($request->input('no_pekerja'));
         $aduan->save();
 
-        return redirect()->route('staff')->with('success', 'Maklumat berjaya disimpan');
+        return redirect()->route('aduan')->with('success', 'Maklumat berjaya disimpan');
     }
 
     public function show($id)
@@ -117,7 +112,7 @@ class AduanController extends Controller
         $aduan = Aduan::findOrFail($id);
 
         return view('pages.aduan.view', [
-            'staff' => $aduan,
+            'aduan' => $aduan,
         ]);
     }
 
@@ -126,7 +121,7 @@ class AduanController extends Controller
         $aduan = Aduan::findOrFail($id);
 
         return view('pages.aduan.edit', [
-            'staff' => $aduan,
+            'aduan' => $aduan,
             'save_route' => route('aduan.update', $id),
             'str_mode' => 'Kemaskini',
         ]);
@@ -155,18 +150,7 @@ class AduanController extends Controller
             'status.required' => 'Sila pilih Status',
         ]);
 
-        // Check if a staff with the same no_pekerja exists (excluding the current record)
-        $existingStaff = Aduan::whereNull('deleted_at') 
-            ->where('no_pekerja', strtoupper($request->input('no_pekerja')))
-            ->where('id', '<>', $id)
-            ->first();
-
-        if ($existingStaff) {
-            // If the staff exists, handle the logic accordingly
-            return redirect()->back()->with('error', 'No. Pekerja telah wujud');
-        }
-
-        // Find the staff record by ID
+        // Find the aduan record by ID
         $aduan = Aduan::findOrFail($id);
 
         $aduan->fill($request->except(['name', 'no_pekerja']));
@@ -174,7 +158,7 @@ class AduanController extends Controller
         $aduan->no_pekerja = strtoupper($request->input('no_pekerja'));
         $aduan->save();
 
-        return redirect()->route('staff')->with('success', 'Maklumat berjaya dikemas kini');
+        return redirect()->route('aduan')->with('success', 'Maklumat berjaya dikemas kini');
     }
 
 
@@ -212,7 +196,7 @@ class AduanController extends Controller
         $aduanList = $query->latest()->paginate($perPage);
 
         return view('pages.aduan.index', [
-            'staffList' => $aduanList,
+            'aduanList' => $aduanList,
             'perPage' => $perPage,
             'search' => $search,
             'type' => $type,
@@ -227,7 +211,7 @@ class AduanController extends Controller
 
         $aduan->delete();
 
-        return redirect()->route('staff')->with('success', 'Maklumat berjaya dihapuskan');
+        return redirect()->route('aduan')->with('success', 'Maklumat berjaya dihapuskan');
     }
 
     public function trashList()
