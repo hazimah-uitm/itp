@@ -105,7 +105,7 @@ Route::middleware('auth')->group(function () {
     Route::get('aduan', 'AduanController@index')->name('aduan');
     Route::get('aduan/view/{id}', 'AduanController@show')->name('aduan.show');
     Route::get('/aduan/search', 'AduanController@search')->name('aduan.search');
-    Route::post('/import-staff', 'AduanController@import')->name('aduan.import');
+    Route::post('/import-aduan', 'AduanController@import')->name('aduan.import');
     Route::post('aduan/store', 'AduanController@store')->name('aduan.store');
     Route::get('aduan/{id}/edit', 'AduanController@edit')->name('aduan.edit');
     Route::post('aduan/{id}', 'AduanController@update')->name('aduan.update');

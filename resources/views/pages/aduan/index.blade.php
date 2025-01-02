@@ -76,11 +76,14 @@
                 <thead>
                     <tr>
                         <th>#</th>
-                        <th>Nama</th>
-                        <th>No. Pekerja</th>
-                        <th>Kehadiran</th>
+                        <th>Kampus</th>
+                        <th>Tarikh/Masa Aduan</th>
                         <th>Jenis Pengguna</th>
-                        <th>Status</th>
+                        <th>Kategori Aduan</th>
+                        <th>Sub Kategori Aduan</th>
+                        <th>Status Aduan</th>
+                        <th>Tarikh/Masa Selesai</th>
+                        <th>Tempoh Respons</th>
                         <th>Tindakan</th>
                     </tr>
                 </thead>

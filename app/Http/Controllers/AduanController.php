@@ -13,32 +13,12 @@ class AduanController extends Controller
     public function index(Request $request)
     {
         $perPage = $request->input('perPage', 10);
-        $type = $request->input('type');
-        $attendance = $request->input('attendance');
-        $status = $request->input('status');
 
-        $query = Aduan::query();
-
-        if ($type) {
-            $query->where('type', $type);
-        }
-
-        if ($attendance) {
-            $query->where('attendance', $attendance);
-        }
-
-        if ($status) {
-            $query->where('status', $status);
-        }
-
-        $aduanList = $query->orderBy('name', 'asc')->paginate($perPage);
+        $aduanList = Aduan::latest()->paginate($perPage);
 
         return view('pages.aduan.index', [
             'aduanList' => $aduanList,
-            'perPage' => $perPage,
-            'type' => $type,
-            'attendance' => $attendance,
-            'status' => $status,
+            'perPage' => $perPage
         ]);
     }
 
@@ -46,7 +26,7 @@ class AduanController extends Controller
     public function import(Request $request)
     {
         $request->validate([
-            'file' => 'required|mimes:xlsx,csv',
+            'file' => 'required|mimes:xlsx,xls,csv',
         ]);
 
         try {
@@ -60,11 +40,7 @@ class AduanController extends Controller
 
     public function export(Request $request)
     {
-        return Excel::download(new AduanExport(
-            $request->input('type'),
-            $request->input('attendance'),
-            $request->input('status')
-        ), 'Aduan-ICT.xlsx');
+        return Excel::download(new AduanExport, 'Aduan-ICT.xlsx');
     }
 
     public function create()
@@ -78,30 +54,29 @@ class AduanController extends Controller
     public function store(Request $request)
     {
         $request->validate([
-            'email' => 'nullable',
-            'name' => 'required',
-            'no_pekerja' => 'required',
-            'attendance' => 'required|in:Hadir,Tidak Hadir',
-            'category' => 'nullable|in:Staf Akademik,Staf Pentadbiran',
-            'department' => 'nullable',
+            'aduan_ict_tiket' => 'nullable',
+            'complainent_name_id' => 'nullable',
+            'complainent_category' => 'nullable',
+            'aduan_category' => 'nullable',
+            'aduan_subcategory' => 'nullable',
             'campus' => 'nullable',
-            'club' => 'nullable|in:Ahli KEKiTA,Ahli PEWANI,Bukan Ahli  (Bayaran RM20 dikenakan)',
-            'payment' => 'nullable',
-            'type' => 'required|in:Staf,Bukan Staf',
-            'status' => 'required|in:Belum Tempah,Selesai Tempah',
-        ], [
-            'name.required' => 'Sila isi Nama',
-            'no_pekerja.required' => 'Sila isi No. Pekerja',
-            'attendance.required' => 'Sila sahkan kehadiran',
-            'type.required' => 'Sila isi jenis pengguna',
-            'status.required' => 'Sila pilih Status',
+            'location' => 'nullable',
+            'aduan_details' => 'nullable',
+            'aduan_status' => 'nullable',
+            'aduan_type' => 'nullable',
+            'staff_duty' => 'nullable',
+            'remark_staff_duty' => 'nullable',
+            'date_applied' => 'nullable',
+            'time_applied' => 'nullable',
+            'date_completed' => 'nullable',
+            'time_completed' => 'nullable',
+            'response_time' => 'nullable',
+            'rating' => 'nullable'
         ]);
 
         $aduan = new Aduan();
 
-        $aduan->fill($request->except(['name', 'no_pekerja']));
-        $aduan->name = strtoupper($request->input('name'));
-        $aduan->no_pekerja = strtoupper($request->input('no_pekerja'));
+        $aduan->fill($request->all());
         $aduan->save();
 
         return redirect()->route('aduan')->with('success', 'Maklumat berjaya disimpan');
@@ -131,31 +106,30 @@ class AduanController extends Controller
     public function update(Request $request, $id)
     {
         $request->validate([
-            'email' => 'nullable',
-            'name' => 'required',
-            'no_pekerja' => 'required',
-            'attendance' => 'required|in:Hadir,Tidak Hadir',
-            'category' => 'nullable|in:Staf Akademik,Staf Pentadbiran',
-            'department' => 'nullable',
+            'aduan_ict_tiket' => 'nullable',
+            'complainent_name_id' => 'nullable',
+            'complainent_category' => 'nullable',
+            'aduan_category' => 'nullable',
+            'aduan_subcategory' => 'nullable',
             'campus' => 'nullable',
-            'club' => 'nullable|in:Ahli KEKiTA,Ahli PEWANI,Bukan Ahli  (Bayaran RM20 dikenakan)',
-            'payment' => 'nullable',
-            'type' => 'required|in:Staf,Bukan Staf',
-            'status' => 'required|in:Belum Tempah,Selesai Tempah',
-        ], [
-            'name.required' => 'Sila isi Nama',
-            'no_pekerja.required' => 'Sila isi No. Pekerja',
-            'attendance.required' => 'Sila sahkan kehadiran',
-            'type.required' => 'Sila isi jenis pengguna',
-            'status.required' => 'Sila pilih Status',
+            'location' => 'nullable',
+            'aduan_details' => 'nullable',
+            'aduan_status' => 'nullable',
+            'aduan_type' => 'nullable',
+            'staff_duty' => 'nullable',
+            'remark_staff_duty' => 'nullable',
+            'date_applied' => 'nullable',
+            'time_applied' => 'nullable',
+            'date_completed' => 'nullable',
+            'time_completed' => 'nullable',
+            'response_time' => 'nullable',
+            'rating' => 'nullable'
         ]);
 
         // Find the aduan record by ID
         $aduan = Aduan::findOrFail($id);
 
-        $aduan->fill($request->except(['name', 'no_pekerja']));
-        $aduan->name = strtoupper($request->input('name'));
-        $aduan->no_pekerja = strtoupper($request->input('no_pekerja'));
+        $aduan->fill($request->all());
         $aduan->save();
 
         return redirect()->route('aduan')->with('success', 'Maklumat berjaya dikemas kini');
@@ -166,31 +140,13 @@ class AduanController extends Controller
     {
         $search = $request->input('search');
         $perPage = $request->input('perPage', 10);
-        $type = $request->input('type');
-        $attendance = $request->input('attendance');
-        $status = $request->input('status');
 
         $query = Aduan::query();
 
         if ($search) {
-            $query->where('name', 'LIKE', "%$search%")
-                ->orWhere('no_pekerja', 'LIKE', "%$search%")
-                ->orWhere('attendance', 'LIKE', "%$search%")
-                ->orWhere('status', 'LIKE', "%$search%")
-                ->orWhere('type', 'LIKE', "%$search%")
-                ->orWhere('campus', 'LIKE', "%$search%");
-        }
-
-        if ($type) {
-            $query->where('type', $type);
-        }
-
-        if ($attendance) {
-            $query->where('attendance', $attendance);
-        }
-
-        if ($status) {
-            $query->where('status', $status);
+            $query->where('aduan_category', 'LIKE', "%$search%")
+                ->orWhere('campus', 'LIKE', "%$search%")
+                ->orWhere('aduan_status', 'LIKE', "%$search%");
         }
 
         $aduanList = $query->latest()->paginate($perPage);
@@ -198,10 +154,7 @@ class AduanController extends Controller
         return view('pages.aduan.index', [
             'aduanList' => $aduanList,
             'perPage' => $perPage,
-            'search' => $search,
-            'type' => $type,
-            'attendance' => $attendance,
-            'status' => $status,
+            'search' => $search
         ]);
     }
 
