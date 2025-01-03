@@ -22,6 +22,18 @@ class AduanController extends Controller
         ]);
     }
 
+    public function export(Request $request)
+    {
+        return Excel::download(new AduanExport, 'Aduan-ICT.xlsx');
+    }
+
+    public function create()
+    {
+        return view('pages.aduan.create', [
+            'save_route' => route('aduan.store'),
+            'str_mode' => 'Tambah',
+        ]);
+    }
 
     public function import(Request $request)
     {
@@ -37,20 +49,7 @@ class AduanController extends Controller
             return redirect()->back()->with('error', 'Error importing data: ' . $e->getMessage());
         }
     }
-
-    public function export(Request $request)
-    {
-        return Excel::download(new AduanExport, 'Aduan-ICT.xlsx');
-    }
-
-    public function create()
-    {
-        return view('pages.aduan.create', [
-            'save_route' => route('aduan.store'),
-            'str_mode' => 'Tambah',
-        ]);
-    }
-
+    
     public function store(Request $request)
     {
         $request->validate([

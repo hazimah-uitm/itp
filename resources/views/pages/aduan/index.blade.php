@@ -77,55 +77,65 @@
                     <tr>
                         <th>#</th>
                         <th>Kampus</th>
-                        <th>Tarikh/Masa Aduan</th>
                         <th>Jenis Pengguna</th>
                         <th>Kategori Aduan</th>
                         <th>Sub Kategori Aduan</th>
                         <th>Status Aduan</th>
+                        <th>Tarikh/Masa Aduan</th>
                         <th>Tarikh/Masa Selesai</th>
                         <th>Tempoh Respons</th>
                         <th>Tindakan</th>
                     </tr>
                 </thead>
                 <tbody>
-                    {{-- @if (count($aduanList) > 0)
+                    @if (count($aduanList) > 0)
                     @foreach ($aduanList as $aduan)
                     <tr>
                         <td>{{ ($aduanList->currentPage() - 1) * $aduanList->perPage() + $loop->iteration }}
-                        </td>
-                        <td>{{ ucfirst($aduan->name) }}</td>
-                        <td>{{ $aduan->no_pekerja }}</td>
-                        <td>{{ $aduan->attendance }}</td>
-                        <td>{{ $aduan->type }}</td>
-                        <td>
-                            @if ($aduan->status == 'Belum Tempah')
-                            <span class="badge bg-warning">Belum Tempah</span>
-                            @else
-                            <span class="badge bg-success">Selesai Tempah</span>
-                            @endif
-                        </td>
-                        <td>
-                            <a href="{{ route('aduan.edit', $aduan->id) }}" class="btn btn-info btn-sm"
-                                data-bs-toggle="tooltip" data-bs-placement="bottom" title="Kemaskini">
-                                <i class="bx bxs-edit"></i>
-                            </a>
-                            <a href="{{ route('aduan.show', $aduan->id) }}" class="btn btn-primary btn-sm"
-                                data-bs-toggle="tooltip" data-bs-placement="bottom" title="Papar">
-                                <i class="bx bx-show"></i>
-                            </a>
+                    </td>
+                    <td>{{ $aduan->campus }}</td>
+                    <td>{{ $aduan->complainent_category }}</td>
+                    <td>{{ $aduan->aduan_category }}</td>
+                    <td>{{ $aduan->aduan_subcategory }}</td>
+                    <td>
+                        @if ($aduan->aduan_status == 'ADUAN CANCELLED')
+                        <span class="badge bg-warning">ADUAN CANCELLED</span>
+                        @elseif ($aduan->aduan_status == 'ADUAN CLOSED (INCOMPLETE INFORMATION / WRONG CHANNEL)')
+                        <span class="badge bg-secondary">ADUAN CLOSED</span>
+                        @elseif ($aduan->aduan_status == 'ADUAN COMPLETED')
+                        <span class="badge bg-success">ADUAN COMPLETED</span>
+                        @elseif ($aduan->aduan_status == 'ADUAN VERIFIED')
+                        <span class="badge bg-primary">ADUAN VERIFIED</span>
+                        @else
+                        <span class="badge bg-info">IT SERVICES - 2ND LEVEL SUPPORT</span>
+                        @endif
+                    </td>
+                    <td>{{ $aduan->date_applied }} {{ $aduan->time_applied }}</td>
+                    <td>{{ $aduan->date_completed }} {{ $aduan->time_completed }}</td>
+                    <td>{{ $aduan->response_time }}</td>
+                    <td>
+                        <!-- <a href="{{ route('aduan.edit', $aduan->id) }}" class="btn btn-info btn-sm"
+                            data-bs-toggle="tooltip" data-bs-placement="bottom" title="Kemaskini">
+                            <i class="bx bxs-edit"></i>
+                        </a> -->
 
-                            <a type="button" data-bs-toggle="tooltip" data-bs-placement="bottom"
-                                data-bs-title="Padam">
-                                <span class="btn btn-danger btn-sm" data-bs-toggle="modal"
-                                    data-bs-target="#deleteModal{{ $aduan->id }}"><i
-                                        class="bx bx-trash"></i></span>
-                            </a>
-                        </td>
+                        <a href="{{ route('aduan.show', $aduan->id) }}" class="btn btn-primary btn-sm"
+                            data-bs-toggle="tooltip" data-bs-placement="bottom" title="Papar">
+                            <i class="bx bx-show"></i>
+                        </a>
+
+                        <!-- <a type="button" data-bs-toggle="tooltip" data-bs-placement="bottom"
+                            data-bs-title="Padam">
+                            <span class="btn btn-danger btn-sm" data-bs-toggle="modal"
+                                data-bs-target="#deleteModal{{ $aduan->id }}"><i
+                                    class="bx bx-trash"></i></span>
+                        </a> -->
+                    </td>
                     </tr>
                     @endforeach
-                    @else --}}
-                    <td colspan="9">Tiada rekod</td>
-                    {{-- @endif --}}
+                    @else
+                    <td colspan="10">Tiada rekod</td>
+                    @endif
                 </tbody>
             </table>
         </div>
