@@ -14,7 +14,7 @@ class AduanController extends Controller
     {
         $perPage = $request->input('perPage', 10);
 
-        $aduanList = Aduan::latest()->paginate($perPage);
+        $aduanList = Aduan::paginate($perPage);
 
         return view('pages.aduan.index', [
             'aduanList' => $aduanList,
