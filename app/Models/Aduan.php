@@ -35,6 +35,7 @@ class Aduan extends Model
         'date_completed',
         'time_completed',
         'response_time',
+        'response_days',
         'rating'
     ];
 }

@@ -34,6 +34,7 @@ class CreateAduansTable extends Migration
             $table->date('date_completed')->nullable();
             $table->time('time_completed')->nullable();
             $table->string('response_time')->nullable();
+            $table->integer('response_days')->nullable();
             $table->integer('rating')->nullable();
             $table->softDeletes();
             $table->timestamps();

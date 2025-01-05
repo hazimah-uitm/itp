@@ -48,6 +48,16 @@ class AduanImport implements ToModel, WithHeadingRow
         $rating = ($row['rating'] == '-' || empty($row['rating'])) ? null : (int) $row['rating'];
         $responseTime = ($row['response_time'] == '-' || empty($row['response_time'])) ? null : $row['response_time'];
 
+        $responseDays = null;
+
+        // If response_time is not null and contains 'd' (days)
+        if ($responseTime) {
+            // Match the number of days before the "d" in the format "8 d 7 h 22 m 52 s"
+            preg_match('/(\d+)\s*d/', $responseTime, $dayMatches);
+            // Extract and assign the number of days if available
+            $responseDays = $dayMatches[1] ?? null;
+        }
+
         // Check if the record exists
         $existingAduan = Aduan::where('aduan_ict_ticket', $row['aduan_ict_ticket'])->first();
 
@@ -72,6 +82,7 @@ class AduanImport implements ToModel, WithHeadingRow
                 'date_completed' => $dateCompletedFormatted,
                 'time_completed' => $timeCompleted,
                 'response_time' => $responseTime,
+                'response_days' => $responseDays,
                 'rating' => $rating,
             ]);
             return null; // Return null since no new model is created
@@ -98,6 +109,7 @@ class AduanImport implements ToModel, WithHeadingRow
             'date_completed' => $dateCompletedFormatted,
             'time_completed' => $timeCompleted,
             'response_time' => $responseTime,
+            'response_days' => $responseDays,
             'rating' => $rating,
         ]);
     }

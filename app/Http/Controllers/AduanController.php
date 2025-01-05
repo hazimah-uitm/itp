@@ -77,6 +77,7 @@ class AduanController extends Controller
             'date_completed' => 'nullable',
             'time_completed' => 'nullable',
             'response_time' => 'nullable',
+            'response_days' => 'nullable',
             'rating' => 'nullable'
         ]);
 
@@ -131,6 +132,7 @@ class AduanController extends Controller
             'date_completed' => 'nullable',
             'time_completed' => 'nullable',
             'response_time' => 'nullable',
+            'response_days' => 'nullable',
             'rating' => 'nullable'
         ]);
 

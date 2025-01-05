@@ -87,12 +87,16 @@
                             <td>{{ $aduan->response_time }}</td>
                         </tr>
                         <tr>
+                            <th>Tempoh Respons Hari</th>
+                            <td>{{ $aduan->response_days }}</td>
+                        </tr>
+                        <tr>
                             <th>Rating</th>
                             <td>
                                 @if ($aduan->rating)
                                     {{ $aduan->rating }}<i class='bx bxs-star'></i>
                                 @else
-                                    "-"
+                                    -
                                 @endif
                             </td>
                         </tr>
