@@ -12,9 +12,13 @@ class AduanImport implements ToModel, WithHeadingRow
     public function model(array $row)
     {
         // Extract complainent_id (value within parentheses)
-        $complainentName = $row['complainent_name_id'];
-        preg_match('/\(([^)]+)\)/', $complainentName, $matches);
+        $complainentNameID = $row['complainent_name_id'];
+        preg_match('/\(([^)]+)\)/', $complainentNameID, $matches);
         $complainentId = $matches[1] ?? null;
+
+        // Extract complainent_name (value before parentheses)
+        preg_match('/^[^(]+/', $complainentNameID, $nameMatches);
+        $complainentName = trim($nameMatches[0] ?? '');
 
         // Convert the date format from 'DD.MM.YYYY' to 'YYYY-MM-DD'
         $dateApplied = \DateTime::createFromFormat('d.m.Y', $row['date_applied']);
@@ -42,10 +46,41 @@ class AduanImport implements ToModel, WithHeadingRow
         $category = explode(' - ', $aduanMainCategory)[0];
 
         $rating = ($row['rating'] == '-' || empty($row['rating'])) ? null : (int) $row['rating'];
+        $responseTime = ($row['response_time'] == '-' || empty($row['response_time'])) ? null : $row['response_time'];
 
+        // Check if the record exists
+        $existingAduan = Aduan::where('aduan_ict_tiket', $row['aduan_ict_ticket'])->first();
+
+        if ($existingAduan) {
+            // Update existing record
+            $existingAduan->update([
+                'complainent_name' => $complainentName,
+                'complainent_id' => $complainentId,
+                'complainent_category' => $row['complainent_category'],
+                'aduan_category' => $aduanCategory,
+                'category' => $category,
+                'aduan_subcategory' => $row['aduan_sub_category'],
+                'campus' => $campus,
+                'location' => $row['location'],
+                'aduan_details' => $row['aduan_details'],
+                'aduan_status' => $row['aduan_status'],
+                'aduan_type' => $row['aduan_type'],
+                'staff_duty' => $row['staff_on_duty'],
+                'remark_staff_duty' => $row['remark_staff_on_duty'],
+                'date_applied' => $dateAppliedFormatted,
+                'time_applied' => $timeApplied,
+                'date_completed' => $dateCompletedFormatted,
+                'time_completed' => $timeCompleted,
+                'response_time' => $responseTime,
+                'rating' => $rating,
+            ]);
+            return null; // Return null since no new model is created
+        }
+
+        // Create a new record if it does not exist
         return new Aduan([
             'aduan_ict_tiket' => $row['aduan_ict_ticket'],
-            'complainent_name' => $row['complainent_name_id'],
+            'complainent_name' => $complainentName,
             'complainent_id' => $complainentId,
             'complainent_category' => $row['complainent_category'],
             'aduan_category' => $aduanCategory,
@@ -62,7 +97,7 @@ class AduanImport implements ToModel, WithHeadingRow
             'time_applied' => $timeApplied,
             'date_completed' => $dateCompletedFormatted,
             'time_completed' => $timeCompleted,
-            'response_time' => $row['response_time'],
+            'response_time' => $responseTime,
             'rating' => $rating,
         ]);
     }
