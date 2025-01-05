@@ -16,6 +16,11 @@ class AduanController extends Controller
 
         $aduanList = Aduan::paginate($perPage);
 
+        // Convert the date_applied field to Carbon instances
+        foreach ($aduanList as $aduan) {
+            $aduan->date_applied = \Carbon\Carbon::parse($aduan->date_applied);
+        }
+
         return view('pages.aduan.index', [
             'aduanList' => $aduanList,
             'perPage' => $perPage
@@ -49,11 +54,11 @@ class AduanController extends Controller
             return redirect()->back()->with('error', 'Error importing data: ' . $e->getMessage());
         }
     }
-    
+
     public function store(Request $request)
     {
         $request->validate([
-            'aduan_ict_tiket' => 'nullable',
+            'aduan_ict_ticket' => 'nullable',
             'complainent_name' => 'nullable',
             'complainent_id' => 'nullable',
             'complainent_category' => 'nullable',
@@ -107,7 +112,7 @@ class AduanController extends Controller
     public function update(Request $request, $id)
     {
         $request->validate([
-            'aduan_ict_tiket' => 'nullable',
+            'aduan_ict_ticket' => 'nullable',
             'complainent_name' => 'nullable',
             'complainent_id' => 'nullable',
             'complainent_category' => 'nullable',

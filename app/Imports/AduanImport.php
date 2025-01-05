@@ -49,7 +49,7 @@ class AduanImport implements ToModel, WithHeadingRow
         $responseTime = ($row['response_time'] == '-' || empty($row['response_time'])) ? null : $row['response_time'];
 
         // Check if the record exists
-        $existingAduan = Aduan::where('aduan_ict_tiket', $row['aduan_ict_ticket'])->first();
+        $existingAduan = Aduan::where('aduan_ict_ticket', $row['aduan_ict_ticket'])->first();
 
         if ($existingAduan) {
             // Update existing record
@@ -79,7 +79,7 @@ class AduanImport implements ToModel, WithHeadingRow
 
         // Create a new record if it does not exist
         return new Aduan([
-            'aduan_ict_tiket' => $row['aduan_ict_ticket'],
+            'aduan_ict_ticket' => $row['aduan_ict_ticket'],
             'complainent_name' => $complainentName,
             'complainent_id' => $complainentId,
             'complainent_category' => $row['complainent_category'],

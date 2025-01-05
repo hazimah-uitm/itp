@@ -81,8 +81,8 @@
                         <th>Kategori</th>
                         <th>Kategori Aduan</th>
                         <th>Status Aduan</th>
-                        <th>Tarikh/Masa Aduan</th>
-                        <th>Tarikh/Masa Selesai</th>
+                        <th>Bulan Aduan</th>
+                        <th>Tahun Aduan</th>
                         <th>Tempoh Respons</th>
                         <th>Tindakan</th>
                     </tr>
@@ -110,8 +110,8 @@
                         <span class="badge bg-info">IT SERVICES - 2ND LEVEL SUPPORT</span>
                         @endif
                     </td>
-                    <td>{{ $aduan->date_applied }} {{ $aduan->time_applied }}</td>
-                    <td>{{ $aduan->date_completed }} {{ $aduan->time_completed }}</td>
+                    <td>{{ $aduan->date_applied->format('F') }}</td>
+                    <td>{{ $aduan->date_applied->format('Y') }}</td>
                     <td>{{ $aduan->response_time }}</td>
                     <td>
                         <!-- <a href="{{ route('aduan.edit', $aduan->id) }}" class="btn btn-info btn-sm"

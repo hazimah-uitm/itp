@@ -15,7 +15,7 @@ class CreateAduansTable extends Migration
     {
         Schema::create('aduans', function (Blueprint $table) {
             $table->bigIncrements('id');
-            $table->string('aduan_ict_tiket')->nullable();
+            $table->string('aduan_ict_ticket')->nullable();
             $table->string('complainent_name')->nullable();
             $table->string('complainent_id')->nullable();
             $table->string('complainent_category')->nullable();

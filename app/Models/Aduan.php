@@ -16,7 +16,7 @@ class Aduan extends Model
     protected static $logOnlyDirty = true;
 
     protected $fillable = [
-        'aduan_ict_tiket',
+        'aduan_ict_ticket',
         'complainent_name',
         'complainent_id',
         'complainent_category',
