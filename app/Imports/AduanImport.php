@@ -11,6 +11,11 @@ class AduanImport implements ToModel, WithHeadingRow
 {
     public function model(array $row)
     {
+        // Extract complainent_id (value within parentheses)
+        $complainentName = $row['complainent_name_id'];
+        preg_match('/\(([^)]+)\)/', $complainentName, $matches);
+        $complainentId = $matches[1] ?? null;
+
         // Convert the date format from 'DD.MM.YYYY' to 'YYYY-MM-DD'
         $dateApplied = \DateTime::createFromFormat('d.m.Y', $row['date_applied']);
         $dateAppliedFormatted = $dateApplied ? $dateApplied->format('Y-m-d') : null;
@@ -27,13 +32,24 @@ class AduanImport implements ToModel, WithHeadingRow
         $splitCampusValue = explode('- UITM KAMPUS', $campusValue);
         $campus = isset($splitCampusValue[1]) ? trim($splitCampusValue[1]) : null;
 
+        // Extract the value after "-"
+        $aduanCategoryValue = $row['aduan_category'];
+        $splitaduanCategoryValue = explode('-', $aduanCategoryValue);
+        $aduanCategory = isset($splitaduanCategoryValue[1]) ? trim($splitaduanCategoryValue[1]) : null;
+
+        // Extract category (value before "-")
+        $aduanMainCategory = $row['aduan_category'];
+        $category = explode(' - ', $aduanMainCategory)[0];
+
         $rating = ($row['rating'] == '-' || empty($row['rating'])) ? null : (int) $row['rating'];
 
         return new Aduan([
             'aduan_ict_tiket' => $row['aduan_ict_ticket'],
-            'complainent_name_id' => $row['complainent_name_id'],
+            'complainent_name' => $row['complainent_name_id'],
+            'complainent_id' => $complainentId,
             'complainent_category' => $row['complainent_category'],
-            'aduan_category' => $row['aduan_category'],
+            'aduan_category' => $aduanCategory,
+            'category' => $category,
             'aduan_subcategory' => $row['aduan_sub_category'],
             'campus' => $campus,
             'location' => $row['location'],
@@ -57,30 +73,29 @@ class AduanImport implements ToModel, WithHeadingRow
         if (empty($time) || $time == '-' || $time == null) {
             return null;  // Return null if the time is missing or placeholder
         }
-    
+
         // If the time is a decimal number (Excel time format), convert it to a valid time
         if (is_numeric($time)) {
             // Convert Excel's time to seconds of the day (multiply by 24 hours)
             $timeInSeconds = $time * 24 * 60 * 60;
-    
+
             // Create a DateTime object based on the seconds of the day
             $formattedTime = new DateTime();
             $formattedTime->setTimestamp($timeInSeconds);
-    
+
             // Return the time in 'H:i:s' format (24-hour time)
             return $formattedTime->format('H:i:s');
         }
-    
+
         // Else if the time is in a string format like 'h:i:s A' (12-hour format with AM/PM)
         $formattedTime = DateTime::createFromFormat('h:i:s A', $time);  // 12-hour format with AM/PM
-    
+
         if ($formattedTime === false) {
             // Try 24-hour format if 12-hour format fails
             $formattedTime = DateTime::createFromFormat('H:i:s', $time);  // 24-hour format
         }
-    
+
         // If the conversion was successful, return it; otherwise, return null
         return $formattedTime ? $formattedTime->format('H:i:s') : null;
-    }    
-     
+    }
 }

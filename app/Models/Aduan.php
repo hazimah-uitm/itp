@@ -17,9 +17,11 @@ class Aduan extends Model
 
     protected $fillable = [
         'aduan_ict_tiket',
-        'complainent_name_id',
+        'complainent_name',
+        'complainent_id',
         'complainent_category',
         'aduan_category',
+        'category',
         'aduan_subcategory',
         'campus',
         'location',

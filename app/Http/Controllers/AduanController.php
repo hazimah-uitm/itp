@@ -54,9 +54,11 @@ class AduanController extends Controller
     {
         $request->validate([
             'aduan_ict_tiket' => 'nullable',
-            'complainent_name_id' => 'nullable',
+            'complainent_name' => 'nullable',
+            'complainent_id' => 'nullable',
             'complainent_category' => 'nullable',
             'aduan_category' => 'nullable',
+            'category' => 'nullable',
             'aduan_subcategory' => 'nullable',
             'campus' => 'nullable',
             'location' => 'nullable',
@@ -106,9 +108,11 @@ class AduanController extends Controller
     {
         $request->validate([
             'aduan_ict_tiket' => 'nullable',
-            'complainent_name_id' => 'nullable',
+            'complainent_name' => 'nullable',
+            'complainent_id' => 'nullable',
             'complainent_category' => 'nullable',
             'aduan_category' => 'nullable',
+            'category' => 'nullable',
             'aduan_subcategory' => 'nullable',
             'campus' => 'nullable',
             'location' => 'nullable',
@@ -145,7 +149,9 @@ class AduanController extends Controller
         if ($search) {
             $query->where('aduan_category', 'LIKE', "%$search%")
                 ->orWhere('campus', 'LIKE', "%$search%")
-                ->orWhere('aduan_status', 'LIKE', "%$search%");
+                ->orWhere('aduan_status', 'LIKE', "%$search%")
+                ->orWhere('complainent_name', 'LIKE', "%$search%")
+                ->orWhere('complainent_id', 'LIKE', "%$search%");
         }
 
         $aduanList = $query->latest()->paginate($perPage);

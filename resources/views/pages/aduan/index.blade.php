@@ -76,10 +76,10 @@
                 <thead>
                     <tr>
                         <th>#</th>
-                        <th>Kampus</th>
+                        <th>Nama</th>
                         <th>Jenis Pengguna</th>
+                        <th>Kategori</th>
                         <th>Kategori Aduan</th>
-                        <th>Sub Kategori Aduan</th>
                         <th>Status Aduan</th>
                         <th>Tarikh/Masa Aduan</th>
                         <th>Tarikh/Masa Selesai</th>
@@ -93,10 +93,10 @@
                     <tr>
                         <td>{{ ($aduanList->currentPage() - 1) * $aduanList->perPage() + $loop->iteration }}
                     </td>
-                    <td>{{ $aduan->campus }}</td>
+                    <td>{{ $aduan->complainent_name }} - {{ $aduan->complainent_id }}</td>
                     <td>{{ $aduan->complainent_category }}</td>
+                    <td>{{ $aduan->category }}</td>
                     <td>{{ $aduan->aduan_category }}</td>
-                    <td>{{ $aduan->aduan_subcategory }}</td>
                     <td>
                         @if ($aduan->aduan_status == 'ADUAN CANCELLED')
                         <span class="badge bg-warning">ADUAN CANCELLED</span>

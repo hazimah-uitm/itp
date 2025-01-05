@@ -16,9 +16,11 @@ class CreateAduansTable extends Migration
         Schema::create('aduans', function (Blueprint $table) {
             $table->bigIncrements('id');
             $table->string('aduan_ict_tiket')->nullable();
-            $table->string('complainent_name_id')->nullable();
+            $table->string('complainent_name')->nullable();
+            $table->string('complainent_id')->nullable();
             $table->string('complainent_category')->nullable();
             $table->string('aduan_category')->nullable();
+            $table->string('category')->nullable();
             $table->string('aduan_subcategory')->nullable();
             $table->string('campus')->nullable();
             $table->string('location')->nullable();
