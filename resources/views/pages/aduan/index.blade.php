@@ -11,17 +11,6 @@
                 </ol>
             </nav>
         </div>
-        @role('Superadmin')
-            <div class="ms-auto">
-                <a href="{{ route('aduan.trash') }}">
-                    <button type="button" class="btn btn-primary mt-2 mt-lg-0">Senarai Rekod Dipadam</button>
-                </a>
-                <a href="{{ route('aduan.export', ['type' => request('type'), 'attendance' => request('attendance'), 'status' => request('status')]) }}"
-                    class="btn btn-success">
-                    Export to Excel
-                </a>
-            </div>
-        @endrole
     </div>
     <!--end breadcrumb-->
     <h6 class="mb-0 text-uppercase">Senarai Aduan</h6>
@@ -114,24 +103,12 @@
                                     <td>{{ $aduan->date_applied->format('Y') }}</td>
                                     <td style="word-wrap: break-word; white-space: normal;">{{ $aduan->response_time }}</td>
                                     <td>
-                                        <!-- <a href="{{ route('aduan.edit', $aduan->id) }}" class="btn btn-info btn-sm"
-                                        data-bs-toggle="tooltip" data-bs-placement="bottom" title="Kemaskini">
-                                        <i class="bx bxs-edit"></i>
-                                    </a> -->
-
                                         <a type="button" data-bs-toggle="tooltip" data-bs-placement="bottom"
                                             data-bs-title="Papar">
                                             <span class="btn btn-primary btn-sm" data-bs-toggle="modal"
                                                 data-bs-target="#showModal{{ $aduan->id }}"><i
                                                     class="bx bx-show"></i></span>
                                         </a>
-
-                                        <!-- <a type="button" data-bs-toggle="tooltip" data-bs-placement="bottom"
-                                        data-bs-title="Padam">
-                                        <span class="btn btn-danger btn-sm" data-bs-toggle="modal"
-                                            data-bs-target="#deleteModal{{ $aduan->id }}"><i
-                                                class="bx bx-trash"></i></span>
-                                    </a> -->
                                     </td>
                                 </tr>
                             @endforeach
@@ -165,9 +142,6 @@
                         {{ $aduanList->appends([
                                 'search' => request('search'),
                                 'perPage' => request('perPage'),
-                                'type' => request('type'),
-                                'status' => request('status'),
-                                'attendance' => request('attendance'),
                             ])->links('pagination::bootstrap-4') }}
                     </div>
                 </div>
@@ -295,38 +269,6 @@
                     <!-- Modal Footer -->
                     <div class="modal-footer">
                         <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Tutup</button>
-                    </div>
-                </div>
-            </div>
-        </div>
-    @endforeach
-
-
-    <!-- Delete Confirmation Modal -->
-    @foreach ($aduanList as $aduan)
-        <div class="modal fade" id="deleteModal{{ $aduan->id }}" tabindex="-1" aria-labelledby="deleteModalLabel"
-            aria-hidden="true">
-            <div class="modal-dialog modal-dialog-centered">
-                <div class="modal-content">
-                    <div class="modal-header">
-                        <h5 class="modal-title" id="deleteModalLabel">Pengesahan Padam Rekod</h5>
-                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-                    </div>
-                    <div class="modal-body">
-                        @isset($aduan)
-                            Adakah anda pasti ingin memadam rekod <span style="font-weight: 600;">
-                                {{ ucfirst($aduan->name) }}</span>?
-                        @else
-                            Tiada maklumat Aduan.
-                        @endisset
-                    </div>
-                    <div class="modal-footer">
-                        <form action="{{ route('aduan.destroy', $aduan->id) }}" method="POST">
-                            {{ method_field('delete') }}
-                            {{ csrf_field() }}
-                            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Tutup</button>
-                            <button type="submit" class="btn btn-danger">Padam</button>
-                        </form>
                     </div>
                 </div>
             </div>
