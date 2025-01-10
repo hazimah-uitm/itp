@@ -3,8 +3,7 @@
         <img src="{{ asset('public/assets/images/logo-icon.png') }}" class="logo-icon" alt="logo icon">
     </div>
     <div>
-        <h4 class="logo-text">ITDASH</h4>
-        <h6 class="logo-subtitle">Dashboard Prestasi IT</h6>
+        <h4 class="logo-text">ITPerformance</h4>
     </div>
     <div class="toggle-icon ms-auto" id="toggle-icon"><i class='bx bx-arrow-to-left'></i></div>
 </div>

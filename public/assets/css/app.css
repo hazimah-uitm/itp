@@ -70,11 +70,10 @@ a {
 }
 
 .logo-text {
-	font-size: 25px;
-	margin-left: 10px;
-	margin-top: 5px;
+	font-size: 18px;
+	margin-left: 12px;
+	letter-spacing: 2px;
 	margin-bottom: 0;
-	letter-spacing: 11px;
 	color: #fff
 }
 
@@ -94,11 +93,11 @@ a {
 }
 
 .logo-text-login {
-	font-size: 32px;
+	font-size: 25px;
 	margin-left: 8px;
 	margin-top: 0;
 	margin-bottom: 0;
-	letter-spacing: 11.5px;
+	letter-spacing: 10px;
 	color: #fff;
 }
 
