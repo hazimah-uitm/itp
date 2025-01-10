@@ -76,11 +76,11 @@
                     <thead>
                         <tr>
                             <th>#</th>
-                            <th>Nama</th>
-                            <th>Jenis Pengguna</th>
+                            <th>Kampus</th>
+                            <th>Status Aduan</th>
                             <th>Kategori</th>
                             <th>Kategori Aduan</th>
-                            <th>Status Aduan</th>
+                            <th>Staf Bertugas</th>
                             <th>Bulan Aduan</th>
                             <th>Tahun Aduan</th>
                             <th>Tempoh Respons</th>
@@ -93,10 +93,7 @@
                                 <tr>
                                     <td>{{ ($aduanList->currentPage() - 1) * $aduanList->perPage() + $loop->iteration }}
                                     </td>
-                                    <td>{{ $aduan->complainent_name }} - {{ $aduan->complainent_id }}</td>
-                                    <td>{{ $aduan->complainent_category }}</td>
-                                    <td>{{ $aduan->category }}</td>
-                                    <td>{{ $aduan->aduan_category }}</td>
+                                    <td>{{ $aduan->campus }}</td>
                                     <td>
                                         @if ($aduan->aduan_status == 'ADUAN CANCELLED')
                                             <span class="badge bg-warning">ADUAN CANCELLED</span>
@@ -110,9 +107,12 @@
                                             <span class="badge bg-info">IT SERVICES - 2ND LEVEL SUPPORT</span>
                                         @endif
                                     </td>
+                                    <td>{{ $aduan->category }}</td>
+                                    <td style="word-wrap: break-word; white-space: normal;">{{ $aduan->aduan_category }}</td>
+                                    <td style="word-wrap: break-word; white-space: normal;">{{ $aduan->staff_duty}}</td>
                                     <td>{{ $aduan->date_applied->format('F') }}</td>
                                     <td>{{ $aduan->date_applied->format('Y') }}</td>
-                                    <td>{{ $aduan->response_time }}</td>
+                                    <td style="word-wrap: break-word; white-space: normal;">{{ $aduan->response_time }}</td>
                                     <td>
                                         <!-- <a href="{{ route('aduan.edit', $aduan->id) }}" class="btn btn-info btn-sm"
                                         data-bs-toggle="tooltip" data-bs-placement="bottom" title="Kemaskini">
@@ -147,9 +147,6 @@
                     <form action="{{ route('aduan.search') }}" method="GET" id="perPageForm"
                         class="d-flex align-items-center">
                         <input type="hidden" name="search" value="{{ request('search') }}">
-                        <input type="hidden" name="type" value="{{ request('type') }}">
-                        <input type="hidden" name="attendance" value="{{ request('attendance') }}">
-                        <input type="hidden" name="status" value="{{ request('status') }}">
                         <select name="perPage" id="perPage" class="form-select form-select-sm"
                             onchange="document.getElementById('perPageForm').submit()">
                             <option value="10" {{ Request::get('perPage') == '10' ? 'selected' : '' }}>10</option>
@@ -340,18 +337,6 @@
         document.addEventListener('DOMContentLoaded', function() {
             // Auto-submit the form on input change
             document.getElementById('searchInput').addEventListener('input', function() {
-                document.getElementById('searchForm').submit();
-            });
-
-            document.getElementById('typeFilter').addEventListener('change', function() {
-                document.getElementById('searchForm').submit();
-            });
-
-            document.getElementById('attendanceFilter').addEventListener('change', function() {
-                document.getElementById('searchForm').submit();
-            });
-
-            document.getElementById('statusFilter').addEventListener('change', function() {
                 document.getElementById('searchForm').submit();
             });
 
