@@ -2,37 +2,38 @@
 
 @section('content')
 <div class="container-fluid mb-3">
-    <div class="row mb-4 justify-content-center d-flex align-items-stretch">
+    <div class="row mb-4 justify-content-center" style="display: flex; flex-wrap: wrap; align-items: stretch;">
         <!-- Main Rectangular Statistic (Jumlah Aduan) -->
-        <div class="col-md-4 mb-3 d-flex align-items-stretch">
-            <div class="bg-primary text-white p-4 rounded shadow w-100"> <!-- Set min-height for equal height -->
-                <h5 class="text-center fw-bold">Jumlah Aduan ICT</h5>
-                <h1 class="display-4 text-center">{{ $totalAduan }}</h1> <!-- Made the font larger here -->
+        <div class="col-lg-4 col-md-6 col-sm-12 mb-3" style="display: flex; align-items: stretch;">
+            <div class="bg-primary text-white p-4 rounded shadow" style="display: flex; flex-direction: column; justify-content: center; align-items: stretch; height: 100%; width: 100%;">
+                <h5 class="text-center fw-bold">JUMLAH ADUAN ICT</h5>
+                <h1 class="display-5 text-center">{{ $totalAduan }}</h1>
             </div>
         </div>
 
         <!-- Donut Charts with Cards (4 charts) -->
         @php
         $charts = [
-            ['id' => 'aduanCompletedChart', 'label' => 'Aduan Completed', 'value' => $aduanCompleted, 'color' => 'rgba(40, 167, 69, 0.7)', 'percent' => $percentAduanCompleted],
-            ['id' => 'inProgressChart', 'label' => 'In Progress', 'value' => $inProgress, 'color' => 'rgba(255, 193, 7, 0.7)', 'percent' => $percentInProgress],
-            ['id' => 'cancelledChart', 'label' => 'Cancelled', 'value' => $cancelled, 'color' => 'rgba(220, 53, 69, 0.7)', 'percent' => $percentCancelled],
-            ['id' => 'closedChart', 'label' => 'Closed', 'value' => $closed, 'color' => 'rgba(108, 117, 125, 0.7)', 'percent' => $percentClosed],
+            ['id' => 'aduanCompletedChart', 'label' => 'COMPLETED & VERIFIED', 'value' => $aduanCompleted, 'color' => 'rgba(40, 167, 69, 0.7)', 'percent' => $percentAduanCompleted],
+            ['id' => 'inProgressChart', 'label' => 'IN PROGRESS', 'value' => $inProgress, 'color' => 'rgba(255, 193, 7, 0.7)', 'percent' => $percentInProgress],
+            ['id' => 'cancelledChart', 'label' => 'CANCELLED', 'value' => $cancelled, 'color' => 'rgba(220, 53, 69, 0.7)', 'percent' => $percentCancelled],
+            ['id' => 'closedChart', 'label' => 'CLOSED', 'value' => $closed, 'color' => 'rgba(108, 117, 125, 0.7)', 'percent' => $percentClosed],
         ];
         @endphp
 
         @foreach($charts as $chart)
-        <div class="col-md-2 mb-3 d-flex align-items-stretch">
-            <div class="card shadow border-0 rounded w-100"> <!-- Set min-height for equal height -->
-                <div class="card-body d-flex flex-column justify-content-center align-items-center p-4"> <!-- Centering content -->
+        <div class="col-lg-2 col-md-3 col-sm-12 mb-3" style="display: flex; align-items: stretch;">
+            <div class="card shadow border-0 rounded" style="display: flex; flex-direction: column; justify-content: center; align-items: stretch; height: 100%; width: 100%;">
+                <div class="card-body d-flex flex-column justify-content-center align-items-center p-4">
                     <canvas id="{{ $chart['id'] }}"></canvas>
-                    <h5 class="fw-bold mt-2" style="font-size: 14px; text-align: center;">{{ $chart['label'] }}</h5> <!-- Reduced label font size and centered -->
+                    <h5 class="fw-bold mt-2" style="font-size: 14px; text-align: center;">{{ $chart['label'] }}</h5>
                 </div>
             </div>
         </div>
         @endforeach
     </div>
 </div>
+
 
 <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 <script>
@@ -43,7 +44,7 @@
             elementId: 'aduanCompletedChart',
             value: {{ $aduanCompleted }},
             percent: {{ $percentAduanCompleted }},
-            label: 'Completed',
+            label: 'Completed & Verified',
             color: 'rgba(40, 167, 69, 0.7)', // Bootstrap success color
         },
         {
@@ -114,7 +115,7 @@
             },
             options: {
                 responsive: true,
-                cutout: '65%', // Adjust the thickness of the donut
+                cutout: '70%', 
                 plugins: {
                     legend: { display: false },
                 },

@@ -23,7 +23,7 @@ class CreateAduansTable extends Migration
             $table->string('category')->nullable();
             $table->string('aduan_subcategory')->nullable();
             $table->string('campus')->nullable();
-            $table->string('location')->nullable();
+            $table->text('location')->nullable();
             $table->text('aduan_details')->nullable();
             $table->string('aduan_status')->nullable();
             $table->string('aduan_type')->nullable();
