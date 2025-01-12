@@ -29,6 +29,7 @@ For other than owner, please use fork.
 7. Run "php artisan migrate" and "php artisan db:seed"
 8. After done import, run "php artisan serve"
 9. You can access the local system by using link http://127.0.0.1:8000
+10. To create public storage for store image or etc that kept in db, run php artisan storage:link
 
 ## License
 
