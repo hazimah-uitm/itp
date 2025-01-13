@@ -34,7 +34,8 @@
                     @if (count($activities) > 0)
                     @foreach ($activities as $activityLog)
                     <tr>
-                        <td>{{ $loop->iteration }}</td>
+                        <td>{{ ($activities->currentPage() - 1) * $activities->perPage() + $loop->iteration }}
+                        </td>
                         <td>{{ $activityLog->description }}</td>
                         <td>
                             @if ($activityLog->subject)
@@ -90,11 +91,14 @@
                 </form>
             </div>
 
-            <div class="mt-3 d-flex justify-content-end">
-                <div class="mx-1 mt-2">{{ $activities->firstItem() }} – {{ $activities->lastItem() }} dari
+            <div class="d-flex justify-content-end align-items-center">
+                <span class="mx-2 mt-2 small text-muted">
+                    Menunjukkan {{ $activities->firstItem() }} hingga {{ $activities->lastItem() }} daripada
                     {{ $activities->total() }} rekod
+                </span>
+                <div class="pagination-wrapper">
+                    {{ $activities->links('pagination::bootstrap-4') }}
                 </div>
-                <div>{{ $activities->links() }}</div>
             </div>
         </div>
     </div>
