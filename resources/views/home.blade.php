@@ -139,7 +139,6 @@
         </div>
     </div>
 
-    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <script>
         // Chart Data
         const totalAduan = {{ $totalAduan }};
@@ -147,7 +146,7 @@
                 elementId: 'aduanCompletedChart',
                 value: {{ $aduanCompleted }},
                 percent: {{ $percentAduanCompleted }},
-                label: 'Completed',
+                label: 'Completed & Verified',
                 color: 'rgba(40, 167, 69, 0.7)',
             },
             {
@@ -211,7 +210,7 @@
             new Chart(ctx, {
                 type: 'doughnut',
                 data: {
-                    labels: [chart.label, 'Unresolved'],
+                    labels: [chart.label, 'Others'],
                     datasets: [{
                         data: [chart.value, totalAduan - chart.value],
                         backgroundColor: [chart.color, 'rgba(233, 236, 239, 0.7)'],
