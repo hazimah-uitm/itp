@@ -198,7 +198,7 @@
                                 </tbody>
                                 <tfoot>
                                     <tr>
-                                        <th colspan="2" class="text-right">Total Jumlah</th>
+                                        <th colspan="2" class="text-right">Jumlah Keseluruhan</th>
                                         <th>{{ array_sum(array_column($aduanCategoryCounts, 'count')) }}</th>
                                     </tr>
                                 </tfoot>
