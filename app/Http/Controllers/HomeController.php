@@ -12,13 +12,11 @@ class HomeController extends Controller
         $this->middleware('auth');
     }
 
-    public function index(Request $request)
+    private function applyFilters(Request $request)
     {
-        // Retrieve filters from the request
         $month = $request->input('month', 'all'); // Default to 'all'
         $year = $request->input('year', now()->year); // Default to the current year
 
-        // Build the query with filters
         $query = Aduan::query();
 
         // Apply the month filter if it's not 'all'
@@ -28,6 +26,14 @@ class HomeController extends Controller
 
         // Always apply the year filter (this already uses the default year if not provided)
         $query->whereYear('date_applied', $year);
+
+        return $query;
+    }
+
+
+    public function index(Request $request)
+    {
+        $query = $this->applyFilters($request);
 
         $aduanList = $query->get(); // Get filtered data
 
@@ -101,8 +107,6 @@ class HomeController extends Controller
             'responseDaysMoreThan3' => $responseDaysMoreThan3,
             'percentResponseLessThanOrEqual3' => $percentResponseLessThanOrEqual3,
             'percentResponseMoreThan3' => $percentResponseMoreThan3,
-            'month' => $month,
-            'year' => $year,
         ]);
     }
 }
