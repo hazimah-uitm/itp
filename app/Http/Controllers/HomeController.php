@@ -12,53 +12,68 @@ class HomeController extends Controller
         $this->middleware('auth');
     }
 
-    public function index()
+    public function index(Request $request)
     {
-        $aduanList = Aduan::all();
-    
+        // Retrieve filters from the request
+        $month = $request->input('month', 'all'); // Default to 'all'
+        $year = $request->input('year', now()->year); // Default to the current year
+
+        // Build the query with filters
+        $query = Aduan::query();
+
+        // Apply the month filter if it's not 'all'
+        if ($month !== 'all') {
+            $query->whereMonth('date_applied', $month);
+        }
+
+        // Always apply the year filter (this already uses the default year if not provided)
+        $query->whereYear('date_applied', $year);
+
+        $aduanList = $query->get(); // Get filtered data
+
         // Total Aduan
         $totalAduan = $aduanList->count();
-    
+
         // Aduan by Status
         $aduanCompleted = $aduanList->whereIn('aduan_status', ['ADUAN COMPLETED', 'ADUAN VERIFIED'])->count();
         $inProgress = $aduanList->whereIn('aduan_status', ['IT SERVICES - 2ND LEVEL SUPPORT', '2ND LEVEL MAINTENANCE', '1ST LEVEL SUPPORT'])->count();
         $cancelled = $aduanList->where('aduan_status', 'ADUAN CANCELLED')->count();
         $closed = $aduanList->where('aduan_status', 'ADUAN CLOSED (INCOMPLETE INFORMATION / WRONG CHANNEL)')->count();
-    
-        // Percentage calculation
+
+        // Percentages for Aduan by Status
         $percentAduanCompleted = ($totalAduan > 0) ? round(($aduanCompleted / $totalAduan) * 100, 2) : 0;
         $percentInProgress = ($totalAduan > 0) ? round(($inProgress / $totalAduan) * 100, 2) : 0;
         $percentCancelled = ($totalAduan > 0) ? round(($cancelled / $totalAduan) * 100, 2) : 0;
         $percentClosed = ($totalAduan > 0) ? round(($closed / $totalAduan) * 100, 2) : 0;
-    
-        // Aduan by campus
+
+        // Aduan by Campus
         $samarahan = $aduanList->where('campus', 'SAMARAHAN')->count();
         $samarahan2 = $aduanList->where('campus', 'SAMARAHAN 2')->count();
         $mukah = $aduanList->where('campus', 'MUKAH')->count();
-    
-        // Percentage calculation
+
+        // Percentages for Aduan by Campus
         $percentSamarahan = ($totalAduan > 0) ? round(($samarahan / $totalAduan) * 100, 2) : 0;
         $percentSamarahan2 = ($totalAduan > 0) ? round(($samarahan2 / $totalAduan) * 100, 2) : 0;
         $percentMukah = ($totalAduan > 0) ? round(($mukah / $totalAduan) * 100, 2) : 0;
-    
-        // Aduan by complainent category
+
+        // Aduan by Complainent Category
         $staff = $aduanList->where('complainent_category', 'STAFF')->count();
         $student = $aduanList->where('complainent_category', 'STUDENT')->count();
         $guest = $aduanList->where('complainent_category', 'GUEST')->count();
-    
-        // Percentage calculation
+
+        // Percentages for Aduan by Complainent Category
         $percentStaff = ($totalAduan > 0) ? round(($staff / $totalAduan) * 100, 2) : 0;
         $percentStudent = ($totalAduan > 0) ? round(($student / $totalAduan) * 100, 2) : 0;
         $percentGuest = ($totalAduan > 0) ? round(($guest / $totalAduan) * 100, 2) : 0;
-    
-        // Calculate response days categories
+
+        // Response Days Categories
         $responseDaysLessThanOrEqual3 = $aduanList->where('response_days', '<=', 3)->count();
         $responseDaysMoreThan3 = $aduanList->where('response_days', '>', 3)->count();
-    
-        // Percentage calculation for response days
+
+        // Percentages for Response Days
         $percentResponseLessThanOrEqual3 = ($totalAduan > 0) ? round(($responseDaysLessThanOrEqual3 / $totalAduan) * 100, 2) : 0;
         $percentResponseMoreThan3 = ($totalAduan > 0) ? round(($responseDaysMoreThan3 / $totalAduan) * 100, 2) : 0;
-    
+
         return view('home', [
             'aduanList' => $aduanList,
             'totalAduan' => $totalAduan,
@@ -86,7 +101,8 @@ class HomeController extends Controller
             'responseDaysMoreThan3' => $responseDaysMoreThan3,
             'percentResponseLessThanOrEqual3' => $percentResponseLessThanOrEqual3,
             'percentResponseMoreThan3' => $percentResponseMoreThan3,
+            'month' => $month,
+            'year' => $year,
         ]);
     }
-    
 }
