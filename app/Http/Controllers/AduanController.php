@@ -5,28 +5,68 @@ namespace App\Http\Controllers;
 use App\Imports\AduanExport;
 use App\Imports\AduanImport;
 use App\Models\Aduan;
+use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Maatwebsite\Excel\Facades\Excel;
 
 class AduanController extends Controller
 {
-    public function index(Request $request)
+    protected function getFilteredAduan(Request $request, $applyFilters = false)
     {
         $perPage = $request->input('perPage', 10);
-
-        $aduanList = Aduan::paginate($perPage);
-
-        // Convert the date_applied field to Carbon instances
-        foreach ($aduanList as $aduan) {
-            $aduan->date_applied = \Carbon\Carbon::parse($aduan->date_applied);
+        $query = Aduan::query();
+    
+        if ($applyFilters) {
+            $search = $request->input('search');
+            $month = $request->input('month', 'all'); // Default to 'all'
+            $year = $request->input('year', now()->year); // Default to current year
+    
+            // Apply search filter
+            if ($search) {
+                $query->where(function ($q) use ($search) {
+                    $q->where('aduan_category', 'LIKE', "%$search%")
+                        ->orWhere('campus', 'LIKE', "%$search%")
+                        ->orWhere('aduan_status', 'LIKE', "%$search%")
+                        ->orWhere('complainent_name', 'LIKE', "%$search%")
+                        ->orWhere('complainent_id', 'LIKE', "%$search%");
+                });
+            }
+    
+            // Apply month filter if not 'all'
+            if ($month !== 'all') {
+                $query->whereMonth('date_applied', $month);
+            }
+    
+            // Always apply year filter (default to current year)
+            $query->whereYear('date_applied', $year);
+        } else {
+            // Default behavior: show current year's data
+            $query->whereYear('date_applied', now()->year);
         }
+    
+        $aduanList = $query->latest()->paginate($perPage);
+    
+        // Format dates
+        foreach ($aduanList as $aduan) {
+            $dateApplied = Carbon::parse($aduan->date_applied)->timezone('Asia/Kuching');
+            $aduan->formatted_date = $dateApplied->format('d-m-Y');
+            $aduan->month = $dateApplied->format('F');
+            $aduan->year = $dateApplied->format('Y');
+        }
+    
+        return $aduanList;
+    }    
 
+    public function index(Request $request)
+    {
+        $aduanList = $this->getFilteredAduan($request);
+    
         return view('pages.aduan.index', [
             'aduanList' => $aduanList,
-            'perPage' => $perPage
+            'perPage' => $request->input('perPage', 10),
         ]);
     }
-
+    
     public function export(Request $request)
     {
         return Excel::download(new AduanExport, 'Aduan-ICT.xlsx');
@@ -145,31 +185,19 @@ class AduanController extends Controller
         return redirect()->route('aduan')->with('success', 'Maklumat berjaya dikemas kini');
     }
 
-
     public function search(Request $request)
     {
-        $search = $request->input('search');
-        $perPage = $request->input('perPage', 10);
-
-        $query = Aduan::query();
-
-        if ($search) {
-            $query->where('aduan_category', 'LIKE', "%$search%")
-                ->orWhere('campus', 'LIKE', "%$search%")
-                ->orWhere('aduan_status', 'LIKE', "%$search%")
-                ->orWhere('complainent_name', 'LIKE', "%$search%")
-                ->orWhere('complainent_id', 'LIKE', "%$search%");
-        }
-
-        $aduanList = $query->latest()->paginate($perPage);
-
+        $aduanList = $this->getFilteredAduan($request, true);
+    
         return view('pages.aduan.index', [
             'aduanList' => $aduanList,
-            'perPage' => $perPage,
-            'search' => $search
+            'perPage' => $request->input('perPage', 10),
+            'search' => $request->input('search'),
+            'month' => $request->input('month', 'all'),
+            'year' => $request->input('year', now()->year),
         ]);
     }
-
+    
     public function destroy(Request $request, $id)
     {
         $aduan = Aduan::findOrFail($id);
