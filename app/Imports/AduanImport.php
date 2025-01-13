@@ -36,11 +36,6 @@ class AduanImport implements ToModel, WithHeadingRow
         $splitCampusValue = explode('- UITM KAMPUS', $campusValue);
         $campus = isset($splitCampusValue[1]) ? trim($splitCampusValue[1]) : null;
 
-        // Extract the value after "-"
-        $aduanCategoryValue = $row['aduan_category'];
-        $splitaduanCategoryValue = explode('-', $aduanCategoryValue);
-        $aduanCategory = isset($splitaduanCategoryValue[1]) ? trim($splitaduanCategoryValue[1]) : null;
-
         // Extract category (value before "-")
         $aduanMainCategory = $row['aduan_category'];
         $category = explode(' - ', $aduanMainCategory)[0];
@@ -67,7 +62,7 @@ class AduanImport implements ToModel, WithHeadingRow
                 'complainent_name' => $complainentName,
                 'complainent_id' => $complainentId,
                 'complainent_category' => $row['complainent_category'],
-                'aduan_category' => $aduanCategory,
+                'aduan_category' => $row['aduan_category'],
                 'category' => $category,
                 'aduan_subcategory' => $row['aduan_sub_category'],
                 'campus' => $campus,
@@ -94,7 +89,7 @@ class AduanImport implements ToModel, WithHeadingRow
             'complainent_name' => $complainentName,
             'complainent_id' => $complainentId,
             'complainent_category' => $row['complainent_category'],
-            'aduan_category' => $aduanCategory,
+            'aduan_category' => $row['aduan_category'],
             'category' => $category,
             'aduan_subcategory' => $row['aduan_sub_category'],
             'campus' => $campus,
