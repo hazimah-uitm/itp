@@ -226,6 +226,28 @@
     </div>
 </div>
 <script>
+    document.addEventListener('DOMContentLoaded', function() {
+
+        document.getElementById('campusFilter').addEventListener('change', function() {
+            document.getElementById('searchForm').submit();
+        });
+
+        document.getElementById('monthFilter').addEventListener('change', function() {
+            document.getElementById('searchForm').submit();
+        });
+
+        document.getElementById('yearFilter').addEventListener('change', function() {
+            document.getElementById('searchForm').submit();
+        });
+
+        document.getElementById('resetButton').addEventListener('click', function() {
+            // Redirect to the base route to clear query parameters
+            window.location.href = "{{ route('home') }}";
+        });
+
+    });
+</script>
+<script>
     // Use the passed data from PHP
     const aduanCategoryData = <?php echo json_encode($aduanCategoryData); ?>;
 
@@ -267,28 +289,6 @@
                 }
             }
         }
-    });
-</script>
-<script>
-    document.addEventListener('DOMContentLoaded', function() {
-
-        document.getElementById('campusFilter').addEventListener('change', function() {
-            document.getElementById('searchForm').submit();
-        });
-
-        document.getElementById('monthFilter').addEventListener('change', function() {
-            document.getElementById('searchForm').submit();
-        });
-
-        document.getElementById('yearFilter').addEventListener('change', function() {
-            document.getElementById('searchForm').submit();
-        });
-
-        document.getElementById('resetButton').addEventListener('click', function() {
-            // Redirect to the base route to clear query parameters
-            window.location.href = "{{ route('home') }}";
-        });
-
     });
 </script>
 @endsection

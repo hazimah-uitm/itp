@@ -34,8 +34,8 @@ class AduanController extends Controller
             }
         
             // Apply campus filter (supports multi-select)
-            if ($campus && is_array($campus)) {
-                $query->whereIn('campus', $campus);
+            if ($campus) {
+                $query->where('campus', $campus);
             }
         
             // Apply month filter if not 'all'
@@ -201,7 +201,7 @@ class AduanController extends Controller
             'perPage' => $request->input('perPage', 10),
             'search' => $request->input('search'),
             'month' => $request->input('month', 'all'),
-            'year' => $request->input('year', now()->year),
+            'year' => $request->input('year', 'all'),
         ]);
     }
     

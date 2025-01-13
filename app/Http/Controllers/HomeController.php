@@ -20,8 +20,8 @@ class HomeController extends Controller
 
         $query = Aduan::query();
 
-        if ($campus && count($campus)) {
-            $query->whereIn('campus', $campus);
+        if ($campus) {
+            $query->where('campus', $campus);
         }
 
         // Apply the month filter if it's not 'all'
