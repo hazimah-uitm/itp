@@ -94,10 +94,16 @@ class HomeController extends Controller
 
         $aduanCategoryData = [];
         foreach ($aduanCategoryCounts as $category => $count) {
+            // Ensure the count is not null, and if it is, set it to 0
+            $count = $count ?? 0;
+
+            // Ensure totalAduan is not null or zero
+            $percentage = ($totalAduan > 0) ? round(($count / $totalAduan) * 100, 2) : 0;
+
             $aduanCategoryData[] = [
                 'category' => $category,
                 'count' => $count,
-                'percentage' => ($totalAduan > 0) ? round(($count / $totalAduan) * 100, 2) : 0
+                'percentage' => $percentage
             ];
         }
 

@@ -55,45 +55,90 @@
             </div>
         </div>
 
-        <!-- Cards replacing Donut Charts (4 cards) -->
+        <!-- 4 Main Cards -->
         @php
         $cards = [
         [
+        'id' => 'aduanCompletedChart',
         'label' => 'COMPLETED & VERIFIED',
         'value' => $aduanCompleted,
+        'color' => 'rgba(40, 167, 69, 0.7)',
         'percent' => $percentAduanCompleted,
         ],
         [
+        'id' => 'inProgressChart',
         'label' => 'IN PROGRESS',
         'value' => $inProgress,
+        'color' => 'rgba(255, 193, 7, 0.7)',
         'percent' => $percentInProgress,
         ],
         [
+        'id' => 'cancelledChart',
         'label' => 'CANCELLED',
         'value' => $cancelled,
+        'color' => 'rgba(220, 53, 69, 0.7)',
         'percent' => $percentCancelled,
         ],
         [
+        'id' => 'closedChart',
         'label' => 'CLOSED',
         'value' => $closed,
+        'color' => 'rgba(108, 117, 125, 0.7)',
         'percent' => $percentClosed,
         ],
         ];
         @endphp
 
-        @foreach ($cards as $card)
+        @foreach ($cards as $index => $card)
         <div class="col-lg-2 col-md-3 col-sm-12 mb-3" style="display: flex; align-items: stretch;">
             <div class="card shadow border-0 rounded"
                 style="display: flex; flex-direction: column; justify-content: center; align-items: stretch; height: 100%; width: 100%;">
                 <div class="card-body d-flex flex-column justify-content-center align-items-center p-4">
                     <h5 class="fw-bold text-primary text-center">{{ $card['label'] }}</h5>
-                    <h1 class="display-5 text-center">{{ $card['value'] }}</h1>
+                    <canvas id="chart-{{ $index }}" width="100" height="100"></canvas>
+                    <h6 class="text-center mt-2">{{ $card['value'] }}</h6>
                     <h6 class="text-muted text-center">{{ $card['percent'] }}%</h6>
                 </div>
             </div>
         </div>
         @endforeach
     </div>
+
+    <script>
+        document.addEventListener("DOMContentLoaded", function() {
+            const cards = @json($cards);
+
+            cards.forEach((card, index) => {
+                const ctx = document.getElementById(`chart-${index}`).getContext('2d');
+                new Chart(ctx, {
+                    type: 'doughnut',
+                    data: {
+                        labels: ['Total', 'Others'],
+                        datasets: [{
+                            data: [card.percent, 100 - card.percent],
+                            backgroundColor: [card.color, '#e0e0e0'],
+                            borderWidth: 1
+                        }]
+                    },
+                    options: {
+                        cutout: '70%',
+                        plugins: {
+                            legend: {
+                                display: false
+                            },
+                            tooltip: {
+                                callbacks: {
+                                    label: function(tooltipItem) {
+                                        return `${tooltipItem.label}: ${tooltipItem.raw}%`;
+                                    }
+                                }
+                            }
+                        }
+                    }
+                });
+            });
+        });
+    </script>
 
     <!-- Campus Cards -->
     <h4 class="text-center mb-4">KAMPUS</h4>
@@ -177,14 +222,85 @@
     <h4 class="text-center mb-4">KATEGORI ADUAN</h4>
     <div class="row">
         <div class="col-lg-6 col-md-12 col-sm-12">
-            <div class="card">
-                <div class="card-body">
-                    <div class="row justify-content-center">
+            <div class="card" id="aduanCard">
+                <div class="card-body d-flex flex-column justify-content-center">
+                    <div class="row justify-content-center flex-grow-1">
+                        <!-- Canvas for the chart -->
                         <canvas id="aduanChart" width="400" height="400"></canvas>
+                        <!-- Fallback text for 'No Data' -->
+                        <p id="noDataMessage" style="display: none; text-align: center; width: 100%;">Tiada rekod</p>
                     </div>
                 </div>
             </div>
         </div>
+
+        <script>
+            // Use the passed data from PHP
+            const aduanCategoryData = <?php echo json_encode($aduanCategoryData); ?>;
+
+            // Check if aduanCategoryData is null or empty, set default values if so
+            const safeAduanCategoryData = aduanCategoryData && aduanCategoryData.length > 0 ? aduanCategoryData : [{
+                category: 'No Data',
+                count: 0,
+                percentage: 0
+            }];
+
+            // Dynamically adjust the content visibility based on data availability
+            const aduanCard = document.getElementById('aduanCard');
+            const noDataMessage = document.getElementById('noDataMessage');
+            const aduanChart = document.getElementById('aduanChart');
+
+            if (safeAduanCategoryData.length === 1 && safeAduanCategoryData[0].count === 0) {
+                // When there's no data, show "No Data Available" and hide the chart
+                aduanChart.style.display = 'none'; // Hide the canvas
+                noDataMessage.style.display = 'block'; // Show the "No Data" message
+            } else {
+                // Display the chart when there is data and hide the "No Data" message
+                aduanChart.style.display = 'block'; // Show the chart
+                noDataMessage.style.display = 'none'; // Hide the "No Data" message
+            }
+
+            // Prepare labels and data for the chart
+            const labels = safeAduanCategoryData.map(item => item.category);
+            const data = safeAduanCategoryData.map(item => item.count);
+
+            // Doughnut Chart Configuration
+            const ctx = document.getElementById('aduanChart').getContext('2d');
+            new Chart(ctx, {
+                type: 'doughnut',
+                data: {
+                    labels: labels,
+                    datasets: [{
+                        label: 'Aduan Categories',
+                        data: data,
+                        backgroundColor: [
+                            '#FF6384', '#36A2EB', '#FFCE56', '#4BC0C0', '#9966FF', '#FF9F40'
+                        ],
+                        hoverBackgroundColor: [
+                            '#FF6384', '#36A2EB', '#FFCE56', '#4BC0C0', '#9966FF', '#FF9F40'
+                        ]
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    plugins: {
+                        legend: {
+                            position: 'right',
+                        },
+                        tooltip: {
+                            callbacks: {
+                                label: function(context) {
+                                    const total = context.dataset.data.reduce((sum, value) => sum + value, 0);
+                                    const percentage = ((context.raw / total) * 100).toFixed(2);
+                                    return `${context.label}: ${context.raw} (${percentage}%)`;
+                                }
+                            }
+                        }
+                    }
+                }
+            });
+        </script>
+
         <div class="col-lg-6 col-md-12 col-sm-12">
             <div class="card">
                 <div class="card-body">
@@ -245,50 +361,6 @@
             window.location.href = "{{ route('home') }}";
         });
 
-    });
-</script>
-<script>
-    // Use the passed data from PHP
-    const aduanCategoryData = <?php echo json_encode($aduanCategoryData); ?>;
-
-    // Prepare labels and data for the chart
-    const labels = aduanCategoryData.map(item => item.category);
-    const data = aduanCategoryData.map(item => item.count);
-
-    // Doughnut Chart Configuration
-    const ctx = document.getElementById('aduanChart').getContext('2d');
-    new Chart(ctx, {
-        type: 'doughnut',
-        data: {
-            labels: labels,
-            datasets: [{
-                label: 'Aduan Categories',
-                data: data,
-                backgroundColor: [
-                    '#FF6384', '#36A2EB', '#FFCE56', '#4BC0C0', '#9966FF', '#FF9F40'
-                ],
-                hoverBackgroundColor: [
-                    '#FF6384', '#36A2EB', '#FFCE56', '#4BC0C0', '#9966FF', '#FF9F40'
-                ]
-            }]
-        },
-        options: {
-            responsive: true,
-            plugins: {
-                legend: {
-                    position: 'right',
-                },
-                tooltip: {
-                    callbacks: {
-                        label: function(context) {
-                            const total = context.dataset.data.reduce((sum, value) => sum + value, 0);
-                            const percentage = ((context.raw / total) * 100).toFixed(2);
-                            return `${context.label}: ${context.raw} (${percentage}%)`;
-                        }
-                    }
-                }
-            }
-        }
     });
 </script>
 @endsection
