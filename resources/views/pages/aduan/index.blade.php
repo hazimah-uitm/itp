@@ -53,6 +53,7 @@
                         </select>
 
                         <select name="year" class="form-select form-select-sm ms-2 rounded" id="yearFilter">
+                            <option value="all" {{ request('year') == 'all' ? 'selected' : '' }}>Semua Tahun</option>
                             @for ($y = now()->year; $y >= now()->year - 10; $y--)
                             <option value="{{ $y }}" {{ request('year') == $y ? 'selected' : '' }}>
                                 {{ $y }}

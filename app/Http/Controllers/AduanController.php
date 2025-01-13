@@ -18,10 +18,10 @@ class AduanController extends Controller
     
         if ($applyFilters) {
             $search = $request->input('search');
-            $month = $request->input('month', 'all'); // Default to 'all'
-            $year = $request->input('year', now()->year); // Default to current year
+            $month = $request->input('month', 'all'); 
+            $year = $request->input('year', 'all'); 
             $campus = $request->input('campus');
-
+        
             // Apply search filter
             if ($search) {
                 $query->where(function ($q) use ($search) {
@@ -32,22 +32,23 @@ class AduanController extends Controller
                         ->orWhere('complainent_id', 'LIKE', "%$search%");
                 });
             }
-    
-            if ($campus && in_array($campus, ['SAMARAHAN', 'SAMARAHAN 2', 'MUKAH'])) {
-                $query->where('campus', $campus);
+        
+            // Apply campus filter (supports multi-select)
+            if ($campus && is_array($campus)) {
+                $query->whereIn('campus', $campus);
             }
-
+        
             // Apply month filter if not 'all'
             if ($month !== 'all') {
                 $query->whereMonth('date_applied', $month);
             }
-    
-            // Always apply year filter (default to current year)
-            $query->whereYear('date_applied', $year);
-        } else {
-            // Default behavior: show current year's data
-            $query->whereYear('date_applied', now()->year);
+        
+            // Apply year filter if not 'all'
+            if ($year !== 'all') {
+                $query->whereYear('date_applied', $year);
+            }
         }
+        
     
         $aduanList = $query->latest()->paginate($perPage);
     

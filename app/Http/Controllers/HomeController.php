@@ -15,22 +15,24 @@ class HomeController extends Controller
     private function applyFilters(Request $request)
     {
         $month = $request->input('month', 'all'); // Default to 'all'
-        $year = $request->input('year', now()->year); // Default to the current year
+        $year = $request->input('year', 'all'); // Default to the current year
         $campus = $request->input('campus');
 
         $query = Aduan::query();
 
         if ($campus && count($campus)) {
             $query->whereIn('campus', $campus);
-        }        
+        }
 
         // Apply the month filter if it's not 'all'
         if ($month !== 'all') {
             $query->whereMonth('date_applied', $month);
         }
 
-        // Always apply the year filter (this already uses the default year if not provided)
-        $query->whereYear('date_applied', $year);
+        // Apply year filter if not 'all'
+        if ($year !== 'all') {
+            $query->whereYear('date_applied', $year);
+        }
 
         return $query;
     }
