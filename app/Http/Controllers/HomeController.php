@@ -80,6 +80,20 @@ class HomeController extends Controller
         $percentResponseLessThanOrEqual3 = ($totalAduan > 0) ? round(($responseDaysLessThanOrEqual3 / $totalAduan) * 100, 2) : 0;
         $percentResponseMoreThan3 = ($totalAduan > 0) ? round(($responseDaysMoreThan3 / $totalAduan) * 100, 2) : 0;
 
+        // Group by Aduan Category and count occurrences
+        $aduanCategoryCounts = $aduanList->groupBy('aduan_category')->map(function ($items) {
+            return $items->count();
+        });
+
+        $aduanCategoryData = [];
+        foreach ($aduanCategoryCounts as $category => $count) {
+            $aduanCategoryData[] = [
+                'category' => $category,
+                'count' => $count,
+                'percentage' => ($totalAduan > 0) ? round(($count / $totalAduan) * 100, 2) : 0
+            ];
+        }
+
         return view('home', [
             'aduanList' => $aduanList,
             'totalAduan' => $totalAduan,
@@ -107,6 +121,7 @@ class HomeController extends Controller
             'responseDaysMoreThan3' => $responseDaysMoreThan3,
             'percentResponseLessThanOrEqual3' => $percentResponseLessThanOrEqual3,
             'percentResponseMoreThan3' => $percentResponseMoreThan3,
+            'aduanCategoryCounts' => $aduanCategoryData,
         ]);
     }
 }

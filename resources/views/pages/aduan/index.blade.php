@@ -76,8 +76,8 @@
         </div>
 
         <div class="table-responsive">
-            <table class="table">
-                <thead>
+            <table class="table table-sm table-striped table-hover">
+                <thead class="table-light text-center text-uppercase">
                     <tr>
                         <th>#</th>
                         <th>Kampus</th>
@@ -191,7 +191,7 @@
 
             <!-- Modal Body -->
             <div class="modal-body">
-                <table class="table table-borderless table-striped">
+                <table class="table table-borderless table-striped table-hover">
                     <tbody>
                         <tr>
                             <th scope="row">Tiket Aduan ICT</th>
@@ -227,7 +227,7 @@
                         </tr>
                         <tr>
                             <th scope="row">Keterangan Aduan</th>
-                            <td>{!! nl2br(e($aduan->aduan_details)) !!}</td>
+                            <td style="word-wrap: break-word; white-space: normal;">{!! nl2br(e($aduan->aduan_details)) !!}</td>
                         </tr>
                         <tr>
                             <th scope="row">Jenis Aduan</th>

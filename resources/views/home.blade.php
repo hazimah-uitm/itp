@@ -164,6 +164,39 @@
             </div>
         </div>
     </div>
+
+    <h4 class="text-center mb-4">KATEGORI ADUAN</h4>
+    <div class="row">
+        <div class="col-lg-6 col-md-12 col-sm-12">
+            <!-- Response Days Statistics -->
+        </div>
+        <div class="col-lg-6 col-md-12 col-sm-12">
+            <div class="card">
+                <div class="card-body">
+                    <div class="row justify-content-center">
+                        <div class="table-responsive">
+                            <table class="table table-sm table-striped table-hover">
+                                <thead>
+                                    <tr>
+                                        <th>Kategori</th>
+                                        <th>Jumlah</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    @foreach ($aduanCategoryCounts as $categoryData)
+                                    <tr>
+                                        <td>{{ $categoryData['category'] }}</td>
+                                        <td>{{ $categoryData['count'] }}</td>
+                                    </tr>
+                                    @endforeach
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
 </div>
 
 <script>

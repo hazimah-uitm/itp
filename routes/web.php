@@ -107,11 +107,5 @@ Route::middleware('auth')->group(function () {
     Route::get('/aduan/search', 'AduanController@search')->name('aduan.search');
     Route::post('/import-aduan', 'AduanController@import')->name('aduan.import');
     Route::post('aduan/store', 'AduanController@store')->name('aduan.store');
-    Route::get('aduan/{id}/edit', 'AduanController@edit')->name('aduan.edit');
-    Route::post('aduan/{id}', 'AduanController@update')->name('aduan.update');
-    Route::delete('aduan/{id}', 'AduanController@destroy')->name('aduan.destroy');
-    Route::get('/aduan/trash', 'AduanController@trashList')->name('aduan.trash');
-    Route::get('/aduan/{id}/restore', 'AduanController@restore')->name('aduan.restore');
-    Route::delete('/aduan/{id}/force-delete', 'AduanController@forceDelete')->name('aduan.forceDelete');
     Route::get('aduan/export', 'AduanController@export')->name('aduan.export');
 });
