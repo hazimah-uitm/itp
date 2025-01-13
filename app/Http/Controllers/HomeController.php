@@ -90,13 +90,22 @@ class HomeController extends Controller
         // Group by Aduan Category and count occurrences
         $aduanCategoryCounts = $aduanList->groupBy('aduan_category')->map(function ($items) {
             return $items->count();
-        });
+        })->toArray(); // Convert to an array for sorting
 
+        // Sort the array in descending order by count
+        arsort($aduanCategoryCounts);
+
+        // Get the top 10 categories
+        $topCategories = array_slice($aduanCategoryCounts, 0, 10, true);
+
+        // Calculate the "Lain-lain" count
+        $othersCount = array_sum(array_slice($aduanCategoryCounts, 10));
+
+        // Prepare the aduanCategoryData array
         $aduanCategoryData = [];
-        foreach ($aduanCategoryCounts as $category => $count) {
-            // Ensure the count is not null, and if it is, set it to 0
-            $count = $count ?? 0;
 
+        // Add top 10 categories to the data array
+        foreach ($topCategories as $category => $count) {
             // Ensure totalAduan is not null or zero
             $percentage = ($totalAduan > 0) ? round(($count / $totalAduan) * 100, 2) : 0;
 
@@ -104,6 +113,15 @@ class HomeController extends Controller
                 'category' => $category,
                 'count' => $count,
                 'percentage' => $percentage
+            ];
+        }
+
+        // Add "Lain-lain" category if there are remaining items
+        if ($othersCount > 0) {
+            $aduanCategoryData[] = [
+                'category' => 'Lain-lain',
+                'count' => $othersCount,
+                'percentage' => ($totalAduan > 0) ? round(($othersCount / $totalAduan) * 100, 2) : 0
             ];
         }
 
