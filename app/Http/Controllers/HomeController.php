@@ -16,8 +16,13 @@ class HomeController extends Controller
     {
         $month = $request->input('month', 'all'); // Default to 'all'
         $year = $request->input('year', now()->year); // Default to the current year
+        $campus = $request->input('campus');
 
         $query = Aduan::query();
+
+        if ($campus && count($campus)) {
+            $query->whereIn('campus', $campus);
+        }        
 
         // Apply the month filter if it's not 'all'
         if ($month !== 'all') {
@@ -122,6 +127,7 @@ class HomeController extends Controller
             'percentResponseLessThanOrEqual3' => $percentResponseLessThanOrEqual3,
             'percentResponseMoreThan3' => $percentResponseMoreThan3,
             'aduanCategoryCounts' => $aduanCategoryData,
+            'campusFilter' => $request->input('campus'),
         ]);
     }
 }

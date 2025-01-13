@@ -7,6 +7,14 @@
             <form action="{{ route('home') }}" method="GET" id="searchForm">
                 <div class="d-flex flex-wrap justify-content-end">
                     <div class="mb-2 ms-2 col-12 col-md-auto">
+                        <select name="campus" class="form-select ms-2 rounded" id="campusFilter">
+                            <option value="">Semua Kampus</option>
+                            <option value="SAMARAHAN" {{ request('campus') == 'SAMARAHAN' ? 'selected' : '' }}>Samarahan</option>
+                            <option value="SAMARAHAN 2" {{ request('campus') == 'SAMARAHAN 2' ? 'selected' : '' }}>Samarahan 2</option>
+                            <option value="MUKAH" {{ request('campus') == 'MUKAH' ? 'selected' : '' }}>Mukah</option>
+                        </select>
+                    </div>
+                    <div class="mb-2 ms-2 col-12 col-md-auto">
                         <select name="month" class="form-select ms-2 rounded" id="monthFilter">
                             <option value="all" {{ request('month') == 'all' ? 'selected' : '' }}>Semua Bulan</option>
                             @for ($m = 1; $m <= 12; $m++)
@@ -213,6 +221,10 @@
 
 <script>
     document.addEventListener('DOMContentLoaded', function() {
+
+        document.getElementById('campusFilter').addEventListener('change', function() {
+            document.getElementById('searchForm').submit();
+        });
 
         document.getElementById('monthFilter').addEventListener('change', function() {
             document.getElementById('searchForm').submit();

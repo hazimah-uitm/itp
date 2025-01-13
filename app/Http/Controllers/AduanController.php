@@ -20,7 +20,8 @@ class AduanController extends Controller
             $search = $request->input('search');
             $month = $request->input('month', 'all'); // Default to 'all'
             $year = $request->input('year', now()->year); // Default to current year
-    
+            $campus = $request->input('campus');
+
             // Apply search filter
             if ($search) {
                 $query->where(function ($q) use ($search) {
@@ -32,6 +33,10 @@ class AduanController extends Controller
                 });
             }
     
+            if ($campus && in_array($campus, ['SAMARAHAN', 'SAMARAHAN 2', 'MUKAH'])) {
+                $query->where('campus', $campus);
+            }
+
             // Apply month filter if not 'all'
             if ($month !== 'all') {
                 $query->whereMonth('date_applied', $month);
@@ -64,6 +69,7 @@ class AduanController extends Controller
         return view('pages.aduan.index', [
             'aduanList' => $aduanList,
             'perPage' => $request->input('perPage', 10),
+            'campusFilter' => $request->input('campus'),
         ]);
     }
     

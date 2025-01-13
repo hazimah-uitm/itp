@@ -35,14 +35,23 @@
                     <div class="input-group">
                         <input type="text" class="form-control rounded" placeholder="Carian..." name="search"
                             value="{{ request('search') }}" id="searchInput">
+
+                        <select name="campus" class="form-select form-select-sm ms-2 rounded" id="campusFilter">
+                            <option value="">Semua Kampus</option>
+                            <option value="SAMARAHAN" {{ request('campus') == 'SAMARAHAN' ? 'selected' : '' }}>Samarahan</option>
+                            <option value="SAMARAHAN 2" {{ request('campus') == 'SAMARAHAN 2' ? 'selected' : '' }}>Samarahan 2</option>
+                            <option value="MUKAH" {{ request('campus') == 'MUKAH' ? 'selected' : '' }}>Mukah</option>
+                        </select>
+
                         <select name="month" class="form-select form-select-sm ms-2 rounded" id="monthFilter">
-                            <option value="all" {{ request('month') == 'all' ? 'selected' : '' }}>All Months</option>
+                            <option value="all" {{ request('month') == 'all' ? 'selected' : '' }}>Semua Bulan</option>
                             @for ($m = 1; $m <= 12; $m++)
                                 <option value="{{ $m }}" {{ request('month') == $m ? 'selected' : '' }}>
                                 {{ \Carbon\Carbon::create()->month($m)->format('F') }}
                                 </option>
                                 @endfor
                         </select>
+
                         <select name="year" class="form-select form-select-sm ms-2 rounded" id="yearFilter">
                             @for ($y = now()->year; $y >= now()->year - 10; $y--)
                             <option value="{{ $y }}" {{ request('year') == $y ? 'selected' : '' }}>
@@ -139,6 +148,7 @@
                 <form action="{{ route('aduan.search') }}" method="GET" id="perPageForm"
                     class="d-flex align-items-center">
                     <input type="hidden" name="search" value="{{ request('search') }}">
+                    <input type="hidden" name="campus" value="{{ request('campus') }}">
                     <input type="hidden" name="month" value="{{ request('month') }}">
                     <input type="hidden" name="year" value="{{ request('year') }}">
                     <select name="perPage" id="perPage" class="form-select form-select-sm"
@@ -160,6 +170,7 @@
                                 'search' => request('search'),
                                 'month' => request('month'),
                                 'year' => request('year'),
+                                'campus' => request('campus'),
                                 'perPage' => request('perPage'),
                             ])->links('pagination::bootstrap-4') }}
                 </div>
@@ -301,6 +312,10 @@
     document.addEventListener('DOMContentLoaded', function() {
         // Auto-submit the form on input change
         document.getElementById('searchInput').addEventListener('input', function() {
+            document.getElementById('searchForm').submit();
+        });
+
+        document.getElementById('campusFilter').addEventListener('change', function() {
             document.getElementById('searchForm').submit();
         });
 
