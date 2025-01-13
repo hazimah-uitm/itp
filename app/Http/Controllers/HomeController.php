@@ -128,7 +128,7 @@ class HomeController extends Controller
             'responseDaysMoreThan3' => $responseDaysMoreThan3,
             'percentResponseLessThanOrEqual3' => $percentResponseLessThanOrEqual3,
             'percentResponseMoreThan3' => $percentResponseMoreThan3,
-            'aduanCategoryCounts' => $aduanCategoryData,
+            'aduanCategoryData' => $aduanCategoryData,
             'campusFilter' => $request->input('campus'),
         ]);
     }

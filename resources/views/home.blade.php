@@ -177,13 +177,19 @@
     <h4 class="text-center mb-4">KATEGORI ADUAN</h4>
     <div class="row">
         <div class="col-lg-6 col-md-12 col-sm-12">
-            <!-- Response Days Statistics -->
+            <div class="card">
+                <div class="card-body">
+                    <div class="row justify-content-center">
+                        <canvas id="aduanChart" width="400" height="400"></canvas>
+                    </div>
+                </div>
+            </div>
         </div>
         <div class="col-lg-6 col-md-12 col-sm-12">
             <div class="card">
                 <div class="card-body">
                     <div class="row justify-content-center">
-                        <div class="table-responsive" style="max-height: 400px; overflow-y: auto;">
+                        <div class="table-responsive" style="max-height: 610px; overflow-y: auto;">
                             <table class="table table-sm table-striped table-hover">
                                 <thead>
                                     <tr>
@@ -193,8 +199,8 @@
                                     </tr>
                                 </thead>
                                 <tbody>
-                                    @if (count($aduanCategoryCounts) > 0)
-                                    @foreach ($aduanCategoryCounts as $categoryData)
+                                    @if (count($aduanCategoryData) > 0)
+                                    @foreach ($aduanCategoryData as $categoryData)
                                     <tr>
                                         <td class="text-center">{{ ($loop->index + 1) }}</td>
                                         <td>{{ $categoryData['category'] }}</td>
@@ -208,7 +214,7 @@
                                 <tfoot>
                                     <tr>
                                         <th colspan="2" class="text-right">Jumlah Keseluruhan</th>
-                                        <th>{{ array_sum(array_column($aduanCategoryCounts, 'count')) }}</th>
+                                        <th>{{ array_sum(array_column($aduanCategoryData, 'count')) }}</th>
                                     </tr>
                                 </tfoot>
                             </table>
@@ -219,7 +225,50 @@
         </div>
     </div>
 </div>
+<script>
+    // Use the passed data from PHP
+    const aduanCategoryData = <?php echo json_encode($aduanCategoryData); ?>;
 
+    // Prepare labels and data for the chart
+    const labels = aduanCategoryData.map(item => item.category);
+    const data = aduanCategoryData.map(item => item.count);
+
+    // Doughnut Chart Configuration
+    const ctx = document.getElementById('aduanChart').getContext('2d');
+    new Chart(ctx, {
+        type: 'doughnut',
+        data: {
+            labels: labels,
+            datasets: [{
+                label: 'Aduan Categories',
+                data: data,
+                backgroundColor: [
+                    '#FF6384', '#36A2EB', '#FFCE56', '#4BC0C0', '#9966FF', '#FF9F40'
+                ],
+                hoverBackgroundColor: [
+                    '#FF6384', '#36A2EB', '#FFCE56', '#4BC0C0', '#9966FF', '#FF9F40'
+                ]
+            }]
+        },
+        options: {
+            responsive: true,
+            plugins: {
+                legend: {
+                    position: 'right',
+                },
+                tooltip: {
+                    callbacks: {
+                        label: function(context) {
+                            const total = context.dataset.data.reduce((sum, value) => sum + value, 0);
+                            const percentage = ((context.raw / total) * 100).toFixed(2);
+                            return `${context.label}: ${context.raw} (${percentage}%)`;
+                        }
+                    }
+                }
+            }
+        }
+    });
+</script>
 <script>
     document.addEventListener('DOMContentLoaded', function() {
 
