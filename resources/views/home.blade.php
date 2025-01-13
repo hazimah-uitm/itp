@@ -174,22 +174,34 @@
             <div class="card">
                 <div class="card-body">
                     <div class="row justify-content-center">
-                        <div class="table-responsive">
+                        <div class="table-responsive" style="max-height: 400px; overflow-y: auto;">
                             <table class="table table-sm table-striped table-hover">
                                 <thead>
                                     <tr>
-                                        <th>Kategori</th>
-                                        <th>Jumlah</th>
+                                        <th>#</th>
+                                        <th>KATEGORI</th>
+                                        <th>JUMLAH</th>
                                     </tr>
                                 </thead>
                                 <tbody>
+                                    @if (count($aduanCategoryCounts) > 0)
                                     @foreach ($aduanCategoryCounts as $categoryData)
                                     <tr>
+                                        <td class="text-center">{{ ($loop->index + 1) }}</td>
                                         <td>{{ $categoryData['category'] }}</td>
                                         <td>{{ $categoryData['count'] }}</td>
                                     </tr>
                                     @endforeach
+                                    @else
+                                    <td colspan="3">Tiada rekod</td>
+                                    @endif
                                 </tbody>
+                                <tfoot>
+                                    <tr>
+                                        <th colspan="2" class="text-right">Total Jumlah</th>
+                                        <th>{{ array_sum(array_column($aduanCategoryCounts, 'count')) }}</th>
+                                    </tr>
+                                </tfoot>
                             </table>
                         </div>
                     </div>
