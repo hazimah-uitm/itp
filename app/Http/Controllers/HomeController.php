@@ -17,11 +17,21 @@ class HomeController extends Controller
         $month = $request->input('month', 'all'); // Default to 'all'
         $year = $request->input('year', 'all'); // Default to the current year
         $campus = $request->input('campus');
+        $aduanStatus = $request->input('aduan_status');
+        $complainentCategory = $request->input('complainent_category');
 
         $query = Aduan::query();
 
         if ($campus) {
             $query->where('campus', $campus);
+        }
+
+        if ($aduanStatus) {
+            $query->where('aduan_status', $aduanStatus);
+        }
+
+        if ($complainentCategory) {
+            $query->where('complainent_category', $complainentCategory);
         }
 
         // Apply the month filter if it's not 'all'
@@ -49,7 +59,7 @@ class HomeController extends Controller
 
         // JUMLAH ADUAN BY STATUS
         $aduanCompleted = $aduanList->whereIn('aduan_status', ['ADUAN COMPLETED', 'ADUAN VERIFIED'])->count();
-        $inProgress = $aduanList->whereIn('aduan_status', ['IT SERVICES - 2ND LEVEL SUPPORT', '2ND LEVEL MAINTENANCE', '1ST LEVEL SUPPORT'])->count();
+        $inProgress = $aduanList->whereIn('aduan_status', ['IT SERVICES - 2ND LEVEL SUPPORT', '2ND LEVEL MAINTENANCE', '1ST LEVEL MAINTENANCE'])->count();
         $cancelled = $aduanList->where('aduan_status', 'ADUAN CANCELLED')->count();
         $closed = $aduanList->where('aduan_status', 'ADUAN CLOSED (INCOMPLETE INFORMATION / WRONG CHANNEL)')->count();
         $percentAduanCompleted = ($totalAduan > 0) ? round(($aduanCompleted / $totalAduan) * 100, 2) : 0;
@@ -147,6 +157,8 @@ class HomeController extends Controller
             'percentResponseMoreThan3' => $percentResponseMoreThan3,
             'aduanCategoryData' => $aduanCategoryData,
             'campusFilter' => $request->input('campus'),
+            'aduanStatusFilter' => $request->input('campus'),
+            'complainentCategoryFilter' => $request->input('complainent_category'),
             'complainantData' => $complainantData,
             'responseDaysData' => $responseDaysData,
         ]);

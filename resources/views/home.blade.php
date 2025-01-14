@@ -15,6 +15,26 @@
                         </select>
                     </div>
                     <div class="mb-2 ms-2 col-12 col-md-auto">
+                        <select name="complainent_category" class="form-select ms-2 rounded" id="complainentCategoryFilter">
+                            <option value="">Semua Kategori Pengadu</option>
+                            <option value="STAFF" {{ request('complainent_category') == 'STAFF' ? 'selected' : '' }}>STAFF</option>
+                            <option value="STUDENT" {{ request('complainent_category') == 'STUDENT' ? 'selected' : '' }}>STUDENT</option>
+                            <option value="GUEST" {{ request('complainent_category') == 'GUEST' ? 'selected' : '' }}>GUEST</option>
+                        </select>
+                    </div>
+                    <div class="mb-2 ms-2 col-12 col-md-auto">
+                        <select name="aduan_status" class="form-select ms-2 rounded" id="aduanStatusFilter">
+                            <option value="">Semua Aduan Status</option>
+                            <option value="1ST LEVEL MAINTENANCE" {{ request('aduan_status') == '1ST LEVEL MAINTENANCE' ? 'selected' : '' }}>1ST LEVEL MAINTENANCE</option>
+                            <option value="2ND LEVEL MAINTENANCE" {{ request('aduan_status') == '2ND LEVEL MAINTENANCE' ? 'selected' : '' }}>2ND LEVEL MAINTENANCE</option>
+                            <option value="IT SERVICES - 2ND LEVEL SUPPORT" {{ request('aduan_status') == 'IT SERVICES - 2ND LEVEL SUPPORT' ? 'selected' : '' }}>IT SERVICES - 2ND LEVEL SUPPORT</option>
+                            <option value="ADUAN CANCELLED" {{ request('aduan_status') == 'ADUAN CANCELLED' ? 'selected' : '' }}>ADUAN CANCELLED</option>
+                            <option value="ADUAN CLOSED (INCOMPLETE INFORMATION / WRONG CHANNEL)" {{ request('aduan_status') == 'ADUAN CLOSED (INCOMPLETE INFORMATION / WRONG CHANNEL)' ? 'selected' : '' }}>ADUAN CLOSED (INCOMPLETE INFORMATION / WRONG CHANNEL)</option>
+                            <option value="ADUAN COMPLETED" {{ request('aduan_status') == 'ADUAN COMPLETED' ? 'selected' : '' }}>ADUAN COMPLETED</option>
+                            <option value="ADUAN VERIFIED" {{ request('aduan_status') == 'ADUAN VERIFIED' ? 'selected' : '' }}>ADUAN VERIFIED</option>
+                        </select>
+                    </div>
+                    <div class="mb-2 ms-2 col-12 col-md-auto">
                         <select name="month" class="form-select ms-2 rounded" id="monthFilter">
                             <option value="all" {{ request('month') == 'all' ? 'selected' : '' }}>Semua Bulan</option>
                             @for ($m = 1; $m <= 12; $m++)
@@ -44,7 +64,6 @@
             </form>
         </div>
     </div>
-
     <div class="row mb-4 justify-content-center" style="display: flex; flex-wrap: wrap; align-items: stretch;">
         <!-- Main Rectangular Statistic (Jumlah Aduan) -->
         <div class="col-lg-4 col-md-6 col-sm-12 mb-3" style="display: flex; align-items: stretch;">
@@ -104,42 +123,6 @@
         @endforeach
     </div>
 
-    <script>
-        document.addEventListener("DOMContentLoaded", function() {
-            const cards = @json($cards);
-
-            cards.forEach((card, index) => {
-                const ctx = document.getElementById(`chart-${index}`).getContext('2d');
-                new Chart(ctx, {
-                    type: 'doughnut',
-                    data: {
-                        labels: ['Total', 'Others'],
-                        datasets: [{
-                            data: [card.percent, 100 - card.percent],
-                            backgroundColor: [card.color, '#e0e0e0'],
-                            borderWidth: 1
-                        }]
-                    },
-                    options: {
-                        cutout: '70%',
-                        plugins: {
-                            legend: {
-                                display: false
-                            },
-                            tooltip: {
-                                callbacks: {
-                                    label: function(tooltipItem) {
-                                        return `${tooltipItem.label}: ${tooltipItem.raw}%`;
-                                    }
-                                }
-                            }
-                        }
-                    }
-                });
-            });
-        });
-    </script>
-
     <!-- Campus Cards -->
     <h4 class="text-center mb-4">KAMPUS</h4>
     <div class="row justify-content-center">
@@ -165,8 +148,8 @@
         @endforeach
     </div>
 
+    <!-- Complainent Cards -->
     <div class="row justify-content-center">
-        <!-- Complainent Cards -->
         @php
         $Complainents = [
         ['label' => 'STAFF', 'value' => $staff, 'percent' => $percentStaff],
@@ -219,6 +202,7 @@
         </div>
     </div>
 
+    <!-- Kategori Aduan -->
     <h4 class="text-center mb-4">KATEGORI ADUAN</h4>
     <div class="row">
         <div class="col-lg-6 col-md-12 col-sm-12">
@@ -233,87 +217,6 @@
                 </div>
             </div>
         </div>
-
-        <script>
-            // Use the passed data from PHP
-            const aduanCategoryData = <?php echo json_encode($aduanCategoryData); ?>;
-
-            // Check if aduanCategoryData is null or empty, set default values if so
-            const safeAduanCategoryData = aduanCategoryData && aduanCategoryData.length > 0 ? aduanCategoryData : [{
-                category: 'No Data',
-                count: 0,
-                percentage: 0
-            }];
-
-            // Dynamically adjust the content visibility based on data availability
-            const aduanCard = document.getElementById('aduanCard');
-            const noDataMessage = document.getElementById('noDataMessage');
-            const aduanChart = document.getElementById('aduanChart');
-
-            if (safeAduanCategoryData.length === 1 && safeAduanCategoryData[0].count === 0) {
-                // When there's no data, show "No Data Available" and hide the chart
-                aduanChart.style.display = 'none'; // Hide the canvas
-                noDataMessage.style.display = 'block'; // Show the "No Data" message
-            } else {
-                // Display the chart when there is data and hide the "No Data" message
-                aduanChart.style.display = 'block'; // Show the chart
-                noDataMessage.style.display = 'none'; // Hide the "No Data" message
-            }
-
-            // Prepare labels and data for the chart
-            const labels = safeAduanCategoryData.map(item => item.category);
-            const data = safeAduanCategoryData.map(item => item.count);
-
-            // Doughnut Chart Configuration
-            const ctx = document.getElementById('aduanChart').getContext('2d');
-            new Chart(ctx, {
-                type: 'doughnut',
-                data: {
-                    labels: labels,
-                    datasets: [{
-                        label: 'Aduan Categories',
-                        data: data,
-                        backgroundColor: [
-                            '#FF6384', '#36A2EB', '#FFCE56', '#4BC0C0', '#9966FF', '#FF9F40'
-                        ],
-                        hoverBackgroundColor: [
-                            '#FF6384', '#36A2EB', '#FFCE56', '#4BC0C0', '#9966FF', '#FF9F40'
-                        ]
-                    }]
-                },
-                options: {
-                    responsive: true,
-                    maintainAspectRatio: false, // Disable maintaining aspect ratio
-                    plugins: {
-                        legend: {
-                            position: 'right',
-                        },
-                        tooltip: {
-                            callbacks: {
-                                label: function(context) {
-                                    const total = context.dataset.data.reduce((sum, value) => sum + value, 0);
-                                    const percentage = ((context.raw / total) * 100).toFixed(2);
-                                    return `${context.label}: ${context.raw} (${percentage}%)`;
-                                }
-                            }
-                        },
-                        datalabels: {
-                            color: '#000', // Text color
-                            font: {
-                                weight: 'bold',
-                                size: 12
-                            },
-                            formatter: (value, context) => {
-                                const total = context.chart.data.datasets[0].data.reduce((sum, val) => sum + val, 0);
-                                const percentage = ((value / total) * 100).toFixed(2);
-                                return `${percentage}%`;
-                            }
-                        }
-                    }
-                },
-                plugins: [ChartDataLabels]
-            });
-        </script>
 
         <div class="col-lg-6 col-md-12 col-sm-12">
             <div class="card">
@@ -355,6 +258,7 @@
         </div>
     </div>
 
+    <!-- Jumlah aduan x kategori pengadu x tempoh respon -->
     <h4 class="text-center mb-4">JUMLAH ADUAN MENGIKUT KATEGORI PENGADU & TEMPOH TINDAK BALAS SELESAI</h4>
     <div class="row">
         <div class="col-lg-6 col-md-12 col-sm-12">
@@ -376,108 +280,22 @@
                 </div>
             </div>
         </div>
-
-        <script>
-            // Data from the server
-            const complainantData = @json($complainantData);
-            const responseDaysData = @json($responseDaysData);
-
-            // Function to display total on bars
-            const displayTotal = {
-                id: 'displayTotal',
-                beforeDraw(chart) {
-                    const ctx = chart.ctx;
-                    chart.data.datasets.forEach((dataset, i) => {
-                        const meta = chart.getDatasetMeta(i);
-                        meta.data.forEach((bar, index) => {
-                            const value = dataset.data[index];
-                            ctx.fillStyle = '#000';
-                            ctx.font = '12px Arial';
-                            ctx.textAlign = 'center';
-                            ctx.fillText(value, bar.x, bar.y - 5); // Position above the bar
-                        });
-                    });
-                }
-            };
-
-            // Complainant Chart
-            const complainantCtx = document.getElementById('complainantChart').getContext('2d');
-            new Chart(complainantCtx, {
-                type: 'bar',
-                data: {
-                    labels: Object.keys(complainantData),
-                    datasets: [{
-                        data: Object.values(complainantData),
-                        backgroundColor: ['#FF6384', '#36A2EB', '#FFCE56'],
-                    }]
-                },
-                options: {
-                    responsive: true,
-                    plugins: {
-                        legend: {
-                            display: false, // Disable legend
-                        }
-                    },
-                    scales: {
-                        x: {
-                            title: {
-                                display: true,
-                                text: 'Kategori pengadu'
-                            }
-                        },
-                        y: {
-                            title: {
-                                display: true,
-                                text: 'Jumlah aduan'
-                            }
-                        }
-                    }
-                },
-                plugins: [displayTotal]
-            });
-
-            // Response Days Chart
-            const responseDaysCtx = document.getElementById('responseDaysChart').getContext('2d');
-            new Chart(responseDaysCtx, {
-                type: 'bar',
-                data: {
-                    labels: Object.keys(responseDaysData),
-                    datasets: [{
-                        data: Object.values(responseDaysData),
-                        backgroundColor: ['#FF6384', '#36A2EB', '#FFCE56', '#4BC0C0', '#9966FF'],
-                    }]
-                },
-                options: {
-                    responsive: true,
-                    plugins: {
-                        legend: {
-                            display: false, // Disable legend
-                        }
-                    },
-                    scales: {
-                        x: {
-                            title: {
-                                display: true,
-                                text: 'Tempoh tindak balas selesai (hari)'
-                            }
-                        },
-                        y: {
-                            title: {
-                                display: true,
-                                text: 'Jumlah Aduan'
-                            }
-                        }
-                    }
-                },
-                plugins: [displayTotal]
-            });
-        </script>
     </div>
 </div>
+
+<!-- Filter -->
 <script>
     document.addEventListener('DOMContentLoaded', function() {
 
+        document.getElementById('aduanStatusFilter').addEventListener('change', function() {
+            document.getElementById('searchForm').submit();
+        });
+
         document.getElementById('campusFilter').addEventListener('change', function() {
+            document.getElementById('searchForm').submit();
+        });
+
+        document.getElementById('complainentCategoryFilter').addEventListener('change', function() {
             document.getElementById('searchForm').submit();
         });
 
@@ -496,4 +314,221 @@
 
     });
 </script>
+
+<!-- 4 Main Cards -->
+<script>
+    document.addEventListener("DOMContentLoaded", function() {
+        const cards = @json($cards);
+
+        cards.forEach((card, index) => {
+            const ctx = document.getElementById(`chart-${index}`).getContext('2d');
+            new Chart(ctx, {
+                type: 'doughnut',
+                data: {
+                    labels: ['Total', 'Others'],
+                    datasets: [{
+                        data: [card.percent, 100 - card.percent],
+                        backgroundColor: [card.color, '#e0e0e0'],
+                        borderWidth: 1
+                    }]
+                },
+                options: {
+                    cutout: '70%',
+                    plugins: {
+                        legend: {
+                            display: false
+                        },
+                        tooltip: {
+                            callbacks: {
+                                label: function(tooltipItem) {
+                                    return `${tooltipItem.label}: ${tooltipItem.raw}%`;
+                                }
+                            }
+                        }
+                    }
+                }
+            });
+        });
+    });
+</script>
+
+<!-- Kategori Aduan -->
+<script>
+    // Use the passed data from PHP
+    const aduanCategoryData = <?php echo json_encode($aduanCategoryData); ?>;
+
+    // Check if aduanCategoryData is null or empty, set default values if so
+    const safeAduanCategoryData = aduanCategoryData && aduanCategoryData.length > 0 ? aduanCategoryData : [{
+        category: 'No Data',
+        count: 0,
+        percentage: 0
+    }];
+
+    // Dynamically adjust the content visibility based on data availability
+    const aduanCard = document.getElementById('aduanCard');
+    const noDataMessage = document.getElementById('noDataMessage');
+    const aduanChart = document.getElementById('aduanChart');
+
+    if (safeAduanCategoryData.length === 1 && safeAduanCategoryData[0].count === 0) {
+        // When there's no data, show "No Data Available" and hide the chart
+        aduanChart.style.display = 'none'; // Hide the canvas
+        noDataMessage.style.display = 'block'; // Show the "No Data" message
+    } else {
+        // Display the chart when there is data and hide the "No Data" message
+        aduanChart.style.display = 'block'; // Show the chart
+        noDataMessage.style.display = 'none'; // Hide the "No Data" message
+    }
+
+    // Prepare labels and data for the chart
+    const labels = safeAduanCategoryData.map(item => item.category);
+    const data = safeAduanCategoryData.map(item => item.count);
+
+    // Doughnut Chart Configuration
+    const ctx = document.getElementById('aduanChart').getContext('2d');
+    new Chart(ctx, {
+        type: 'doughnut',
+        data: {
+            labels: labels,
+            datasets: [{
+                label: 'Aduan Categories',
+                data: data,
+                backgroundColor: [
+                    '#FF6384', '#36A2EB', '#FFCE56', '#4BC0C0', '#9966FF', '#FF9F40'
+                ],
+                hoverBackgroundColor: [
+                    '#FF6384', '#36A2EB', '#FFCE56', '#4BC0C0', '#9966FF', '#FF9F40'
+                ]
+            }]
+        },
+        options: {
+            responsive: true,
+            maintainAspectRatio: false, // Disable maintaining aspect ratio
+            plugins: {
+                legend: {
+                    position: 'right',
+                },
+                tooltip: {
+                    callbacks: {
+                        label: function(context) {
+                            const total = context.dataset.data.reduce((sum, value) => sum + value, 0);
+                            const percentage = ((context.raw / total) * 100).toFixed(2);
+                            return `${context.label}: ${context.raw} (${percentage}%)`;
+                        }
+                    }
+                },
+                datalabels: {
+                    color: '#000', // Text color
+                    font: {
+                        weight: 'bold',
+                        size: 12
+                    },
+                    formatter: (value, context) => {
+                        const total = context.chart.data.datasets[0].data.reduce((sum, val) => sum + val, 0);
+                        const percentage = ((value / total) * 100).toFixed(2);
+                        return `${percentage}%`;
+                    }
+                }
+            }
+        },
+        plugins: [ChartDataLabels]
+    });
+</script>
+
+<!-- Jumlah aduan x pengadu x respon day -->
+<script>
+    // Data from the server
+    const complainantData = @json($complainantData);
+    const responseDaysData = @json($responseDaysData);
+
+    // Function to display total on bars
+    const displayTotal = {
+        id: 'displayTotal',
+        beforeDraw(chart) {
+            const ctx = chart.ctx;
+            chart.data.datasets.forEach((dataset, i) => {
+                const meta = chart.getDatasetMeta(i);
+                meta.data.forEach((bar, index) => {
+                    const value = dataset.data[index];
+                    ctx.fillStyle = '#000';
+                    ctx.font = '12px Arial';
+                    ctx.textAlign = 'center';
+                    ctx.fillText(value, bar.x, bar.y - 5); // Position above the bar
+                });
+            });
+        }
+    };
+
+    // Complainant Chart
+    const complainantCtx = document.getElementById('complainantChart').getContext('2d');
+    new Chart(complainantCtx, {
+        type: 'bar',
+        data: {
+            labels: Object.keys(complainantData),
+            datasets: [{
+                data: Object.values(complainantData),
+                backgroundColor: ['#FF6384', '#36A2EB', '#FFCE56'],
+            }]
+        },
+        options: {
+            responsive: true,
+            plugins: {
+                legend: {
+                    display: false, // Disable legend
+                }
+            },
+            scales: {
+                x: {
+                    title: {
+                        display: true,
+                        text: 'Kategori pengadu'
+                    }
+                },
+                y: {
+                    title: {
+                        display: true,
+                        text: 'Jumlah aduan'
+                    }
+                }
+            }
+        },
+        plugins: [displayTotal]
+    });
+
+    // Response Days Chart
+    const responseDaysCtx = document.getElementById('responseDaysChart').getContext('2d');
+    new Chart(responseDaysCtx, {
+        type: 'bar',
+        data: {
+            labels: Object.keys(responseDaysData),
+            datasets: [{
+                data: Object.values(responseDaysData),
+                backgroundColor: ['#FF6384', '#36A2EB', '#FFCE56', '#4BC0C0', '#9966FF'],
+            }]
+        },
+        options: {
+            responsive: true,
+            plugins: {
+                legend: {
+                    display: false, // Disable legend
+                }
+            },
+            scales: {
+                x: {
+                    title: {
+                        display: true,
+                        text: 'Tempoh tindak balas selesai (hari)'
+                    }
+                },
+                y: {
+                    title: {
+                        display: true,
+                        text: 'Jumlah Aduan'
+                    }
+                }
+            }
+        },
+        plugins: [displayTotal]
+    });
+</script>
+
 @endsection
