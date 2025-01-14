@@ -222,11 +222,11 @@
     <h4 class="text-center mb-4">KATEGORI ADUAN</h4>
     <div class="row">
         <div class="col-lg-6 col-md-12 col-sm-12">
-            <div class="card" id="aduanCard">
+            <div class="card" id="aduanCard" style="height: auto;">
                 <div class="card-body d-flex flex-column justify-content-center">
                     <div class="row justify-content-center flex-grow-1">
                         <!-- Canvas for the chart -->
-                        <canvas id="aduanChart" width="400" height="400"></canvas>
+                        <canvas id="aduanChart" style="max-height: 405px; max-width: 750px;"></canvas>
                         <!-- Fallback text for 'No Data' -->
                         <p id="noDataMessage" style="display: none; text-align: center; width: 100%;">Tiada rekod</p>
                     </div>
@@ -283,6 +283,7 @@
                 },
                 options: {
                     responsive: true,
+                    maintainAspectRatio: false, // Disable maintaining aspect ratio
                     plugins: {
                         legend: {
                             position: 'right',
