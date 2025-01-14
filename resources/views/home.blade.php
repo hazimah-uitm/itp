@@ -296,9 +296,22 @@
                                     return `${context.label}: ${context.raw} (${percentage}%)`;
                                 }
                             }
+                        },
+                        datalabels: {
+                            color: '#000', // Text color
+                            font: {
+                                weight: 'bold',
+                                size: 12
+                            },
+                            formatter: (value, context) => {
+                                const total = context.chart.data.datasets[0].data.reduce((sum, val) => sum + val, 0);
+                                const percentage = ((value / total) * 100).toFixed(2);
+                                return `${percentage}%`;
+                            }
                         }
                     }
-                }
+                },
+                plugins: [ChartDataLabels]
             });
         </script>
 

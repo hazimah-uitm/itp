@@ -44,79 +44,57 @@ class HomeController extends Controller
 
         $aduanList = $query->get(); // Get filtered data
 
-        // Total Aduan
+        // JUMLAH ADUAN ICT
         $totalAduan = $aduanList->count();
 
-        // Aduan by Status
+        // JUMLAH ADUAN BY STATUS
         $aduanCompleted = $aduanList->whereIn('aduan_status', ['ADUAN COMPLETED', 'ADUAN VERIFIED'])->count();
         $inProgress = $aduanList->whereIn('aduan_status', ['IT SERVICES - 2ND LEVEL SUPPORT', '2ND LEVEL MAINTENANCE', '1ST LEVEL SUPPORT'])->count();
         $cancelled = $aduanList->where('aduan_status', 'ADUAN CANCELLED')->count();
         $closed = $aduanList->where('aduan_status', 'ADUAN CLOSED (INCOMPLETE INFORMATION / WRONG CHANNEL)')->count();
-
-        // Percentages for Aduan by Status
         $percentAduanCompleted = ($totalAduan > 0) ? round(($aduanCompleted / $totalAduan) * 100, 2) : 0;
         $percentInProgress = ($totalAduan > 0) ? round(($inProgress / $totalAduan) * 100, 2) : 0;
         $percentCancelled = ($totalAduan > 0) ? round(($cancelled / $totalAduan) * 100, 2) : 0;
         $percentClosed = ($totalAduan > 0) ? round(($closed / $totalAduan) * 100, 2) : 0;
 
-        // Aduan by Campus
+        // JUMLAH ADUAN BY CAMPUS
         $samarahan = $aduanList->where('campus', 'SAMARAHAN')->count();
         $samarahan2 = $aduanList->where('campus', 'SAMARAHAN 2')->count();
         $mukah = $aduanList->where('campus', 'MUKAH')->count();
-
-        // Percentages for Aduan by Campus
         $percentSamarahan = ($totalAduan > 0) ? round(($samarahan / $totalAduan) * 100, 2) : 0;
         $percentSamarahan2 = ($totalAduan > 0) ? round(($samarahan2 / $totalAduan) * 100, 2) : 0;
         $percentMukah = ($totalAduan > 0) ? round(($mukah / $totalAduan) * 100, 2) : 0;
 
-        // Aduan by Complainent Category
+        // JUMLAH ADUAN BY COMPLAINENT CATEGORY
         $staff = $aduanList->where('complainent_category', 'STAFF')->count();
         $student = $aduanList->where('complainent_category', 'STUDENT')->count();
         $guest = $aduanList->where('complainent_category', 'GUEST')->count();
-
-        // Percentages for Aduan by Complainent Category
         $percentStaff = ($totalAduan > 0) ? round(($staff / $totalAduan) * 100, 2) : 0;
         $percentStudent = ($totalAduan > 0) ? round(($student / $totalAduan) * 100, 2) : 0;
         $percentGuest = ($totalAduan > 0) ? round(($guest / $totalAduan) * 100, 2) : 0;
 
-        // Response Days Categories
+        // JUMLAH ADUAN MENGIKUT PIAGAM
         $responseDaysLessThanOrEqual3 = $aduanList->where('response_days', '<=', 3)->count();
         $responseDaysMoreThan3 = $aduanList->where('response_days', '>', 3)->count();
-
-        // Percentages for Response Days
         $percentResponseLessThanOrEqual3 = ($totalAduan > 0) ? round(($responseDaysLessThanOrEqual3 / $totalAduan) * 100, 2) : 0;
         $percentResponseMoreThan3 = ($totalAduan > 0) ? round(($responseDaysMoreThan3 / $totalAduan) * 100, 2) : 0;
 
-        // Group by Aduan Category and count occurrences
+        // KATEGORI ADUAN
         $aduanCategoryCounts = $aduanList->groupBy('aduan_category')->map(function ($items) {
             return $items->count();
         })->toArray(); // Convert to an array for sorting
-
-        // Sort the array in descending order by count
-        arsort($aduanCategoryCounts);
-
-        // Get the top 10 categories
-        $topCategories = array_slice($aduanCategoryCounts, 0, 10, true);
-
-        // Calculate the "Lain-lain" count
-        $othersCount = array_sum(array_slice($aduanCategoryCounts, 10));
-
-        // Prepare the aduanCategoryData array
+        arsort($aduanCategoryCounts);  // Sort the array in descending order by count
+        $topCategories = array_slice($aduanCategoryCounts, 0, 10, true);  // Get the top 10 categories
+        $othersCount = array_sum(array_slice($aduanCategoryCounts, 10));   // Calculate the "Lain-lain" count
         $aduanCategoryData = [];
-
-        // Add top 10 categories to the data array
         foreach ($topCategories as $category => $count) {
-            // Ensure totalAduan is not null or zero
             $percentage = ($totalAduan > 0) ? round(($count / $totalAduan) * 100, 2) : 0;
-
             $aduanCategoryData[] = [
                 'category' => $category,
                 'count' => $count,
                 'percentage' => $percentage
             ];
         }
-
-        // Add "Lain-lain" category if there are remaining items
         if ($othersCount > 0) {
             $aduanCategoryData[] = [
                 'category' => 'Lain-lain',
