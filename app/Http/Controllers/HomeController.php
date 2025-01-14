@@ -103,6 +103,21 @@ class HomeController extends Controller
             ];
         }
 
+        // ADUAN BY KATEGORI PENGADU DAN RESPONSE DAYS
+        $complainantData = [
+            'STAFF' => $staff,
+            'STUDENT' => $student,
+            'GUEST' => $guest,
+        ];
+        
+        $responseDaysData = [
+            '0' => $aduanList->where('response_days', 0)->count(),
+            '1' => $aduanList->where('response_days', 1)->count(),
+            '2' => $aduanList->where('response_days', 2)->count(),
+            '3' => $aduanList->where('response_days', 3)->count(),
+            '>3' => $aduanList->where('response_days', '>', 3)->count(),
+        ];
+
         return view('home', [
             'aduanList' => $aduanList,
             'totalAduan' => $totalAduan,
@@ -132,6 +147,8 @@ class HomeController extends Controller
             'percentResponseMoreThan3' => $percentResponseMoreThan3,
             'aduanCategoryData' => $aduanCategoryData,
             'campusFilter' => $request->input('campus'),
+            'complainantData' => $complainantData,
+            'responseDaysData' => $responseDaysData,
         ]);
     }
 }
