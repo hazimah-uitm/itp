@@ -338,7 +338,7 @@
 <!-- 4 Main Cards -->
 <script>
     document.addEventListener("DOMContentLoaded", function() {
-        const cards = @json($cards);
+        const cards = <?php echo json_encode($cards); ?>;
 
         cards.forEach((card, index) => {
             const ctx = document.getElementById(`chart-${index}`).getContext('2d');
@@ -471,8 +471,8 @@
 <!-- Jumlah aduan x pengadu x respon day -->
 <script>
     // Data from the server
-    const complainantData = @json($complainantData);
-    const totalComplaints = @json($totalComplaints);
+    const complainantData = <?php echo json_encode($complainantData); ?>;
+    const totalComplaints = <?php echo json_encode($totalComplaints); ?>;
 
     // Calculate totals for each day (0, 1, 2, 3, >3)
     const totalsForEachDay = ['0', '1', '2', '3', '>3'].map(day => {
