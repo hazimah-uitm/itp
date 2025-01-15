@@ -21,6 +21,7 @@ class AduanController extends Controller
             $month = $request->input('month', 'all'); 
             $year = $request->input('year', 'all'); 
             $campus = $request->input('campus');
+            $aduanStatus = $request->input('aduan_status');
         
             // Apply search filter
             if ($search) {
@@ -33,9 +34,12 @@ class AduanController extends Controller
                 });
             }
         
-            // Apply campus filter (supports multi-select)
-            if ($campus) {
+            if ($campus && $campus !== 'all') {
                 $query->where('campus', $campus);
+            }
+    
+            if ($aduanStatus && $aduanStatus !== 'all') {
+                $query->where('aduan_status', $aduanStatus);
             }
         
             // Apply month filter if not 'all'
@@ -49,6 +53,13 @@ class AduanController extends Controller
             }
         }
         
+        $campusFilter = Aduan::select('campus')
+        ->distinct()
+        ->pluck('campus');
+        
+        $aduanStatusFilter = Aduan::select('aduan_status')
+        ->distinct()
+        ->pluck('aduan_status');
     
         $aduanList = $query->latest()->paginate($perPage);
     
@@ -60,17 +71,22 @@ class AduanController extends Controller
             $aduan->year = $dateApplied->format('Y');
         }
     
-        return $aduanList;
+        return [
+            'aduanList' => $aduanList,
+            'campusFilter' => $campusFilter,
+            'aduanStatusFilter' => $aduanStatusFilter,
+        ];
     }    
 
     public function index(Request $request)
     {
-        $aduanList = $this->getFilteredAduan($request);
+        $result = $this->getFilteredAduan($request);
     
         return view('pages.aduan.index', [
-            'aduanList' => $aduanList,
+            'aduanList' => $result['aduanList'],
             'perPage' => $request->input('perPage', 10),
-            'campusFilter' => $request->input('campus'),
+            'campusFilter' => $result['campusFilter'],
+            'aduanStatusFilter' => $result['aduanStatusFilter'],
         ]);
     }
     
@@ -194,14 +210,16 @@ class AduanController extends Controller
 
     public function search(Request $request)
     {
-        $aduanList = $this->getFilteredAduan($request, true);
+        $result = $this->getFilteredAduan($request, true);
     
         return view('pages.aduan.index', [
-            'aduanList' => $aduanList,
+            'aduanList' => $result['aduanList'],
             'perPage' => $request->input('perPage', 10),
             'search' => $request->input('search'),
             'month' => $request->input('month', 'all'),
             'year' => $request->input('year', 'all'),
+            'campusFilter' => $result['campusFilter'],
+            'aduanStatusFilter' => $result['aduanStatusFilter'],
         ]);
     }
     

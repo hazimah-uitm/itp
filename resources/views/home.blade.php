@@ -8,30 +8,52 @@
                 <div class="d-flex flex-wrap justify-content-end">
                     <div class="mb-2 ms-2 col-12 col-md-auto">
                         <select name="campus" class="form-select ms-2 rounded" id="campusFilter">
-                            <option value="">Semua Kampus</option>
-                            <option value="SAMARAHAN" {{ request('campus') == 'SAMARAHAN' ? 'selected' : '' }}>Samarahan</option>
-                            <option value="SAMARAHAN 2" {{ request('campus') == 'SAMARAHAN 2' ? 'selected' : '' }}>Samarahan 2</option>
-                            <option value="MUKAH" {{ request('campus') == 'MUKAH' ? 'selected' : '' }}>Mukah</option>
+                            <option value="all" {{ request('campus', 'all') == 'all' ? 'selected' : '' }}>Semua Kampus</option>
+                            @foreach ($campusFilter as $campus)
+                            <option value="{{ $campus }}" {{ request('campus') == $campus ? 'selected' : '' }}>
+                                {{ $campus }}
+                            </option>
+                            @endforeach
                         </select>
                     </div>
                     <div class="mb-2 ms-2 col-12 col-md-auto">
                         <select name="complainent_category" class="form-select ms-2 rounded" id="complainentCategoryFilter">
-                            <option value="">Semua Kategori Pengadu</option>
-                            <option value="STAFF" {{ request('complainent_category') == 'STAFF' ? 'selected' : '' }}>STAFF</option>
-                            <option value="STUDENT" {{ request('complainent_category') == 'STUDENT' ? 'selected' : '' }}>STUDENT</option>
-                            <option value="GUEST" {{ request('complainent_category') == 'GUEST' ? 'selected' : '' }}>GUEST</option>
+                            <option value="all" {{ request('complainent_category', 'all') == 'all' ? 'selected' : '' }}>Semua Kategori Pengadu</option>
+                            @foreach ($complainentCategoryFilter as $category)
+                            <option value="{{ $category }}" {{ request('complainent_category') == $category ? 'selected' : '' }}>
+                                {{ $category }}
+                            </option>
+                            @endforeach
+                        </select>
+                    </div>
+                    <div class="mb-2 ms-2 col-12 col-md-auto">
+                        <select name="category" class="form-select ms-2 rounded" id="categoryFilter">
+                            <option value="all" {{ request('category', 'all') == 'all' ? 'selected' : '' }}>Semua Kategori</option>
+                            @foreach ($categoryFilter as $category)
+                            <option value="{{ $category }}" {{ request('category') == $category ? 'selected' : '' }}>
+                                {{ $category }}
+                            </option>
+                            @endforeach
+                        </select>
+                    </div>
+                    <div class="mb-2 ms-2 col-12 col-md-auto">
+                        <select name="aduan_category" class="form-select ms-2 rounded" id="aduanCategoryFilter">
+                            <option value="all" {{ request('aduan_category', 'all') == 'all' ? 'selected' : '' }}>Semua Kategori</option>
+                            @foreach ($aduanCategoryFilter as $category)
+                            <option value="{{ $category }}" {{ request('aduan_category') == $category ? 'selected' : '' }}>
+                                {{ $category }}
+                            </option>
+                            @endforeach
                         </select>
                     </div>
                     <div class="mb-2 ms-2 col-12 col-md-auto">
                         <select name="aduan_status" class="form-select ms-2 rounded" id="aduanStatusFilter">
-                            <option value="">Semua Aduan Status</option>
-                            <option value="1ST LEVEL MAINTENANCE" {{ request('aduan_status') == '1ST LEVEL MAINTENANCE' ? 'selected' : '' }}>1ST LEVEL MAINTENANCE</option>
-                            <option value="2ND LEVEL MAINTENANCE" {{ request('aduan_status') == '2ND LEVEL MAINTENANCE' ? 'selected' : '' }}>2ND LEVEL MAINTENANCE</option>
-                            <option value="IT SERVICES - 2ND LEVEL SUPPORT" {{ request('aduan_status') == 'IT SERVICES - 2ND LEVEL SUPPORT' ? 'selected' : '' }}>IT SERVICES - 2ND LEVEL SUPPORT</option>
-                            <option value="ADUAN CANCELLED" {{ request('aduan_status') == 'ADUAN CANCELLED' ? 'selected' : '' }}>ADUAN CANCELLED</option>
-                            <option value="ADUAN CLOSED (INCOMPLETE INFORMATION / WRONG CHANNEL)" {{ request('aduan_status') == 'ADUAN CLOSED (INCOMPLETE INFORMATION / WRONG CHANNEL)' ? 'selected' : '' }}>ADUAN CLOSED (INCOMPLETE INFORMATION / WRONG CHANNEL)</option>
-                            <option value="ADUAN COMPLETED" {{ request('aduan_status') == 'ADUAN COMPLETED' ? 'selected' : '' }}>ADUAN COMPLETED</option>
-                            <option value="ADUAN VERIFIED" {{ request('aduan_status') == 'ADUAN VERIFIED' ? 'selected' : '' }}>ADUAN VERIFIED</option>
+                            <option value="all" {{ request('aduan_status', 'all') == 'all' ? 'selected' : '' }}>Semua Aduan Status</option>
+                            @foreach ($aduanStatusFilter as $aduanStatus)
+                            <option value="{{ $aduanStatus }}" {{ request('aduan_status') == $aduanStatus ? 'selected' : '' }}>
+                                {{ $aduanStatus }}
+                            </option>
+                            @endforeach
                         </select>
                     </div>
                     <div class="mb-2 ms-2 col-12 col-md-auto">
@@ -296,6 +318,14 @@
         });
 
         document.getElementById('complainentCategoryFilter').addEventListener('change', function() {
+            document.getElementById('searchForm').submit();
+        });
+
+        document.getElementById('categoryFilter').addEventListener('change', function() {
+            document.getElementById('searchForm').submit();
+        });
+
+        document.getElementById('aduanCategoryFilter').addEventListener('change', function() {
             document.getElementById('searchForm').submit();
         });
 

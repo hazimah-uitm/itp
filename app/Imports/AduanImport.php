@@ -31,10 +31,19 @@ class AduanImport implements ToModel, WithHeadingRow
         $timeApplied = ($row['time_applied'] == '-' || empty($row['time_applied'])) ? null : $this->formatTime($row['time_applied']);
         $timeCompleted = ($row['time_completed'] == '-' || empty($row['time_completed'])) ? null : $this->formatTime($row['time_completed']);
 
-        // Extract the value after "- UITM KAMPUS"
+        // Extract the value after "UiTM" or "UiTM Kampus" and before "-"
         $campusValue = $row['campus_zone'];
-        $splitCampusValue = explode('- UITM KAMPUS', $campusValue);
-        $campus = isset($splitCampusValue[1]) ? trim($splitCampusValue[1]) : null;
+        if (strpos($campusValue, 'UiTM Kampus') !== false) {
+            $splitCampusValue = explode('UiTM Kampus', $campusValue);
+        } else {
+            $splitCampusValue = explode('UiTM', $campusValue);
+        }
+        if (isset($splitCampusValue[1])) {
+            $subValue = explode('-', $splitCampusValue[1]);
+            $campus = isset($subValue[0]) ? trim($subValue[0]) : null;
+        } else {
+            $campus = null;
+        }
 
         // Extract category (value before "-")
         $aduanMainCategory = $row['aduan_category'];

@@ -19,19 +19,29 @@ class HomeController extends Controller
         $campus = $request->input('campus');
         $aduanStatus = $request->input('aduan_status');
         $complainentCategory = $request->input('complainent_category');
+        $category = $request->input('category');
+        $aduanCategory = $request->input('aduan_category');
 
         $query = Aduan::query();
 
-        if ($campus) {
+        if ($campus && $campus !== 'all') {
             $query->where('campus', $campus);
         }
 
-        if ($aduanStatus) {
+        if ($aduanStatus && $aduanStatus !== 'all') {
             $query->where('aduan_status', $aduanStatus);
         }
 
-        if ($complainentCategory) {
+        if ($complainentCategory && $complainentCategory !== 'all') {
             $query->where('complainent_category', $complainentCategory);
+        }        
+
+        if ($category && $category !== 'all') {
+            $query->where('category', $category);
+        }
+
+        if ($aduanCategory && $aduanCategory !== 'all') {
+            $query->where('aduan_category', $aduanCategory);
         }
 
         // Apply the month filter if it's not 'all'
@@ -52,7 +62,27 @@ class HomeController extends Controller
     {
         $query = $this->applyFilters($request);
 
-        $aduanList = $query->get(); // Get filtered data
+        $aduanList = $query->get(); 
+        
+        $complainentCategoryFilter = Aduan::select('complainent_category')
+        ->distinct()
+        ->pluck('complainent_category');
+        
+        $categoryFilter = Aduan::select('category')
+        ->distinct()
+        ->pluck('category');
+        
+        $aduanCategoryFilter = Aduan::select('aduan_category')
+        ->distinct()
+        ->pluck('aduan_category');
+        
+        $campusFilter = Aduan::select('campus')
+        ->distinct()
+        ->pluck('campus');
+        
+        $aduanStatusFilter = Aduan::select('aduan_status')
+        ->distinct()
+        ->pluck('aduan_status');
 
         // JUMLAH ADUAN ICT
         $totalAduan = $aduanList->count();
@@ -156,9 +186,11 @@ class HomeController extends Controller
             'percentResponseLessThanOrEqual3' => $percentResponseLessThanOrEqual3,
             'percentResponseMoreThan3' => $percentResponseMoreThan3,
             'aduanCategoryData' => $aduanCategoryData,
-            'campusFilter' => $request->input('campus'),
-            'aduanStatusFilter' => $request->input('campus'),
-            'complainentCategoryFilter' => $request->input('complainent_category'),
+            'campusFilter' => $campusFilter,
+            'aduanStatusFilter' => $aduanStatusFilter,
+            'complainentCategoryFilter' => $complainentCategoryFilter,
+            'categoryFilter' => $categoryFilter,
+            'aduanCategoryFilter' => $aduanCategoryFilter,
             'complainantData' => $complainantData,
             'responseDaysData' => $responseDaysData,
         ]);

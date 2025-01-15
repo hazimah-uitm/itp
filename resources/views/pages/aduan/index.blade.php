@@ -28,8 +28,8 @@
 @endif
 <div class="card">
     <div class="card-body">
-        <div class="row mb-4">
-            <div class="col-lg-6">
+        <div class="row mb-3">
+            <div class="col-lg-12">
                 <form action="{{ route('aduan.search') }}" method="GET" id="searchForm"
                     class="d-lg-flex align-items-center gap-3">
                     <div class="input-group">
@@ -37,10 +37,21 @@
                             value="{{ request('search') }}" id="searchInput">
 
                         <select name="campus" class="form-select form-select-sm ms-2 rounded" id="campusFilter">
-                            <option value="">Semua Kampus</option>
-                            <option value="SAMARAHAN" {{ request('campus') == 'SAMARAHAN' ? 'selected' : '' }}>Samarahan</option>
-                            <option value="SAMARAHAN 2" {{ request('campus') == 'SAMARAHAN 2' ? 'selected' : '' }}>Samarahan 2</option>
-                            <option value="MUKAH" {{ request('campus') == 'MUKAH' ? 'selected' : '' }}>Mukah</option>
+                            <option value="all" {{ request('campus', 'all') == 'all' ? 'selected' : '' }}>Semua Kampus</option>
+                            @foreach ($campusFilter as $campus)
+                            <option value="{{ $campus }}" {{ request('campus') == $campus ? 'selected' : '' }}>
+                                {{ $campus }}
+                            </option>
+                            @endforeach
+                        </select>
+
+                        <select name="aduan_status" class="form-select form-select-sm ms-2 rounded" id="aduanStatusFilter">
+                            <option value="all" {{ request('aduan_status', 'all') == 'all' ? 'selected' : '' }}>Semua Aduan Status</option>
+                            @foreach ($aduanStatusFilter as $aduanStatus)
+                            <option value="{{ $aduanStatus }}" {{ request('aduan_status') == $aduanStatus ? 'selected' : '' }}>
+                                {{ $aduanStatus }}
+                            </option>
+                            @endforeach
                         </select>
 
                         <select name="month" class="form-select form-select-sm ms-2 rounded" id="monthFilter">
@@ -71,8 +82,10 @@
                     </div>
                 </form>
             </div>
+        </div>
 
-            <div class="col-lg-6 d-flex justify-content-end align-items-center gap-2">
+        <div class="row mb-3">
+            <div class="col-lg-12 d-flex justify-content-end align-items-center">
                 <!-- Import Button and Form -->
                 <form action="{{ route('aduan.import') }}" method="POST" enctype="multipart/form-data"
                     class="d-flex align-items-center">
@@ -84,6 +97,7 @@
                 </form>
             </div>
         </div>
+
 
         <div class="table-responsive">
             <table class="table table-sm table-striped table-hover">
@@ -150,6 +164,7 @@
                     class="d-flex align-items-center">
                     <input type="hidden" name="search" value="{{ request('search') }}">
                     <input type="hidden" name="campus" value="{{ request('campus') }}">
+                    <input type="hidden" name="aduan_status" value="{{ request('aduan_status') }}">
                     <input type="hidden" name="month" value="{{ request('month') }}">
                     <input type="hidden" name="year" value="{{ request('year') }}">
                     <select name="perPage" id="perPage" class="form-select form-select-sm"
@@ -172,6 +187,7 @@
                                 'month' => request('month'),
                                 'year' => request('year'),
                                 'campus' => request('campus'),
+                                'aduan_status' => request('aduan_status'),
                                 'perPage' => request('perPage'),
                             ])->links('pagination::bootstrap-4') }}
                 </div>
@@ -313,6 +329,10 @@
     document.addEventListener('DOMContentLoaded', function() {
         // Auto-submit the form on input change
         document.getElementById('searchInput').addEventListener('input', function() {
+            document.getElementById('searchForm').submit();
+        });
+
+        document.getElementById('aduanStatusFilter').addEventListener('change', function() {
             document.getElementById('searchForm').submit();
         });
 
