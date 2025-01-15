@@ -14,7 +14,7 @@ class AduanController extends Controller
     protected function getFilteredAduan(Request $request, $applyFilters = false)
     {
         $perPage = $request->input('perPage', 10);
-        $query = Aduan::query();
+        $query = Aduan::whereIn('campus', ['Samarahan', 'Samarahan 2', 'Mukah']);
     
         if ($applyFilters) {
             $search = $request->input('search');
@@ -54,8 +54,10 @@ class AduanController extends Controller
         }
         
         $campusFilter = Aduan::select('campus')
+        ->whereIn('campus', ['Samarahan', 'Samarahan 2', 'Mukah'])
         ->distinct()
-        ->pluck('campus');
+        ->orderBy('campus', 'asc')
+        ->pluck('campus');    
         
         $aduanStatusFilter = Aduan::select('aduan_status')
         ->distinct()

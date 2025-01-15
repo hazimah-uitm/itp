@@ -62,7 +62,7 @@ class HomeController extends Controller
     {
         $query = $this->applyFilters($request);
 
-        $aduanList = $query->get(); 
+        $aduanList = $query->whereIn('campus', ['Samarahan', 'Samarahan 2', 'Mukah'])->get();
         
         $complainentCategoryFilter = Aduan::select('complainent_category')
         ->distinct()
@@ -80,9 +80,10 @@ class HomeController extends Controller
         ->pluck('aduan_category');    
         
         $campusFilter = Aduan::select('campus')
+        ->whereIn('campus', ['Samarahan', 'Samarahan 2', 'Mukah'])
         ->distinct()
         ->orderBy('campus', 'asc')
-        ->pluck('campus');
+        ->pluck('campus');     
         
         $aduanStatusFilter = Aduan::select('aduan_status')
         ->distinct()
@@ -103,9 +104,9 @@ class HomeController extends Controller
         $percentClosed = ($totalAduan > 0) ? round(($closed / $totalAduan) * 100, 2) : 0;
 
         // JUMLAH ADUAN BY CAMPUS
-        $samarahan = $aduanList->where('campus', 'SAMARAHAN')->count();
-        $samarahan2 = $aduanList->where('campus', 'SAMARAHAN 2')->count();
-        $mukah = $aduanList->where('campus', 'MUKAH')->count();
+        $samarahan = $aduanList->where('campus', 'Samarahan')->count();
+        $samarahan2 = $aduanList->where('campus', 'Samarahan 2')->count();
+        $mukah = $aduanList->where('campus', 'Mukah')->count();
         $percentSamarahan = ($totalAduan > 0) ? round(($samarahan / $totalAduan) * 100, 2) : 0;
         $percentSamarahan2 = ($totalAduan > 0) ? round(($samarahan2 / $totalAduan) * 100, 2) : 0;
         $percentMukah = ($totalAduan > 0) ? round(($mukah / $totalAduan) * 100, 2) : 0;

@@ -17,6 +17,26 @@
                         </select>
                     </div>
                     <div class="mb-2 ms-2 col-12 col-md-auto">
+                        <select name="month" class="form-select ms-2 rounded" id="monthFilter">
+                            <option value="all" {{ request('month') == 'all' ? 'selected' : '' }}>Semua Bulan</option>
+                            @for ($m = 1; $m <= 12; $m++)
+                                <option value="{{ $m }}" {{ request('month') == $m ? 'selected' : '' }}>
+                                {{ \Carbon\Carbon::create()->month($m)->format('F') }}
+                                </option>
+                                @endfor
+                        </select>
+                    </div>
+                    <div class="mb-2 ms-2 col-12 col-md-auto">
+                        <select name="year" class="form-select ms-2 rounded" id="yearFilter">
+                            <option value="all" {{ request('year') == 'all' ? 'selected' : '' }}>Semua Tahun</option>
+                            @for ($y = now()->year; $y >= now()->year - 10; $y--)
+                            <option value="{{ $y }}" {{ request('year') == $y ? 'selected' : '' }}>
+                                {{ $y }}
+                            </option>
+                            @endfor
+                        </select>
+                    </div>
+                    <div class="mb-2 ms-2 col-12 col-md-auto">
                         <select name="complainent_category" class="form-select ms-2 rounded" id="complainentCategoryFilter">
                             <option value="all" {{ request('complainent_category', 'all') == 'all' ? 'selected' : '' }}>Semua Kategori Pengadu</option>
                             @foreach ($complainentCategoryFilter as $category)
@@ -54,26 +74,6 @@
                                 {{ $aduanStatus }}
                             </option>
                             @endforeach
-                        </select>
-                    </div>
-                    <div class="mb-2 ms-2 col-12 col-md-auto">
-                        <select name="month" class="form-select ms-2 rounded" id="monthFilter">
-                            <option value="all" {{ request('month') == 'all' ? 'selected' : '' }}>Semua Bulan</option>
-                            @for ($m = 1; $m <= 12; $m++)
-                                <option value="{{ $m }}" {{ request('month') == $m ? 'selected' : '' }}>
-                                {{ \Carbon\Carbon::create()->month($m)->format('F') }}
-                                </option>
-                                @endfor
-                        </select>
-                    </div>
-                    <div class="mb-2 ms-2 col-12 col-md-auto">
-                        <select name="year" class="form-select ms-2 rounded" id="yearFilter">
-                            <option value="all" {{ request('year') == 'all' ? 'selected' : '' }}>Semua Tahun</option>
-                            @for ($y = now()->year; $y >= now()->year - 10; $y--)
-                            <option value="{{ $y }}" {{ request('year') == $y ? 'selected' : '' }}>
-                                {{ $y }}
-                            </option>
-                            @endfor
                         </select>
                     </div>
 
