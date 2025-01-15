@@ -66,22 +66,27 @@ class HomeController extends Controller
         
         $complainentCategoryFilter = Aduan::select('complainent_category')
         ->distinct()
+        ->orderBy('complainent_category', 'asc')
         ->pluck('complainent_category');
         
         $categoryFilter = Aduan::select('category')
         ->distinct()
+        ->orderBy('category', 'asc')
         ->pluck('category');
         
         $aduanCategoryFilter = Aduan::select('aduan_category')
         ->distinct()
-        ->pluck('aduan_category');
+        ->orderBy('aduan_category', 'asc')
+        ->pluck('aduan_category');    
         
         $campusFilter = Aduan::select('campus')
         ->distinct()
+        ->orderBy('campus', 'asc')
         ->pluck('campus');
         
         $aduanStatusFilter = Aduan::select('aduan_status')
         ->distinct()
+        ->orderBy('aduan_status', 'asc')
         ->pluck('aduan_status');
 
         // JUMLAH ADUAN ICT
