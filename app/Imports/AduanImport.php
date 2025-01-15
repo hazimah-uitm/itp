@@ -120,33 +120,25 @@ class AduanImport implements ToModel, WithHeadingRow
 
     private function formatTime($time)
     {
-        // Check if the time is empty or invalid
         if (empty($time) || $time == '-' || $time == null) {
             return null;  // Return null if the time is missing or placeholder
         }
 
-        // If the time is a decimal number (Excel time format), convert it to a valid time
         if (is_numeric($time)) {
-            // Convert Excel's time to seconds of the day (multiply by 24 hours)
             $timeInSeconds = $time * 24 * 60 * 60;
 
-            // Create a DateTime object based on the seconds of the day
             $formattedTime = new DateTime();
             $formattedTime->setTimestamp($timeInSeconds);
 
-            // Return the time in 'H:i:s' format (24-hour time)
             return $formattedTime->format('H:i:s');
         }
 
-        // Else if the time is in a string format like 'h:i:s A' (12-hour format with AM/PM)
         $formattedTime = DateTime::createFromFormat('h:i:s A', $time);  // 12-hour format with AM/PM
 
         if ($formattedTime === false) {
-            // Try 24-hour format if 12-hour format fails
             $formattedTime = DateTime::createFromFormat('H:i:s', $time);  // 24-hour format
         }
 
-        // If the conversion was successful, return it; otherwise, return null
         return $formattedTime ? $formattedTime->format('H:i:s') : null;
     }
 }

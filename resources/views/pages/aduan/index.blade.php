@@ -105,13 +105,13 @@
                     <tr>
                         <th>#</th>
                         <th>Kampus</th>
-                        <th>Status Aduan</th>
+                        <th>Status</th>
                         <th>Kategori</th>
-                        <th>Kategori Aduan</th>
-                        <th>Staf Bertugas</th>
-                        <th>Bulan Aduan</th>
-                        <th>Tahun Aduan</th>
-                        <th>Tempoh Respons</th>
+                        <th>Aduan</th>
+                        <th>PIC</th>
+                        <th>Bulan</th>
+                        <th>Tahun</th>
+                        <th>Respons</th>
                         <th>Tindakan</th>
                     </tr>
                 </thead>
