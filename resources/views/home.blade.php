@@ -227,12 +227,12 @@
     <!-- Kategori Aduan -->
     <h4 class="text-center mb-4">KATEGORI ADUAN</h4>
     <div class="row">
-        <div class="col-lg-6 col-md-12 col-sm-12">
-            <div class="card" id="aduanCard" style="height: auto;">
+        <div class="col-lg-8 col-md-12 col-sm-12">
+            <div class="card">
                 <div class="card-body d-flex flex-column justify-content-center">
                     <div class="row justify-content-center flex-grow-1">
                         <!-- Canvas for the chart -->
-                        <canvas id="aduanChart" style="max-height: 405px; max-width: 750px;"></canvas>
+                        <canvas id="aduanChart" style="max-height: 100%; width: 100%;"></canvas>
                         <!-- Fallback text for 'No Data' -->
                         <p id="noDataMessage" style="display: none; text-align: center; width: 100%;">Tiada rekod</p>
                     </div>
@@ -240,11 +240,11 @@
             </div>
         </div>
 
-        <div class="col-lg-6 col-md-12 col-sm-12">
+        <div class="col-lg-4 col-md-12 col-sm-12">
             <div class="card">
                 <div class="card-body">
                     <div class="row justify-content-center">
-                        <div class="table-responsive" style="max-height: 610px; overflow-y: auto;">
+                        <div class="table-responsive" style="max-height: 100%; overflow-y: auto;">
                             <table class="table table-sm table-striped table-hover">
                                 <thead>
                                     <tr>
@@ -287,7 +287,7 @@
             <div class="card">
                 <div class="card-body d-flex flex-column justify-content-center">
                     <div class="row justify-content-center flex-grow-1">
-                        <canvas id="complainantChart" width="400" height="200"></canvas>
+                        <canvas id="complainantChart" width="350" height="150"></canvas>
                     </div>
                 </div>
             </div>
@@ -377,55 +377,66 @@
     // Use the passed data from PHP
     const aduanCategoryData = <?php echo json_encode($aduanCategoryData); ?>;
 
-    // Check if aduanCategoryData is null or empty, set default values if so
-    const safeAduanCategoryData = aduanCategoryData && aduanCategoryData.length > 0 ? aduanCategoryData : [{
-        category: 'No Data',
-        count: 0,
-        percentage: 0
-    }];
-
-    // Dynamically adjust the content visibility based on data availability
-    const aduanCard = document.getElementById('aduanCard');
-    const noDataMessage = document.getElementById('noDataMessage');
-    const aduanChart = document.getElementById('aduanChart');
-
-    if (safeAduanCategoryData.length === 1 && safeAduanCategoryData[0].count === 0) {
-        // When there's no data, show "No Data Available" and hide the chart
-        aduanChart.style.display = 'none'; // Hide the canvas
-        noDataMessage.style.display = 'block'; // Show the "No Data" message
-    } else {
-        // Display the chart when there is data and hide the "No Data" message
-        aduanChart.style.display = 'block'; // Show the chart
-        noDataMessage.style.display = 'none'; // Hide the "No Data" message
-    }
+    // Filter out the "Lain-lain" category
+    const filteredAduanCategoryData = aduanCategoryData.filter(item => item.category !== 'Lain-lain');
 
     // Prepare labels and data for the chart
-    const labels = safeAduanCategoryData.map(item => item.category);
-    const data = safeAduanCategoryData.map(item => item.count);
+    const labels = filteredAduanCategoryData.map(item => item.category);
+    const data = filteredAduanCategoryData.map(item => item.count);
 
-    // Doughnut Chart Configuration
+    // Horizontal Rounded Bar Chart Configuration
     const ctx = document.getElementById('aduanChart').getContext('2d');
     new Chart(ctx, {
-        type: 'doughnut',
+        type: 'bar',
         data: {
             labels: labels,
             datasets: [{
-                label: 'Aduan Categories',
+                label: 'Jumlah Aduan',
                 data: data,
                 backgroundColor: [
-                    '#FF6384', '#36A2EB', '#FFCE56', '#4BC0C0', '#9966FF', '#FF9F40'
+                    '#FF6384', '#36A2EB', '#FFCE56', '#4BC0C0', '#9966FF', '#FF9F40',
+                    '#8A2BE2', '#00CED1', '#FFD700', '#DC143C'
                 ],
                 hoverBackgroundColor: [
-                    '#FF6384', '#36A2EB', '#FFCE56', '#4BC0C0', '#9966FF', '#FF9F40'
-                ]
+                    '#FF6384', '#36A2EB', '#FFCE56', '#4BC0C0', '#9966FF', '#FF9F40',
+                    '#8A2BE2', '#00CED1', '#FFD700', '#DC143C'
+                ],
+                borderRadius: 5,
+                borderSkipped: false
             }]
         },
         options: {
+            indexAxis: 'y',
             responsive: true,
-            maintainAspectRatio: false, // Disable maintaining aspect ratio
+            maintainAspectRatio: false,
+            layout: {
+                padding: {
+                    left: 10, // Add left padding
+                    right: 50, // Add right padding to allow space for labels
+                    top: 10,
+                    bottom: 10
+                }
+            },
+            scales: {
+                x: {
+                    display: false
+                },
+                y: {
+                    display: true,
+                    ticks: {
+                        color: '#000',
+                        font: {
+                            size: 14
+                        }
+                    },
+                    grid: {
+                        display: false
+                    }
+                }
+            },
             plugins: {
                 legend: {
-                    position: 'right',
+                    display: false
                 },
                 tooltip: {
                     callbacks: {
@@ -437,7 +448,9 @@
                     }
                 },
                 datalabels: {
-                    color: '#000', // Text color
+                    anchor: 'end',
+                    align: 'end',
+                    color: '#000',
                     font: {
                         weight: 'bold',
                         size: 12
@@ -445,8 +458,9 @@
                     formatter: (value, context) => {
                         const total = context.chart.data.datasets[0].data.reduce((sum, val) => sum + val, 0);
                         const percentage = ((value / total) * 100).toFixed(2);
-                        return `${percentage}%`;
-                    }
+                        return `${value} (${percentage}%)`;
+                    },
+                    offset: 1 // Ensure labels are not cut off
                 }
             }
         },
@@ -572,5 +586,4 @@
         plugins: [ChartDataLabels], // Include the plugin
     });
 </script>
-
 @endsection
