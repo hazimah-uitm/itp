@@ -173,6 +173,16 @@ class HomeController extends Controller
                 '>3' => $aduanList->where('complainent_category', 'GUEST')->where('response_days', '>', 3)->count(),
             ]
         ];
+    
+        // Calculate total complaints for each response day (combined for STAFF, STUDENT, and GUEST)
+        $totalComplaints = [
+            '0' => $complainantData['STAFF']['0'] + $complainantData['STUDENT']['0'] + $complainantData['GUEST']['0'],
+            '1' => $complainantData['STAFF']['1'] + $complainantData['STUDENT']['1'] + $complainantData['GUEST']['1'],
+            '2' => $complainantData['STAFF']['2'] + $complainantData['STUDENT']['2'] + $complainantData['GUEST']['2'],
+            '3' => $complainantData['STAFF']['3'] + $complainantData['STUDENT']['3'] + $complainantData['GUEST']['3'],
+            '>3' => $complainantData['STAFF']['>3'] + $complainantData['STUDENT']['>3'] + $complainantData['GUEST']['>3']
+        ];
+    
 
         return view('home', [
             'aduanList' => $aduanList,
@@ -208,6 +218,7 @@ class HomeController extends Controller
             'categoryFilter' => $categoryFilter,
             'aduanCategoryFilter' => $aduanCategoryFilter,
             'complainantData' => $complainantData,
+            'totalComplaints' => $totalComplaints,
         ]);
     }
 }

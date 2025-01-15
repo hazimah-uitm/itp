@@ -458,31 +458,24 @@
 <script>
     // Data from the server
     const complainantData = @json($complainantData);
+    const totalComplaints = @json($totalComplaints);
 
-    // Function to display total on bars
-    const displayTotal = {
-        id: 'displayTotal',
-        beforeDraw(chart) {
-            const ctx = chart.ctx;
-            chart.data.datasets.forEach((dataset, i) => {
-                const meta = chart.getDatasetMeta(i);
-                meta.data.forEach((bar, index) => {
-                    const value = dataset.data[index];
-                    ctx.fillStyle = '#000';
-                    ctx.font = '12px Arial';
-                    ctx.textAlign = 'center';
-                    ctx.fillText(value, bar.x, bar.y - 5); // Position above the bar
-                });
-            });
-        }
-    };
+    // Calculate totals for each day (0, 1, 2, 3, >3)
+    const totalsForEachDay = ['0', '1', '2', '3', '>3'].map(day => {
+        return (
+            complainantData.STAFF[day] + 
+            complainantData.STUDENT[day] + 
+            complainantData.GUEST[day]
+        );
+    });
 
     // Complainant Chart (Response days by complainant category)
     const complainantCtx = document.getElementById('complainantChart').getContext('2d');
+    
     new Chart(complainantCtx, {
-        type: 'bar',
+        type: 'bar', // Set to 'bar' for horizontal bar chart
         data: {
-            labels: ['0', '1', '2', '3', '>3'], // response days (0, 1, 2, 3, >3)
+            labels: ['0', '1', '2', '3', '>3'],
             datasets: [
                 {
                     label: 'STAFF',
@@ -494,8 +487,6 @@
                         complainantData.STAFF['>3'] || 0
                     ],
                     backgroundColor: '#FF6384',
-                    borderColor: '#FF6384',
-                    borderWidth: 1
                 },
                 {
                     label: 'STUDENT',
@@ -507,8 +498,6 @@
                         complainantData.STUDENT['>3'] || 0
                     ],
                     backgroundColor: '#36A2EB',
-                    borderColor: '#36A2EB',
-                    borderWidth: 1
                 },
                 {
                     label: 'GUEST',
@@ -520,8 +509,6 @@
                         complainantData.GUEST['>3'] || 0
                     ],
                     backgroundColor: '#FFCE56',
-                    borderColor: '#FFCE56',
-                    borderWidth: 1
                 }
             ]
         },
@@ -529,25 +516,49 @@
             responsive: true,
             plugins: {
                 legend: {
-                    display: true // Enable legend to show categories
+                    display: true
+                },
+                tooltip: {
+                    callbacks: {
+                        title: function(tooltipItem) {
+                            const day = tooltipItem[0].label;
+                            const total = totalComplaints[day]; // Get the total for the current day
+                            return `Day ${day}: Total ${total}`;
+                        }
+                    }
+                },
+                // Display total on top of bars (static labels)
+                datalabels: {
+                    display: true,
+                    color: 'black',
+                    font: {
+                        weight: 'bold',
+                        size: 12
+                    },
+                    formatter: function(value, context) {
+                        const day = context.dataIndex;
+                        return totalsForEachDay[day] || 0; // Show total for each day
+                    },
                 }
             },
             scales: {
                 x: {
+                    stacked: true,
                     title: {
                         display: true,
-                        text: 'Tempoh Tindak Balas Selesai (Hari)'
+                        text: 'Response Days'
                     }
                 },
                 y: {
+                    stacked: true,
                     title: {
                         display: true,
-                        text: 'Jumlah'
+                        text: 'Total Complaints'
                     }
                 }
             }
-        },
-        plugins: [displayTotal]
+        }
     });
 </script>
+
 @endsection
