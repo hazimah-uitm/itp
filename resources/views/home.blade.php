@@ -232,7 +232,7 @@
                 <div class="card-body d-flex flex-column justify-content-center">
                     <div class="row justify-content-center flex-grow-1">
                         <!-- Canvas for the chart -->
-                        <canvas id="aduanChart" style="max-height: 100%; width: 100%;"></canvas>
+                        <canvas id="aduanChart" style="max-height: 400px; max-width: 100%;"></canvas>
                         <!-- Fallback text for 'No Data' -->
                         <p id="noDataMessage" style="display: none; text-align: center; width: 100%;">Tiada rekod</p>
                     </div>
@@ -412,7 +412,7 @@
             layout: {
                 padding: {
                     left: 10, // Add left padding
-                    right: 50, // Add right padding to allow space for labels
+                    right: 90, // Add right padding to allow space for labels
                     top: 10,
                     bottom: 10
                 }
@@ -443,7 +443,7 @@
                         label: function(context) {
                             const total = context.dataset.data.reduce((sum, value) => sum + value, 0);
                             const percentage = ((context.raw / total) * 100).toFixed(2);
-                            return `${context.label}: ${context.raw} (${percentage}%)`;
+                            return `${context.raw} (${percentage}%)`;
                         }
                     }
                 },
