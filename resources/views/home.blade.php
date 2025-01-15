@@ -38,7 +38,7 @@
                     </div>
                     <div class="mb-2 ms-2 col-12 col-md-auto">
                         <select name="aduan_category" class="form-select ms-2 rounded" id="aduanCategoryFilter">
-                            <option value="all" {{ request('aduan_category', 'all') == 'all' ? 'selected' : '' }}>Semua Kategori</option>
+                            <option value="all" {{ request('aduan_category', 'all') == 'all' ? 'selected' : '' }}>Semua Kategori Aduan</option>
                             @foreach ($aduanCategoryFilter as $category)
                             <option value="{{ $category }}" {{ request('aduan_category') == $category ? 'selected' : '' }}>
                                 {{ $category }}
