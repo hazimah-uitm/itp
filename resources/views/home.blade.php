@@ -463,21 +463,20 @@
     // Calculate totals for each day (0, 1, 2, 3, >3)
     const totalsForEachDay = ['0', '1', '2', '3', '>3'].map(day => {
         return (
-            complainantData.STAFF[day] + 
-            complainantData.STUDENT[day] + 
+            complainantData.STAFF[day] +
+            complainantData.STUDENT[day] +
             complainantData.GUEST[day]
         );
     });
 
     // Complainant Chart (Response days by complainant category)
     const complainantCtx = document.getElementById('complainantChart').getContext('2d');
-    
+
     new Chart(complainantCtx, {
-        type: 'bar', // Set to 'bar' for horizontal bar chart
+        type: 'bar', // Stacked bar chart
         data: {
             labels: ['0', '1', '2', '3', '>3'],
-            datasets: [
-                {
+            datasets: [{
                     label: 'STAFF',
                     data: [
                         complainantData.STAFF['0'] || 0,
@@ -516,48 +515,61 @@
             responsive: true,
             plugins: {
                 legend: {
-                    display: true
+                    display: true,
                 },
                 tooltip: {
                     callbacks: {
-                        title: function(tooltipItem) {
-                            const day = tooltipItem[0].label;
+                        title: function(tooltipItems) {
+                            const day = tooltipItems[0].label;
                             const total = totalComplaints[day]; // Get the total for the current day
                             return `Day ${day}: Total ${total}`;
-                        }
-                    }
+                        },
+                    },
                 },
-                // Display total on top of bars (static labels)
                 datalabels: {
                     display: true,
                     color: 'black',
+                    align: 'top', // Align label at the top of the bar
+                    anchor: 'end', // Anchor label at the end of the bar
                     font: {
                         weight: 'bold',
-                        size: 12
+                        size: 12,
                     },
                     formatter: function(value, context) {
-                        const day = context.dataIndex;
-                        return totalsForEachDay[day] || 0; // Show total for each day
+                        // Only display the total at the top of the bar
+                        const datasetIndex = context.datasetIndex;
+                        const dataIndex = context.dataIndex;
+
+                        // Only calculate once per bar (not per category)
+                        if (datasetIndex === context.chart.data.datasets.length - 1) {
+                            // Sum up the values for all datasets at the current index
+                            const totals = context.chart.data.datasets.reduce((sum, dataset) => {
+                                return sum + (dataset.data[dataIndex] || 0);
+                            }, 0);
+                            return totals; // Return the total
+                        }
+                        return ''; // Return an empty string for other labels
                     },
-                }
+                },
             },
             scales: {
                 x: {
                     stacked: true,
                     title: {
                         display: true,
-                        text: 'Response Days'
-                    }
+                        text: 'Response Days',
+                    },
                 },
                 y: {
                     stacked: true,
                     title: {
                         display: true,
-                        text: 'Total Complaints'
-                    }
-                }
-            }
-        }
+                        text: 'Total Complaints',
+                    },
+                },
+            },
+        },
+        plugins: [ChartDataLabels], // Include the plugin
     });
 </script>
 
