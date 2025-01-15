@@ -151,17 +151,27 @@ class HomeController extends Controller
 
         // ADUAN BY KATEGORI PENGADU DAN RESPONSE DAYS
         $complainantData = [
-            'STAFF' => $staff,
-            'STUDENT' => $student,
-            'GUEST' => $guest,
-        ];
-        
-        $responseDaysData = [
-            '0' => $aduanList->where('response_days', 0)->count(),
-            '1' => $aduanList->where('response_days', 1)->count(),
-            '2' => $aduanList->where('response_days', 2)->count(),
-            '3' => $aduanList->where('response_days', 3)->count(),
-            '>3' => $aduanList->where('response_days', '>', 3)->count(),
+            'STAFF' => [
+                '0' => $aduanList->where('complainent_category', 'STAFF')->where('response_days', 0)->count(),
+                '1' => $aduanList->where('complainent_category', 'STAFF')->where('response_days', 1)->count(),
+                '2' => $aduanList->where('complainent_category', 'STAFF')->where('response_days', 2)->count(),
+                '3' => $aduanList->where('complainent_category', 'STAFF')->where('response_days', 3)->count(),
+                '>3' => $aduanList->where('complainent_category', 'STAFF')->where('response_days', '>', 3)->count(),
+            ],
+            'STUDENT' => [
+                '0' => $aduanList->where('complainent_category', 'STUDENT')->where('response_days', 0)->count(),
+                '1' => $aduanList->where('complainent_category', 'STUDENT')->where('response_days', 1)->count(),
+                '2' => $aduanList->where('complainent_category', 'STUDENT')->where('response_days', 2)->count(),
+                '3' => $aduanList->where('complainent_category', 'STUDENT')->where('response_days', 3)->count(),
+                '>3' => $aduanList->where('complainent_category', 'STUDENT')->where('response_days', '>', 3)->count(),
+            ],
+            'GUEST' => [
+                '0' => $aduanList->where('complainent_category', 'GUEST')->where('response_days', 0)->count(),
+                '1' => $aduanList->where('complainent_category', 'GUEST')->where('response_days', 1)->count(),
+                '2' => $aduanList->where('complainent_category', 'GUEST')->where('response_days', 2)->count(),
+                '3' => $aduanList->where('complainent_category', 'GUEST')->where('response_days', 3)->count(),
+                '>3' => $aduanList->where('complainent_category', 'GUEST')->where('response_days', '>', 3)->count(),
+            ]
         ];
 
         return view('home', [
@@ -198,7 +208,6 @@ class HomeController extends Controller
             'categoryFilter' => $categoryFilter,
             'aduanCategoryFilter' => $aduanCategoryFilter,
             'complainantData' => $complainantData,
-            'responseDaysData' => $responseDaysData,
         ]);
     }
 }

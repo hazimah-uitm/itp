@@ -283,21 +283,11 @@
     <!-- Jumlah aduan x kategori pengadu x tempoh respon -->
     <h4 class="text-center mb-4">JUMLAH ADUAN MENGIKUT KATEGORI PENGADU & TEMPOH TINDAK BALAS SELESAI</h4>
     <div class="row">
-        <div class="col-lg-6 col-md-12 col-sm-12">
+        <div class="col-lg-12 col-md-12 col-sm-12">
             <div class="card">
                 <div class="card-body d-flex flex-column justify-content-center">
                     <div class="row justify-content-center flex-grow-1">
                         <canvas id="complainantChart" width="400" height="200"></canvas>
-                    </div>
-                </div>
-            </div>
-        </div>
-
-        <div class="col-lg-6 col-md-12 col-sm-12">
-            <div class="card">
-                <div class="card-body">
-                    <div class="row justify-content-center">
-                        <canvas id="responseDaysChart" width="400" height="200"></canvas>
                     </div>
                 </div>
             </div>
@@ -468,7 +458,6 @@
 <script>
     // Data from the server
     const complainantData = @json($complainantData);
-    const responseDaysData = @json($responseDaysData);
 
     // Function to display total on bars
     const displayTotal = {
@@ -488,71 +477,72 @@
         }
     };
 
-    // Complainant Chart
+    // Complainant Chart (Response days by complainant category)
     const complainantCtx = document.getElementById('complainantChart').getContext('2d');
     new Chart(complainantCtx, {
         type: 'bar',
         data: {
-            labels: Object.keys(complainantData),
-            datasets: [{
-                data: Object.values(complainantData),
-                backgroundColor: ['#FF6384', '#36A2EB', '#FFCE56'],
-            }]
+            labels: ['0', '1', '2', '3', '>3'], // response days (0, 1, 2, 3, >3)
+            datasets: [
+                {
+                    label: 'STAFF',
+                    data: [
+                        complainantData.STAFF['0'] || 0,
+                        complainantData.STAFF['1'] || 0,
+                        complainantData.STAFF['2'] || 0,
+                        complainantData.STAFF['3'] || 0,
+                        complainantData.STAFF['>3'] || 0
+                    ],
+                    backgroundColor: '#FF6384',
+                    borderColor: '#FF6384',
+                    borderWidth: 1
+                },
+                {
+                    label: 'STUDENT',
+                    data: [
+                        complainantData.STUDENT['0'] || 0,
+                        complainantData.STUDENT['1'] || 0,
+                        complainantData.STUDENT['2'] || 0,
+                        complainantData.STUDENT['3'] || 0,
+                        complainantData.STUDENT['>3'] || 0
+                    ],
+                    backgroundColor: '#36A2EB',
+                    borderColor: '#36A2EB',
+                    borderWidth: 1
+                },
+                {
+                    label: 'GUEST',
+                    data: [
+                        complainantData.GUEST['0'] || 0,
+                        complainantData.GUEST['1'] || 0,
+                        complainantData.GUEST['2'] || 0,
+                        complainantData.GUEST['3'] || 0,
+                        complainantData.GUEST['>3'] || 0
+                    ],
+                    backgroundColor: '#FFCE56',
+                    borderColor: '#FFCE56',
+                    borderWidth: 1
+                }
+            ]
         },
         options: {
             responsive: true,
             plugins: {
                 legend: {
-                    display: false, // Disable legend
+                    display: true // Enable legend to show categories
                 }
             },
             scales: {
                 x: {
                     title: {
                         display: true,
-                        text: 'Kategori pengadu'
+                        text: 'Tempoh Tindak Balas Selesai (Hari)'
                     }
                 },
                 y: {
                     title: {
                         display: true,
-                        text: 'Jumlah aduan'
-                    }
-                }
-            }
-        },
-        plugins: [displayTotal]
-    });
-
-    // Response Days Chart
-    const responseDaysCtx = document.getElementById('responseDaysChart').getContext('2d');
-    new Chart(responseDaysCtx, {
-        type: 'bar',
-        data: {
-            labels: Object.keys(responseDaysData),
-            datasets: [{
-                data: Object.values(responseDaysData),
-                backgroundColor: ['#FF6384', '#36A2EB', '#FFCE56', '#4BC0C0', '#9966FF'],
-            }]
-        },
-        options: {
-            responsive: true,
-            plugins: {
-                legend: {
-                    display: false, // Disable legend
-                }
-            },
-            scales: {
-                x: {
-                    title: {
-                        display: true,
-                        text: 'Tempoh tindak balas selesai (hari)'
-                    }
-                },
-                y: {
-                    title: {
-                        display: true,
-                        text: 'Jumlah Aduan'
+                        text: 'Jumlah'
                     }
                 }
             }
@@ -560,5 +550,4 @@
         plugins: [displayTotal]
     });
 </script>
-
 @endsection
