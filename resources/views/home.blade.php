@@ -380,92 +380,107 @@
     // Filter out the "Lain-lain" category
     const filteredAduanCategoryData = aduanCategoryData.filter(item => item.category !== 'Lain-lain');
 
-    // Prepare labels and data for the chart
-    const labels = filteredAduanCategoryData.map(item => item.category);
-    const data = filteredAduanCategoryData.map(item => item.count);
+    // Check if there's no data
+    const noDataMessageElement = document.getElementById('noDataMessage');
+    const cardBodyElement = document.querySelector('.card-body');
+    const canvasElement = document.getElementById('aduanChart');
 
-    // Horizontal Rounded Bar Chart Configuration
-    const ctx = document.getElementById('aduanChart').getContext('2d');
-    new Chart(ctx, {
-        type: 'bar',
-        data: {
-            labels: labels,
-            datasets: [{
-                label: 'Jumlah Aduan',
-                data: data,
-                backgroundColor: [
-                    '#FF6384', '#36A2EB', '#FFCE56', '#4BC0C0', '#9966FF', '#FF9F40',
-                    '#8A2BE2', '#00CED1', '#FFD700', '#DC143C'
-                ],
-                hoverBackgroundColor: [
-                    '#FF6384', '#36A2EB', '#FFCE56', '#4BC0C0', '#9966FF', '#FF9F40',
-                    '#8A2BE2', '#00CED1', '#FFD700', '#DC143C'
-                ],
-                borderRadius: 10,
-                borderSkipped: false
-            }]
-        },
-        options: {
-            indexAxis: 'y',
-            responsive: true,
-            maintainAspectRatio: false,
-            layout: {
-                padding: {
-                    left: 10, // Add left padding
-                    right: 90, // Add right padding to allow space for labels
-                    top: 10,
-                    bottom: 10
-                }
+    if (filteredAduanCategoryData.length === 0) {
+        // Show the 'No Data' message and adjust the card and canvas height
+        noDataMessageElement.style.display = 'block';
+        cardBodyElement.style.height = '150px';  // Reduce the height when there's no data
+        canvasElement.style.display = 'none';   // Hide the canvas
+    } else {
+        // Show the canvas and prepare labels and data for the chart
+        noDataMessageElement.style.display = 'none';
+        canvasElement.style.display = 'block';
+
+        const labels = filteredAduanCategoryData.map(item => item.category);
+        const data = filteredAduanCategoryData.map(item => item.count);
+
+        // Horizontal Rounded Bar Chart Configuration
+        const ctx = canvasElement.getContext('2d');
+        new Chart(ctx, {
+            type: 'bar',
+            data: {
+                labels: labels,
+                datasets: [{
+                    label: 'Jumlah Aduan',
+                    data: data,
+                    backgroundColor: [
+                        '#FF6384', '#36A2EB', '#FFCE56', '#4BC0C0', '#9966FF', '#FF9F40',
+                        '#8A2BE2', '#00CED1', '#FFD700', '#DC143C'
+                    ],
+                    hoverBackgroundColor: [
+                        '#FF6384', '#36A2EB', '#FFCE56', '#4BC0C0', '#9966FF', '#FF9F40',
+                        '#8A2BE2', '#00CED1', '#FFD700', '#DC143C'
+                    ],
+                    borderRadius: 10,
+                    borderSkipped: false
+                }]
             },
-            scales: {
-                x: {
-                    display: false
+            options: {
+                indexAxis: 'y',
+                responsive: true,
+                maintainAspectRatio: false,
+                layout: {
+                    padding: {
+                        left: 10, // Add left padding
+                        right: 90, // Add right padding to allow space for labels
+                        top: 10,
+                        bottom: 10
+                    }
                 },
-                y: {
-                    display: true,
-                    ticks: {
+                scales: {
+                    x: {
+                        display: false
+                    },
+                    y: {
+                        display: true,
+                        ticks: {
+                            color: '#000',
+                            font: {
+                                size: 14
+                            }
+                        },
+                        grid: {
+                            display: false
+                        }
+                    }
+                },
+                plugins: {
+                    legend: {
+                        display: false
+                    },
+                    tooltip: {
+                        callbacks: {
+                            label: function(context) {
+                                const total = context.dataset.data.reduce((sum, value) => sum + value, 0);
+                                const percentage = ((context.raw / total) * 100).toFixed(2);
+                                return `${context.raw} (${percentage}%)`;
+                            }
+                        }
+                    },
+                    datalabels: {
+                        anchor: 'end',
+                        align: 'end',
                         color: '#000',
                         font: {
-                            size: 14
-                        }
-                    },
-                    grid: {
-                        display: false
+                            weight: 'bold',
+                            size: 12
+                        },
+                        formatter: (value, context) => {
+                            const total = context.chart.data.datasets[0].data.reduce((sum, val) => sum + val, 0);
+                            const percentage = ((value / total) * 100).toFixed(2);
+                            return `${value} (${percentage}%)`;
+                        },
+                        offset: 1 // Ensure labels are not cut off
                     }
                 }
             },
-            plugins: {
-                legend: {
-                    display: false
-                },
-                tooltip: {
-                    callbacks: {
-                        label: function(context) {
-                            const total = context.dataset.data.reduce((sum, value) => sum + value, 0);
-                            const percentage = ((context.raw / total) * 100).toFixed(2);
-                            return `${context.raw} (${percentage}%)`;
-                        }
-                    }
-                },
-                datalabels: {
-                    anchor: 'end',
-                    align: 'end',
-                    color: '#000',
-                    font: {
-                        weight: 'bold',
-                        size: 12
-                    },
-                    formatter: (value, context) => {
-                        const total = context.chart.data.datasets[0].data.reduce((sum, val) => sum + val, 0);
-                        const percentage = ((value / total) * 100).toFixed(2);
-                        return `${value} (${percentage}%)`;
-                    },
-                    offset: 1 // Ensure labels are not cut off
-                }
-            }
-        },
-        plugins: [ChartDataLabels]
-    });
+            plugins: [ChartDataLabels]
+        });
+    }
 </script>
 
 <!-- Jumlah aduan x pengadu x respon day -->
