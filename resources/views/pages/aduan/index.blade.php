@@ -101,7 +101,7 @@
 
         <div class="table-responsive">
             <table class="table table-sm table-striped table-hover">
-                <thead class="table-light text-center text-uppercase">
+                <thead class="table-light text-uppercase">
                     <tr>
                         <th>#</th>
                         <th>Kampus</th>
