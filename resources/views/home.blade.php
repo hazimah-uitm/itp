@@ -244,12 +244,13 @@
             <div class="card">
                 <div class="card-body">
                     <div class="row justify-content-center">
-                        <div class="table-responsive" style="max-height: 400px; overflow-y: auto;"> <!-- Set max-height for scrolling -->
-                            <table class="table table-sm table-striped table-hover">
+                        <div class="table-responsive">
+                            <!-- Add 'id' or 'class' here for DataTable targeting -->
+                            <table id="categoryTable" class="table table-sm table-striped table-hover">
                                 <thead>
                                     <tr>
                                         <th>#</th>
-                                        <th>KATEGORI</th>
+                                        <th class="text-center">KATEGORI</th>
                                         <th>JUMLAH</th>
                                     </tr>
                                 </thead>
@@ -257,9 +258,9 @@
                                     @if (count($allCategories) > 0)
                                     @foreach ($allCategories as $categoryData)
                                     <tr>
-                                        <td class="text-center">{{ ($loop->index + 1) }}</td>
+                                        <td>{{ ($loop->index + 1) }}</td>
                                         <td style="word-wrap: break-word; white-space: normal;">{{ $categoryData['category'] }}</td>
-                                        <td>{{ $categoryData['count'] }}</td>
+                                        <td class="text-center">{{ $categoryData['count'] }}</td>
                                     </tr>
                                     @endforeach
                                     @else
@@ -271,7 +272,7 @@
                                 <tfoot>
                                     <tr>
                                         <th colspan="2" class="text-right">Jumlah Keseluruhan</th>
-                                        <th>{{ array_sum(array_column($aduanCategoryData, 'count')) }}</th>
+                                        <th class="text-center">{{ array_sum(array_column($aduanCategoryData, 'count')) }}</th>
                                     </tr>
                                 </tfoot>
                             </table>
@@ -603,4 +604,20 @@
         plugins: [ChartDataLabels], // Include the plugin
     });
 </script>
+
+<!-- Datatable -->
+<script>
+    $(document).ready(function() {
+        $('#categoryTable').DataTable({
+            "paging": true, // Enable pagination
+            "ordering": true, // Enable sorting
+            "info": false, // Disable the table information (like "Showing 1 to 10 of 50 entries")
+            "searching": false, // Disable search box
+            "scrollY": "320px", // Make tbody scrollable
+            "scrollCollapse": true, // Collapse scrollable area when there are fewer rows
+            "paging": false // Disable pagination (optional)
+        });
+    });
+</script>
+
 @endsection

@@ -26,26 +26,26 @@
             <div class="page-content">
                 <!--wrapper-->
                 @if (session('success'))
-                    <div id="floating-success-message" class="position-fixed top-0 start-50 translate-middle-x p-3"
-                        style="z-index: 11; display: none; animation: fadeInUp 0.5s ease-out;">
-                        <div class="alert alert-success alert-dismissible fade show bg-light bg-opacity-75"
-                            role="alert">
-                            {{ session('success') }}
-                            <button type="button" class="btn-close" data-bs-dismiss="alert"
-                                aria-label="Close"></button>
-                        </div>
+                <div id="floating-success-message" class="position-fixed top-0 start-50 translate-middle-x p-3"
+                    style="z-index: 11; display: none; animation: fadeInUp 0.5s ease-out;">
+                    <div class="alert alert-success alert-dismissible fade show bg-light bg-opacity-75"
+                        role="alert">
+                        {{ session('success') }}
+                        <button type="button" class="btn-close" data-bs-dismiss="alert"
+                            aria-label="Close"></button>
                     </div>
+                </div>
 
-                    <!-- JavaScript to show the message after the page is loaded -->
-                    <script>
-                        document.addEventListener('DOMContentLoaded', function() {
-                            var floatingMessage = document.getElementById('floating-success-message');
-                            floatingMessage.style.display = 'block';
-                            setTimeout(function() {
-                                floatingMessage.style.display = 'none';
-                            }, 4500); // Adjust the timeout (in milliseconds) based on how long you want the message to be visible
-                        });
-                    </script>
+                <!-- JavaScript to show the message after the page is loaded -->
+                <script>
+                    document.addEventListener('DOMContentLoaded', function() {
+                        var floatingMessage = document.getElementById('floating-success-message');
+                        floatingMessage.style.display = 'block';
+                        setTimeout(function() {
+                            floatingMessage.style.display = 'none';
+                        }, 4500); // Adjust the timeout (in milliseconds) based on how long you want the message to be visible
+                    });
+                </script>
                 @endif
                 @yield('content')
             </div>
@@ -68,8 +68,11 @@
 
     <!-- Bootstrap JS -->
     <script src="{{ asset('public/assets/js/bootstrap.bundle.min.js') }}"></script>
+    
     <!--plugins-->
     <script src="{{ asset('public/assets/js/jquery.min.js') }}"></script>
+    <script src="https://cdn.datatables.net/1.10.21/js/jquery.dataTables.min.js"></script>
+    <script src="https://cdn.datatables.net/1.10.21/js/dataTables.bootstrap4.min.js"></script>
 
     <script src="{{ asset('public/assets/plugins/metismenu/js/metisMenu.min.js') }}"></script>
     <script src="{{ asset('public/assets/plugins/chartjs/chart.min.js') }}"></script>
