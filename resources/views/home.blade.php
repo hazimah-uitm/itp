@@ -286,21 +286,21 @@
     <!-- Jumlah aduan x kategori pengadu x tempoh respon -->
     <div class="row">
         <div class="col-lg-6 col-md-12 col-sm-12">
-        <h4 class="text-center mb-4">JUMLAH ADUAN MENGIKUT KATEGORI PENGADU & TEMPOH TINDAK BALAS SELESAI (HARI)</h4>
+            <h4 class="text-center mb-4">JUMLAH ADUAN MENGIKUT KATEGORI PENGADU & TEMPOH TINDAK BALAS SELESAI (HARI)</h4>
             <div class="card">
                 <div class="card-body d-flex flex-column justify-content-center">
                     <div class="row justify-content-center flex-grow-1">
-                        <canvas id="complainantChart" width="400" height="200"></canvas>
+                        <canvas id="complainantChart" width="500" height="350"></canvas>
                     </div>
                 </div>
             </div>
         </div>
         <div class="col-lg-6 col-md-12 col-sm-12">
-        <h4 class="text-center mb-4">JUMLAH BULANAN ADUAN MENGIKUT KATEGORI ADUAN</h4>
+            <h4 class="text-center mb-4">JUMLAH ADUAN BULANAN MENGIKUT KATEGORI ADUAN</h4>
             <div class="card">
                 <div class="card-body d-flex flex-column justify-content-center">
                     <div class="row justify-content-center flex-grow-1">
-                        <canvas id="aduanMonthCatChart" width="400" height="200"></canvas>
+                        <canvas id="aduanMonthCatChart" width="500" height="350"></canvas>
                     </div>
                 </div>
             </div>
@@ -426,7 +426,7 @@
                 },
                 plugins: {
                     legend: {
-                        display: false
+                        display: false,
                     },
                     tooltip: {
                         callbacks: {
@@ -513,20 +513,21 @@
             plugins: {
                 legend: {
                     display: true,
+                    position: 'bottom',
                 },
                 tooltip: {
                     callbacks: {
                         title: function(tooltipItems) {
                             const day = tooltipItems[0].label;
                             const total = totalComplaints[day];
-                            return `Day ${day}: Total ${total}`;
+                            return `${day} Hari\nJumlah Aduan: ${total}`;
                         },
                     },
                 },
                 datalabels: {
                     display: true,
                     color: 'black',
-                    align: 'top', // Align label at the top of the bar
+                    align: 'end', // Align label at the top of the bar
                     anchor: 'end', // Anchor label at the end of the bar
                     font: {
                         weight: 'bold',
@@ -550,6 +551,7 @@
 
                         return ''; // Do not show any labels for the other datasets (STAFF, STUDENT)
                     },
+                    offset: 1,
                 },
             },
             scales: {
@@ -568,6 +570,14 @@
                     },
                 },
             },
+            layout: {
+                padding: {
+                    top: 40, // Add padding at the top to avoid overlap with the legend
+                    left: 10, // Space from the left
+                    right: 10, // Space from the right
+                    bottom: 10 // Space from the bottom
+                }
+            }
         },
         plugins: [ChartDataLabels],
     });
@@ -590,6 +600,11 @@
         'rgba(199, 199, 199, 0.8)' // Bold gray
     ];
 
+    // Calculate totals for each month
+    const monthlyTotals = aduanMonthCategoryChart.map(data => {
+        return categories.reduce((total, category) => total + (data[category] || 0), 0);
+    });
+
     const datasets = categories.map((category, index) => {
         return {
             label: category,
@@ -609,19 +624,78 @@
                 tooltip: {
                     mode: 'index',
                     intersect: false,
+                    callbacks: {
+                        // Add total value at the top of the tooltip
+                        afterTitle: (tooltipItems) => {
+                            const total = tooltipItems.reduce((sum, item) => sum + item.raw, 0);
+                            return `Jumlah Aduan: ${total}`;
+                        },
+                    },
+                },
+                legend: {
+                    position: 'bottom', // Place the legend at the bottom
                 },
             },
             responsive: true,
             scales: {
                 x: {
                     stacked: true,
+                    title: {
+                        display: true,
+                        text: 'Bulan',
+                    },
                 },
                 y: {
                     stacked: true,
                     beginAtZero: true,
+                    title: {
+                        display: true,
+                        text: 'Jumlah Aduan',
+                    },
                 },
             },
+            layout: {
+                padding: {
+                    top: 40, // Add padding at the top to avoid overlap with the legend
+                    left: 10, // Space from the left
+                    right: 10, // Space from the right
+                    bottom: 10 // Space from the bottom
+                }
+            }
         },
+        plugins: [{
+            // Plugin to display totals and percentages at the end of each bar
+            id: 'customTotalLabels',
+            afterDatasetsDraw(chart) {
+                const {
+                    ctx,
+                    chartArea,
+                    data
+                } = chart;
+                const {
+                    top
+                } = chartArea;
+                ctx.save();
+                ctx.font = 'bold 12px Arial';
+                ctx.textAlign = 'center';
+                ctx.fillStyle = '#000';
+
+                monthlyTotals.forEach((total, i) => {
+                    const barCenter = chart.scales.x.getPixelForTick(i);
+                    const barEnd = chart.scales.y.getPixelForValue(total);
+
+                    // Calculate the percentage
+                    const grandTotal = monthlyTotals.reduce((sum, t) => sum + t, 0);
+                    const percentage = ((total / grandTotal) * 100).toFixed(1);
+
+                    // Display total and percentage
+                    ctx.fillText(`${total}`, barCenter, barEnd - 10); // First line: total
+                    ctx.fillText(`(${percentage}%)`, barCenter, barEnd + 5); // Second line: percentage
+                });
+
+                ctx.restore();
+            },
+        }],
     });
 </script>
 
