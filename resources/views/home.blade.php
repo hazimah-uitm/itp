@@ -244,7 +244,7 @@
             <div class="card">
                 <div class="card-body">
                     <div class="row justify-content-center">
-                        <div class="table-responsive" style="max-height: 100%; overflow-y: auto;">
+                        <div class="table-responsive" style="max-height: 400px; overflow-y: auto;"> <!-- Set max-height for scrolling -->
                             <table class="table table-sm table-striped table-hover">
                                 <thead>
                                     <tr>
@@ -254,16 +254,18 @@
                                     </tr>
                                 </thead>
                                 <tbody>
-                                    @if (count($aduanCategoryData) > 0)
-                                    @foreach ($aduanCategoryData as $categoryData)
+                                    @if (count($allCategories) > 0)
+                                    @foreach ($allCategories as $categoryData)
                                     <tr>
                                         <td class="text-center">{{ ($loop->index + 1) }}</td>
-                                        <td>{{ $categoryData['category'] }}</td>
+                                        <td style="word-wrap: break-word; white-space: normal;">{{ $categoryData['category'] }}</td>
                                         <td>{{ $categoryData['count'] }}</td>
                                     </tr>
                                     @endforeach
                                     @else
-                                    <td colspan="3">Tiada rekod</td>
+                                    <tr>
+                                        <td colspan="3">Tiada rekod</td>
+                                    </tr>
                                     @endif
                                 </tbody>
                                 <tfoot>
@@ -388,8 +390,8 @@
     if (filteredAduanCategoryData.length === 0) {
         // Show the 'No Data' message and adjust the card and canvas height
         noDataMessageElement.style.display = 'block';
-        cardBodyElement.style.height = '150px';  // Reduce the height when there's no data
-        canvasElement.style.display = 'none';   // Hide the canvas
+        cardBodyElement.style.height = '150px'; // Reduce the height when there's no data
+        canvasElement.style.display = 'none'; // Hide the canvas
     } else {
         // Show the canvas and prepare labels and data for the chart
         noDataMessageElement.style.display = 'none';

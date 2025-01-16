@@ -34,7 +34,7 @@ class HomeController extends Controller
 
         if ($complainentCategory && $complainentCategory !== 'all') {
             $query->where('complainent_category', $complainentCategory);
-        }        
+        }
 
         if ($category && $category !== 'all') {
             $query->where('category', $category);
@@ -63,32 +63,32 @@ class HomeController extends Controller
         $query = $this->applyFilters($request);
 
         $aduanList = $query->whereIn('campus', ['Samarahan', 'Samarahan 2', 'Mukah'])->get();
-        
+
         $complainentCategoryFilter = Aduan::select('complainent_category')
-        ->distinct()
-        ->orderBy('complainent_category', 'asc')
-        ->pluck('complainent_category');
-        
+            ->distinct()
+            ->orderBy('complainent_category', 'asc')
+            ->pluck('complainent_category');
+
         $categoryFilter = Aduan::select('category')
-        ->distinct()
-        ->orderBy('category', 'asc')
-        ->pluck('category');
-        
+            ->distinct()
+            ->orderBy('category', 'asc')
+            ->pluck('category');
+
         $aduanCategoryFilter = Aduan::select('aduan_category')
-        ->distinct()
-        ->orderBy('aduan_category', 'asc')
-        ->pluck('aduan_category');    
-        
+            ->distinct()
+            ->orderBy('aduan_category', 'asc')
+            ->pluck('aduan_category');
+
         $campusFilter = Aduan::select('campus')
-        ->whereIn('campus', ['Samarahan', 'Samarahan 2', 'Mukah'])
-        ->distinct()
-        ->orderBy('campus', 'asc')
-        ->pluck('campus');     
-        
+            ->whereIn('campus', ['Samarahan', 'Samarahan 2', 'Mukah'])
+            ->distinct()
+            ->orderBy('campus', 'asc')
+            ->pluck('campus');
+
         $aduanStatusFilter = Aduan::select('aduan_status')
-        ->distinct()
-        ->orderBy('aduan_status', 'asc')
-        ->pluck('aduan_status');
+            ->distinct()
+            ->orderBy('aduan_status', 'asc')
+            ->pluck('aduan_status');
 
         // JUMLAH ADUAN ICT
         $totalAduan = $aduanList->count();
@@ -130,6 +130,16 @@ class HomeController extends Controller
             return $items->count();
         })->toArray(); // Convert to an array for sorting
         arsort($aduanCategoryCounts);  // Sort the array in descending order by count
+        
+        $allCategories = [];
+        foreach ($aduanCategoryCounts as $category => $count) {
+            $allCategories[] = [
+                'category' => $category,
+                'count' => $count
+            ];
+        }
+
+
         $topCategories = array_slice($aduanCategoryCounts, 0, 10, true);  // Get the top 10 categories
         $othersCount = array_sum(array_slice($aduanCategoryCounts, 10));   // Calculate the "Lain-lain" count
         $aduanCategoryData = [];
@@ -173,7 +183,7 @@ class HomeController extends Controller
                 '>3' => $aduanList->where('complainent_category', 'GUEST')->where('response_days', '>', 3)->count(),
             ]
         ];
-    
+
         // Calculate total complaints for each response day (combined for STAFF, STUDENT, and GUEST)
         $totalComplaints = [
             '0' => $complainantData['STAFF']['0'] + $complainantData['STUDENT']['0'] + $complainantData['GUEST']['0'],
@@ -182,36 +192,37 @@ class HomeController extends Controller
             '3' => $complainantData['STAFF']['3'] + $complainantData['STUDENT']['3'] + $complainantData['GUEST']['3'],
             '>3' => $complainantData['STAFF']['>3'] + $complainantData['STUDENT']['>3'] + $complainantData['GUEST']['>3']
         ];
-    
+
 
         return view('home', [
             'aduanList' => $aduanList,
-            'totalAduan' => $totalAduan,
-            'aduanCompleted' => $aduanCompleted,
-            'inProgress' => $inProgress,
-            'cancelled' => $cancelled,
-            'closed' => $closed,
+            'totalAduan' => number_format($totalAduan),
+            'aduanCompleted' => number_format($aduanCompleted),
+            'inProgress' => number_format($inProgress),
+            'cancelled' => number_format($cancelled),
+            'closed' => number_format($closed),
             'percentAduanCompleted' => $percentAduanCompleted,
             'percentInProgress' => $percentInProgress,
             'percentCancelled' => $percentCancelled,
             'percentClosed' => $percentClosed,
-            'samarahan' => $samarahan,
-            'samarahan2' => $samarahan2,
-            'mukah' => $mukah,
+            'samarahan' => number_format($samarahan),
+            'samarahan2' => number_format($samarahan2),
+            'mukah' => number_format($mukah),
             'percentSamarahan' => $percentSamarahan,
             'percentSamarahan2' => $percentSamarahan2,
             'percentMukah' => $percentMukah,
-            'staff' => $staff,
-            'student' => $student,
-            'guest' => $guest,
+            'staff' => number_format($staff),
+            'student' => number_format($student),
+            'guest' => number_format($guest),
             'percentStaff' => $percentStaff,
             'percentStudent' => $percentStudent,
             'percentGuest' => $percentGuest,
-            'responseDaysLessThanOrEqual3' => $responseDaysLessThanOrEqual3,
-            'responseDaysMoreThan3' => $responseDaysMoreThan3,
+            'responseDaysLessThanOrEqual3' => number_format($responseDaysLessThanOrEqual3),
+            'responseDaysMoreThan3' => number_format($responseDaysMoreThan3),
             'percentResponseLessThanOrEqual3' => $percentResponseLessThanOrEqual3,
             'percentResponseMoreThan3' => $percentResponseMoreThan3,
             'aduanCategoryData' => $aduanCategoryData,
+            'allCategories' => $allCategories,
             'campusFilter' => $campusFilter,
             'aduanStatusFilter' => $aduanStatusFilter,
             'complainentCategoryFilter' => $complainentCategoryFilter,
