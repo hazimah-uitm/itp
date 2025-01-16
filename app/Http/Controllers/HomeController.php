@@ -125,23 +125,40 @@ class HomeController extends Controller
         $percentResponseLessThanOrEqual3 = ($totalAduan > 0) ? round(($responseDaysLessThanOrEqual3 / $totalAduan) * 100, 2) : 0;
         $percentResponseMoreThan3 = ($totalAduan > 0) ? round(($responseDaysMoreThan3 / $totalAduan) * 100, 2) : 0;
 
-        // KATEGORI ADUAN
-        $aduanCategoryCounts = $aduanList->groupBy('aduan_category')->map(function ($items) {
-            return $items->count();
-        })->toArray(); // Convert to an array for sorting
-        arsort($aduanCategoryCounts);  // Sort the array in descending order by count
+        // KATEGORI ADUAN AND SUBCATEGORY
+        $aduanCategorySubcategoryCounts = $aduanList->groupBy('aduan_category')->map(function ($items) {
+            return $items->groupBy('aduan_subcategory')->map(function ($subItems) {
+                return $subItems->count();
+            });
+        })->toArray();
 
-        $allCategories = [];
-        foreach ($aduanCategoryCounts as $category => $count) {
-            $allCategories[] = [
-                'category' => $category,
-                'count' => $count
-            ];
+        // Sort the counts by category and subcategory
+        foreach ($aduanCategorySubcategoryCounts as &$categoryCounts) {
+            arsort($categoryCounts);  // Sort subcategories in descending order by count
         }
 
+        $allCategories = [];
+        foreach ($aduanCategorySubcategoryCounts as $category => $subcategories) {
+            foreach ($subcategories as $subcategory => $count) {
+                $allCategories[] = [
+                    'category' => $category,
+                    'subcategory' => $subcategory,
+                    'count' => $count
+                ];
+            }
+        }
 
-        $topCategories = array_slice($aduanCategoryCounts, 0, 10, true);  // Get the top 10 categories
-        $othersCount = array_sum(array_slice($aduanCategoryCounts, 10));   // Calculate the "Lain-lain" count
+        $totalCountAllCategories = array_sum(array_map(function ($category) {
+            return $category['count'];
+        }, $allCategories));
+
+        // TOP 10 KATEGORI ADUAN
+        $aduanTopCategoryCounts = $aduanList->groupBy('aduan_category')->map(function ($items) {
+            return $items->count();
+        })->toArray(); // Convert to an array for sorting
+        arsort($aduanTopCategoryCounts);  // Sort the array in descending order by count
+        $topCategories = array_slice($aduanTopCategoryCounts, 0, 10, true);  // Get the top 10 categories
+        $othersCount = array_sum(array_slice($aduanTopCategoryCounts, 10));   // Calculate the "Lain-lain" count
         $aduanCategoryData = [];
         foreach ($topCategories as $category => $count) {
             $percentage = ($totalAduan > 0) ? round(($count / $totalAduan) * 100, 2) : 0;
@@ -239,6 +256,7 @@ class HomeController extends Controller
             'complainantData' => $complainantData,
             'totalComplaints' => $totalComplaints,
             'percentageData' => $percentageData,
+            'totalCountAllCategories' => number_format($totalCountAllCategories),
         ]);
     }
 }

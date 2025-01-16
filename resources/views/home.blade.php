@@ -226,7 +226,7 @@
     <!-- Kategori Aduan -->
     <h4 class="text-center mb-4">KATEGORI ADUAN</h4>
     <div class="row">
-        <div class="col-lg-8 col-md-12 col-sm-12">
+        <div class="col-lg-7 col-md-12 col-sm-12">
             <div class="card">
                 <div class="card-body d-flex flex-column justify-content-center">
                     <div class="row justify-content-center flex-grow-1">
@@ -239,18 +239,18 @@
             </div>
         </div>
 
-        <div class="col-lg-4 col-md-12 col-sm-12">
+        <div class="col-lg-5 col-md-12 col-sm-12">
             <div class="card">
                 <div class="card-body">
                     <div class="row justify-content-center">
                         <div class="table-responsive">
-                            <!-- Add 'id' or 'class' here for DataTable targeting -->
                             <table id="categoryTable" class="table table-sm table-striped table-hover">
                                 <thead>
                                     <tr>
                                         <th>#</th>
                                         <th class="text-center">KATEGORI</th>
-                                        <th>JUMLAH</th>
+                                        <th class="text-center">SUBKATEGORI</th>
+                                        <th class="text-center">JUMLAH</th>
                                     </tr>
                                 </thead>
                                 <tbody>
@@ -259,19 +259,20 @@
                                     <tr>
                                         <td>{{ ($loop->index + 1) }}</td>
                                         <td style="word-wrap: break-word; white-space: normal;">{{ $categoryData['category'] }}</td>
+                                        <td style="word-wrap: break-word; white-space: normal;">{{ $categoryData['subcategory'] }}</td>
                                         <td class="text-center">{{ $categoryData['count'] }}</td>
                                     </tr>
                                     @endforeach
                                     @else
                                     <tr>
-                                        <td colspan="3">Tiada rekod</td>
+                                        <td colspan="4">Tiada rekod</td>
                                     </tr>
                                     @endif
                                 </tbody>
                                 <tfoot>
                                     <tr>
-                                        <th colspan="2" class="text-right">Jumlah Keseluruhan</th>
-                                        <th class="text-center">{{ array_sum(array_column($aduanCategoryData, 'count')) }}</th>
+                                        <th colspan="3" class="text-right">Jumlah Keseluruhan</th>
+                                        <th class="text-center">{{ $totalCountAllCategories }}</th>
                                     </tr>
                                 </tfoot>
                             </table>
@@ -569,7 +570,7 @@
             "ordering": true, // Enable sorting
             "info": false, // Disable the table information (like "Showing 1 to 10 of 50 entries")
             "searching": false, // Disable search box
-            "scrollY": "325px", // Make tbody scrollable
+            "scrollY": "275px", // Make tbody scrollable
             "scrollCollapse": true, // Collapse scrollable area when there are fewer rows
             "paging": false // Disable pagination (optional)
         });
