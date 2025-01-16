@@ -609,11 +609,10 @@
 <script>
     $(document).ready(function() {
         $('#categoryTable').DataTable({
-            "paging": true, // Enable pagination
             "ordering": true, // Enable sorting
             "info": false, // Disable the table information (like "Showing 1 to 10 of 50 entries")
             "searching": false, // Disable search box
-            "scrollY": "320px", // Make tbody scrollable
+            "scrollY": "325px", // Make tbody scrollable
             "scrollCollapse": true, // Collapse scrollable area when there are fewer rows
             "paging": false // Disable pagination (optional)
         });
