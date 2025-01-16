@@ -229,6 +229,45 @@ class HomeController extends Controller
             '>3' => ($totalComplaints['>3'] / $totalAduan) * 100
         ];
 
+        // Prepare data for stacked bar chart
+        $aduanByMonthAndCategory = $query
+            ->selectRaw("DATE_FORMAT(date_applied, '%m') as month, category, COUNT(*) as total")
+            ->groupBy('month', 'category')
+            ->orderBy('month', 'asc')
+            ->get()
+            ->groupBy('month');
+
+        // Define month names
+        $monthNames = [
+            '01' => 'Jan',
+            '02' => 'Feb',
+            '03' => 'Mar',
+            '04' => 'Apr',
+            '05' => 'May',
+            '06' => 'Jun',
+            '07' => 'Jul',
+            '08' => 'Aug',
+            '09' => 'Sep',
+            '10' => 'Oct',
+            '11' => 'Nov',
+            '12' => 'Dec',
+        ];
+
+        // Format data for the stacked bar chart
+        $aduanMonthCategoryChart = [];
+        $categories = Aduan::distinct()->orderBy('category', 'asc')->pluck('category')->toArray();
+        $months = collect(array_keys($monthNames)); // Use numeric keys to maintain order
+
+        foreach ($months as $month) {
+            $monthData = ['month' => $monthNames[$month]]; // Replace numeric month with its name
+            foreach ($categories as $category) {
+                $monthData[$category] = isset($aduanByMonthAndCategory[$month])
+                    ? $aduanByMonthAndCategory[$month]->where('category', $category)->sum('total')
+                    : 0;
+            }
+            $aduanMonthCategoryChart[] = $monthData;
+        }
+
         return view('home', [
             'aduanList' => $aduanList,
             'totalAduan' => number_format($totalAduan),
@@ -266,6 +305,8 @@ class HomeController extends Controller
             'complainantData' => $complainantData,
             'totalComplaints' => $totalComplaints,
             'percentageData' => $percentageData,
+            'categories' => $categories,
+            'aduanMonthCategoryChart' => $aduanMonthCategoryChart,
             'totalCountAllCategories' => number_format($totalCountAllCategories),
         ]);
     }

@@ -29,11 +29,11 @@
                     <div class="mb-2 ms-2 col-12 col-md-auto">
                         <select name="year" class="form-select ms-2 rounded" id="yearFilter">
                             <option value="all" {{ request('year') == 'all' ? 'selected' : '' }}>Semua Tahun</option>
-                            @for ($y = now()->year; $y >= now()->year - 10; $y--)
-                            <option value="{{ $y }}" {{ request('year') == $y ? 'selected' : '' }}>
-                                {{ $y }}
-                            </option>
-                            @endfor
+                            @for ($y = 2020; $y <= now()->year; $y++)
+                                <option value="{{ $y }}" {{ request('year') == $y ? 'selected' : '' }}>
+                                    {{ $y }}
+                                </option>
+                                @endfor
                         </select>
                     </div>
                     <div class="mb-2 ms-2 col-12 col-md-auto">
@@ -284,13 +284,23 @@
     </div>
 
     <!-- Jumlah aduan x kategori pengadu x tempoh respon -->
-    <h4 class="text-center mb-4">JUMLAH ADUAN MENGIKUT KATEGORI PENGADU & TEMPOH TINDAK BALAS SELESAI</h4>
     <div class="row">
-        <div class="col-lg-12 col-md-12 col-sm-12">
+        <div class="col-lg-6 col-md-12 col-sm-12">
+        <h4 class="text-center mb-4">JUMLAH ADUAN MENGIKUT KATEGORI PENGADU & TEMPOH TINDAK BALAS SELESAI (HARI)</h4>
             <div class="card">
                 <div class="card-body d-flex flex-column justify-content-center">
                     <div class="row justify-content-center flex-grow-1">
-                        <canvas id="complainantChart" width="350" height="150"></canvas>
+                        <canvas id="complainantChart" width="400" height="200"></canvas>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="col-lg-6 col-md-12 col-sm-12">
+        <h4 class="text-center mb-4">JUMLAH BULANAN ADUAN MENGIKUT KATEGORI ADUAN</h4>
+            <div class="card">
+                <div class="card-body d-flex flex-column justify-content-center">
+                    <div class="row justify-content-center flex-grow-1">
+                        <canvas id="aduanMonthCatChart" width="400" height="200"></canvas>
                     </div>
                 </div>
             </div>
@@ -563,16 +573,68 @@
     });
 </script>
 
+<!-- Aduan x Category x Month -->
+<script>
+    const ctx = document.getElementById('aduanMonthCatChart').getContext('2d');
+    const aduanMonthCategoryChart = <?php echo json_encode($aduanMonthCategoryChart); ?>;
+    const categories = <?php echo json_encode($categories); ?>;
+
+    const labels = aduanMonthCategoryChart.map(data => `${data.month}`);
+    const colors = [
+        'rgba(255, 99, 132, 0.8)', // Bold red
+        'rgba(54, 162, 235, 0.8)', // Bold blue
+        'rgba(255, 206, 86, 0.8)', // Bold yellow
+        'rgba(75, 192, 192, 0.8)', // Bold teal
+        'rgba(153, 102, 255, 0.8)', // Bold purple
+        'rgba(255, 159, 64, 0.8)', // Bold orange
+        'rgba(199, 199, 199, 0.8)' // Bold gray
+    ];
+
+    const datasets = categories.map((category, index) => {
+        return {
+            label: category,
+            data: aduanMonthCategoryChart.map(data => data[category] || 0),
+            backgroundColor: colors[index % colors.length],
+        };
+    });
+
+    const aduanMonthCatChart = new Chart(ctx, {
+        type: 'bar',
+        data: {
+            labels: labels,
+            datasets: datasets,
+        },
+        options: {
+            plugins: {
+                tooltip: {
+                    mode: 'index',
+                    intersect: false,
+                },
+            },
+            responsive: true,
+            scales: {
+                x: {
+                    stacked: true,
+                },
+                y: {
+                    stacked: true,
+                    beginAtZero: true,
+                },
+            },
+        },
+    });
+</script>
+
 <!-- Datatable -->
 <script>
     $(document).ready(function() {
         $('#categoryTable').DataTable({
-            "ordering": true, // Enable sorting
-            "info": false, // Disable the table information (like "Showing 1 to 10 of 50 entries")
-            "searching": false, // Disable search box
-            "scrollY": "275px", // Make tbody scrollable
-            "scrollCollapse": true, // Collapse scrollable area when there are fewer rows
-            "paging": false // Disable pagination (optional)
+            "ordering": true,
+            "info": false,
+            "searching": false,
+            "scrollY": "275px",
+            "scrollCollapse": true,
+            "paging": false
         });
     });
 </script>
