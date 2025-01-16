@@ -136,8 +136,7 @@
                 style="display: flex; flex-direction: column; justify-content: center; align-items: stretch; height: 100%; width: 100%;">
                 <div class="card-body d-flex flex-column justify-content-center align-items-center p-4">
                     <h5 class="fw-bold text-primary text-center">{{ $card['label'] }}</h5>
-                    <canvas id="chart-{{ $index }}" width="100" height="100"></canvas>
-                    <h6 class="text-center mt-2">{{ $card['value'] }}</h6>
+                    <h1 class="display-5 text-center">{{ $card['value'] }}</h1>
                     <h6 class="text-muted text-center">{{ $card['percent'] }}%</h6>
                 </div>
             </div>
@@ -335,43 +334,6 @@
             window.location.href = "{{ route('home') }}";
         });
 
-    });
-</script>
-
-<!-- 4 Main Cards -->
-<script>
-    document.addEventListener("DOMContentLoaded", function() {
-        const cards = <?php echo json_encode($cards); ?>;
-
-        cards.forEach((card, index) => {
-            const ctx = document.getElementById(`chart-${index}`).getContext('2d');
-            new Chart(ctx, {
-                type: 'doughnut',
-                data: {
-                    labels: ['Total', 'Others'],
-                    datasets: [{
-                        data: [card.percent, 100 - card.percent],
-                        backgroundColor: [card.color, '#e0e0e0'],
-                        borderWidth: 1
-                    }]
-                },
-                options: {
-                    cutout: '70%',
-                    plugins: {
-                        legend: {
-                            display: false
-                        },
-                        tooltip: {
-                            callbacks: {
-                                label: function(tooltipItem) {
-                                    return `${tooltipItem.label}: ${tooltipItem.raw}%`;
-                                }
-                            }
-                        }
-                    }
-                }
-            });
-        });
     });
 </script>
 
