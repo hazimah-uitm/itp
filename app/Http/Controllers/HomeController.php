@@ -130,7 +130,7 @@ class HomeController extends Controller
             return $items->count();
         })->toArray(); // Convert to an array for sorting
         arsort($aduanCategoryCounts);  // Sort the array in descending order by count
-        
+
         $allCategories = [];
         foreach ($aduanCategoryCounts as $category => $count) {
             $allCategories[] = [
@@ -193,6 +193,14 @@ class HomeController extends Controller
             '>3' => $complainantData['STAFF']['>3'] + $complainantData['STUDENT']['>3'] + $complainantData['GUEST']['>3']
         ];
 
+        // Calculate the percentage for each response day
+        $percentageData = [
+            '0' => ($totalComplaints['0'] / $totalAduan) * 100,
+            '1' => ($totalComplaints['1'] / $totalAduan) * 100,
+            '2' => ($totalComplaints['2'] / $totalAduan) * 100,
+            '3' => ($totalComplaints['3'] / $totalAduan) * 100,
+            '>3' => ($totalComplaints['>3'] / $totalAduan) * 100
+        ];
 
         return view('home', [
             'aduanList' => $aduanList,
@@ -230,6 +238,7 @@ class HomeController extends Controller
             'aduanCategoryFilter' => $aduanCategoryFilter,
             'complainantData' => $complainantData,
             'totalComplaints' => $totalComplaints,
+            'percentageData' => $percentageData,
         ]);
     }
 }

@@ -453,15 +453,7 @@
     // Data from the server
     const complainantData = <?php echo json_encode($complainantData); ?>;
     const totalComplaints = <?php echo json_encode($totalComplaints); ?>;
-
-    // Calculate totals for each day (0, 1, 2, 3, >3)
-    const totalsForEachDay = ['0', '1', '2', '3', '>3'].map(day => {
-        return (
-            complainantData.STAFF[day] +
-            complainantData.STUDENT[day] +
-            complainantData.GUEST[day]
-        );
-    });
+    const percentageData = <?php echo json_encode($percentageData); ?>;
 
     // Complainant Chart (Response days by complainant category)
     const complainantCtx = document.getElementById('complainantChart').getContext('2d');
@@ -515,7 +507,7 @@
                     callbacks: {
                         title: function(tooltipItems) {
                             const day = tooltipItems[0].label;
-                            const total = totalComplaints[day]; // Get the total for the current day
+                            const total = totalComplaints[day];
                             return `Day ${day}: Total ${total}`;
                         },
                     },
@@ -530,19 +522,22 @@
                         size: 12,
                     },
                     formatter: function(value, context) {
-                        // Only display the total at the top of the bar
-                        const datasetIndex = context.datasetIndex;
-                        const dataIndex = context.dataIndex;
+                        const day = context.chart.data.labels[context.dataIndex];
 
-                        // Only calculate once per bar (not per category)
-                        if (datasetIndex === context.chart.data.datasets.length - 1) {
-                            // Sum up the values for all datasets at the current index
-                            const totals = context.chart.data.datasets.reduce((sum, dataset) => {
-                                return sum + (dataset.data[dataIndex] || 0);
-                            }, 0);
-                            return totals; // Return the total
+                        // Sum up the values for the current response day (across all categories)
+                        const totalForDay = context.chart.data.datasets.reduce((sum, dataset) => {
+                            return sum + (dataset.data[context.dataIndex] || 0);
+                        }, 0);
+
+                        // Get the percentage for that response day
+                        const percentage = percentageData[day].toFixed(2); // Percentage based on totalAduan
+
+                        // Only display the label for the last dataset, as this is where we want the total and percentage
+                        if (context.datasetIndex === context.chart.data.datasets.length - 1) {
+                            return `${totalForDay} (${percentage}%)`; // Return total and percentage at the end of the stacked bar
                         }
-                        return ''; // Return an empty string for other labels
+
+                        return ''; // Do not show any labels for the other datasets (STAFF, STUDENT)
                     },
                 },
             },
@@ -551,19 +546,19 @@
                     stacked: true,
                     title: {
                         display: true,
-                        text: 'Response Days',
+                        text: 'Tempoh Tindak Balas Selesai (Hari)',
                     },
                 },
                 y: {
                     stacked: true,
                     title: {
                         display: true,
-                        text: 'Total Complaints',
+                        text: 'Jumlah Aduan',
                     },
                 },
             },
         },
-        plugins: [ChartDataLabels], // Include the plugin
+        plugins: [ChartDataLabels],
     });
 </script>
 
