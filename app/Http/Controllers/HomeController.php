@@ -132,18 +132,28 @@ class HomeController extends Controller
             });
         })->toArray();
 
-        // Sort the counts by category and subcategory
+        // Calculate the total count for each category by summing the subcategory counts
+        $categoryTotalCounts = [];
+        foreach ($aduanCategorySubcategoryCounts as $category => $subcategories) {
+            $categoryTotalCounts[$category] = array_sum($subcategories);
+        }
+
+        // Sort categories by their total counts in descending order
+        arsort($categoryTotalCounts);
+
+        // Now sort the subcategories within each category by count
         foreach ($aduanCategorySubcategoryCounts as &$categoryCounts) {
             arsort($categoryCounts);  // Sort subcategories in descending order by count
         }
 
         $allCategories = [];
-        foreach ($aduanCategorySubcategoryCounts as $category => $subcategories) {
-            foreach ($subcategories as $subcategory => $count) {
+        foreach ($categoryTotalCounts as $category => $totalCount) {
+            foreach ($aduanCategorySubcategoryCounts[$category] as $subcategory => $count) {
                 $allCategories[] = [
                     'category' => $category,
                     'subcategory' => $subcategory,
-                    'count' => $count
+                    'count' => $count,
+                    'total_count' => $totalCount  // Include the total count for sorting
                 ];
             }
         }
