@@ -171,7 +171,7 @@
 
 
     <!-- 1st & 2nd Level Cards -->
-    <h4 class="text-center mb-4">1st & 2nd Level</h4>
+    <h4 class="text-center mb-4">1ST & 2ND LEVEL</h4>
     <div class="row justify-content-center">
         <div class="col-lg-4 col-md-6 col-sm-12 mb-3" style="display: flex; align-items: stretch;">
             <div class="bg-info text-white p-4 rounded shadow"
