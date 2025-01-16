@@ -103,6 +103,13 @@ class HomeController extends Controller
         $percentCancelled = ($totalAduan > 0) ? round(($cancelled / $totalAduan) * 100, 2) : 0;
         $percentClosed = ($totalAduan > 0) ? round(($closed / $totalAduan) * 100, 2) : 0;
 
+        // JUMLAH ADUAN BY 1ST & 2ND LEVEL
+        $aduan1stLevel = $aduanList->whereIn('aduan_status', '1ST LEVEL MAINTENANCE')->count();
+        $aduan2ndLevel = $aduanList->whereIn('aduan_status', ['IT SERVICES - 2ND LEVEL SUPPORT', '2ND LEVEL MAINTENANCE'])->count();
+        $total1st2ndLevel = $aduan1stLevel + $aduan2ndLevel;
+        $percent1stLevel = ($totalAduan > 0) ? round(($aduan1stLevel / $total1st2ndLevel) * 100, 2) : 0;
+        $percent2ndLevel = ($totalAduan > 0) ? round(($aduan2ndLevel / $total1st2ndLevel) * 100, 2) : 0;
+
         // JUMLAH ADUAN BY CAMPUS
         $samarahan = $aduanList->where('campus', 'Samarahan')->count();
         $samarahan2 = $aduanList->where('campus', 'Samarahan 2')->count();
@@ -307,6 +314,11 @@ class HomeController extends Controller
             'percentageData' => $percentageData,
             'categories' => $categories,
             'aduanMonthCategoryChart' => $aduanMonthCategoryChart,
+            'aduan1stLevel' => $aduan1stLevel,
+            'aduan2ndLevel' => $aduan2ndLevel,
+            'percent1stLevel' => $percent1stLevel,
+            'percent2ndLevel' => $percent2ndLevel,
+            'total1st2ndLevel' => $total1st2ndLevel,
             'totalCountAllCategories' => number_format($totalCountAllCategories),
         ]);
     }

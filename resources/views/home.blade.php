@@ -169,6 +169,39 @@
         @endforeach
     </div>
 
+
+    <!-- 1st & 2nd Level Cards -->
+    <h4 class="text-center mb-4">1st & 2nd Level</h4>
+    <div class="row justify-content-center">
+        <div class="col-lg-4 col-md-6 col-sm-12 mb-3" style="display: flex; align-items: stretch;">
+            <div class="bg-info text-white p-4 rounded shadow"
+                style="display: flex; flex-direction: column; justify-content: center; align-items: stretch; height: 100%; width: 100%;">
+                <h5 class="text-center fw-bold">JUMLAH 1ST & 2ND LEVEL</h5>
+                <h1 class="display-5 text-center">{{ $total1st2ndLevel }}</h1>
+            </div>
+        </div>
+
+        @php
+        $aduanLevels = [
+        ['label' => '1ST Level', 'value' => $aduan1stLevel, 'percent' => $percent1stLevel],
+        ['label' => '2ND Level', 'value' => $aduan2ndLevel, 'percent' => $percent2ndLevel],
+        ];
+        @endphp
+
+        @foreach ($aduanLevels as $aduanLevel)
+        <div class="col-lg-4 col-md-4 col-sm-12 mb-3" style="display: flex; align-items: stretch;">
+            <div class="card shadow border-0 rounded"
+                style="display: flex; flex-direction: column; justify-content: center; align-items: stretch; height: 100%; width: 100%;">
+                <div class="card-body d-flex flex-column justify-content-center align-items-center p-4">
+                    <h5 class="fw-bold text-primary text-center">{{ $aduanLevel['label'] }}</h5>
+                    <h1 class="display-5 text-center">{{ $aduanLevel['value'] }}</h1>
+                    <h6 class="text-muted text-center">{{ $aduanLevel['percent'] }}%</h6>
+                </div>
+            </div>
+        </div>
+        @endforeach
+    </div>
+
     <!-- Complainent Cards -->
     <div class="row justify-content-center">
         @php
