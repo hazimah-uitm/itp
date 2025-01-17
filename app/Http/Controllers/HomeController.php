@@ -21,11 +21,16 @@ class HomeController extends Controller
         $complainentCategory = $request->input('complainent_category');
         $category = $request->input('category');
         $aduanCategory = $request->input('aduan_category');
+        $staffDuty = $request->input('staff_duty');
 
         $query = Aduan::query();
 
         if ($campus && $campus !== 'all') {
             $query->where('campus', $campus);
+        }
+
+        if ($staffDuty && $staffDuty !== 'all') {
+            $query->where('staff_duty', $staffDuty);
         }
 
         if ($aduanStatus && $aduanStatus !== 'all') {
@@ -63,6 +68,31 @@ class HomeController extends Controller
         $query = $this->applyFilters($request);
 
         $aduanList = $query->whereIn('campus', ['Samarahan', 'Samarahan 2', 'Mukah'])->get();
+
+        $selectedStaff = [
+            'AWANG BAHARUDIN B. AWANG AHMAD',
+            'JUHARI BIN NORILY',
+            'ARIZZAN BIN JAINI',
+            'AMINUDDIN BIN BAKAR',
+            'SITI SARA BINTI JULAIHI',
+            'NARANG ANAK GERAMAN',
+            'SUHANAH BINTI SHUHOR',
+            'NORHAFIZAH BINTI MADHI',
+            'SYARIFUDDIN BIN BUJANG',
+            'AIMA SUMIYATI BINTI MALIKI',
+            'AMIZAN BIN HAJI TAHET',
+            'NAZAREEN BIN ABDUL LATIFF',
+            'JULIANA BINTI KARTAWI',
+            'RAFIDAH BINTI AHMAD',
+            'ANAS ASRAWY BIN PENDAPAT',
+            'SHILEYIUSKEN MIJEN',
+            'IRENE BINTI SELUROH'
+        ];
+        $staffDutyFilter = Aduan::select('staff_duty')
+            ->whereIn('staff_duty', $selectedStaff) // Filter specific values
+            ->distinct()
+            ->orderBy('staff_duty', 'asc')
+            ->pluck('staff_duty');
 
         $complainentCategoryFilter = Aduan::select('complainent_category')
             ->distinct()
@@ -107,8 +137,8 @@ class HomeController extends Controller
         $aduan1stLevel = $aduanList->whereIn('aduan_status', '1ST LEVEL MAINTENANCE')->count();
         $aduan2ndLevel = $aduanList->whereIn('aduan_status', ['IT SERVICES - 2ND LEVEL SUPPORT', '2ND LEVEL MAINTENANCE'])->count();
         $total1st2ndLevel = $aduan1stLevel + $aduan2ndLevel;
-        $percent1stLevel = ($totalAduan > 0) ? round(($aduan1stLevel / $total1st2ndLevel) * 100, 2) : 0;
-        $percent2ndLevel = ($totalAduan > 0) ? round(($aduan2ndLevel / $total1st2ndLevel) * 100, 2) : 0;
+        $percent1stLevel = ($total1st2ndLevel > 0) ? round(($aduan1stLevel / $total1st2ndLevel) * 100, 2) : 0;
+        $percent2ndLevel = ($total1st2ndLevel > 0) ? round(($aduan2ndLevel / $total1st2ndLevel) * 100, 2) : 0;
 
         // JUMLAH ADUAN BY CAMPUS
         $samarahan = $aduanList->where('campus', 'Samarahan')->count();
@@ -229,11 +259,11 @@ class HomeController extends Controller
 
         // Calculate the percentage for each response day
         $percentageData = [
-            '0' => ($totalComplaints['0'] / $totalAduan) * 100,
-            '1' => ($totalComplaints['1'] / $totalAduan) * 100,
-            '2' => ($totalComplaints['2'] / $totalAduan) * 100,
-            '3' => ($totalComplaints['3'] / $totalAduan) * 100,
-            '>3' => ($totalComplaints['>3'] / $totalAduan) * 100
+            '0' => ($totalAduan > 0) ? round(($totalComplaints['0'] / $totalAduan) * 100, 2) : 0,
+            '1' => ($totalAduan > 0) ? round(($totalComplaints['1'] / $totalAduan) * 100, 2) : 0,
+            '2' => ($totalAduan > 0) ? round(($totalComplaints['2'] / $totalAduan) * 100, 2) : 0,
+            '3' => ($totalAduan > 0) ? round(($totalComplaints['3'] / $totalAduan) * 100, 2) : 0,
+            '>3' => ($totalAduan > 0) ? round(($totalComplaints['>3'] / $totalAduan) * 100, 2) : 0,
         ];
 
         // Prepare data for stacked bar chart
@@ -309,6 +339,7 @@ class HomeController extends Controller
             'complainentCategoryFilter' => $complainentCategoryFilter,
             'categoryFilter' => $categoryFilter,
             'aduanCategoryFilter' => $aduanCategoryFilter,
+            'staffDutyFilter' => $staffDutyFilter,
             'complainantData' => $complainantData,
             'totalComplaints' => $totalComplaints,
             'percentageData' => $percentageData,

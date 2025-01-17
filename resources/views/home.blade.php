@@ -47,6 +47,16 @@
                         </select>
                     </div>
                     <div class="mb-2 ms-2 col-12 col-md-auto">
+                        <select name="staff_duty" class="form-select ms-2 rounded" id="staffDutyFilter">
+                            <option value="all" {{ request('staff_duty', 'all') == 'all' ? 'selected' : '' }}>Semua PIC</option>
+                            @foreach ($staffDutyFilter as $staffDuty)
+                            <option value="{{ $staffDuty }}" {{ request('staff_duty') == $staffDuty ? 'selected' : '' }}>
+                                {{ $staffDuty }}
+                            </option>
+                            @endforeach
+                        </select>
+                    </div>
+                    <div class="mb-2 ms-2 col-12 col-md-auto">
                         <select name="category" class="form-select ms-2 rounded" id="categoryFilter">
                             <option value="all" {{ request('category', 'all') == 'all' ? 'selected' : '' }}>Semua Kategori</option>
                             @foreach ($categoryFilter as $category)
@@ -350,6 +360,10 @@
         });
 
         document.getElementById('campusFilter').addEventListener('change', function() {
+            document.getElementById('searchForm').submit();
+        });
+
+        document.getElementById('staffDutyFilter').addEventListener('change', function() {
             document.getElementById('searchForm').submit();
         });
 
