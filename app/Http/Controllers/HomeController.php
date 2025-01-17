@@ -69,27 +69,8 @@ class HomeController extends Controller
 
         $aduanList = $query->whereIn('campus', ['Samarahan', 'Samarahan 2', 'Mukah'])->get();
 
-        $selectedStaff = [
-            'AWANG BAHARUDIN B. AWANG AHMAD',
-            'JUHARI BIN NORILY',
-            'ARIZZAN BIN JAINI',
-            'AMINUDDIN BIN BAKAR',
-            'SITI SARA BINTI JULAIHI',
-            'NARANG ANAK GERAMAN',
-            'SUHANAH BINTI SHUHOR',
-            'NORHAFIZAH BINTI MADHI',
-            'SYARIFUDDIN BIN BUJANG',
-            'AIMA SUMIYATI BINTI MALIKI',
-            'AMIZAN BIN HAJI TAHET',
-            'NAZAREEN BIN ABDUL LATIFF',
-            'JULIANA BINTI KARTAWI',
-            'RAFIDAH BINTI AHMAD',
-            'ANAS ASRAWY BIN PENDAPAT',
-            'SHILEYIUSKEN MIJEN',
-            'IRENE BINTI SELUROH'
-        ];
         $staffDutyFilter = Aduan::select('staff_duty')
-            ->whereIn('staff_duty', $selectedStaff) // Filter specific values
+            ->whereIn('staff_duty', $this->getSelectedStaff()) // Filter specific values
             ->distinct()
             ->orderBy('staff_duty', 'asc')
             ->pluck('staff_duty');
@@ -352,5 +333,28 @@ class HomeController extends Controller
             'total1st2ndLevel' => $total1st2ndLevel,
             'totalCountAllCategories' => number_format($totalCountAllCategories),
         ]);
+    }
+
+    private function getSelectedStaff()
+    {
+        return [
+            'AWANG BAHARUDIN B. AWANG AHMAD',
+            'JUHARI BIN NORILY',
+            'ARIZZAN BIN JAINI',
+            'AMINUDDIN BIN BAKAR',
+            'SITI SARA BINTI JULAIHI',
+            'NARANG ANAK GERAMAN',
+            'SUHANAH BINTI SHUHOR',
+            'NORHAFIZAH BINTI MADHI',
+            'SYARIFUDDIN BIN BUJANG',
+            'AIMA SUMIYATI BINTI MALIKI',
+            'AMIZAN BIN HAJI TAHET',
+            'NAZAREEN BIN ABDUL LATIFF',
+            'JULIANA BINTI KARTAWI',
+            'RAFIDAH BINTI AHMAD',
+            'ANAS ASRAWY BIN PENDAPAT',
+            'SHILEYIUSKEN MIJEN',
+            'IRENE BINTI SELUROH'
+        ];
     }
 }
