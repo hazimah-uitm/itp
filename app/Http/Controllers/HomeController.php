@@ -91,11 +91,11 @@ class HomeController extends Controller
             ->orderBy('aduan_category', 'asc')
             ->pluck('aduan_category');
 
-            $campusFilter = Aduan::select('campus')
+        $campusFilter = Aduan::select('campus')
             ->distinct()
             ->orderBy('campus', 'asc')
             ->pluck('campus')
-            ->unique();        
+            ->unique();
 
         $aduanStatusFilter = Aduan::select('aduan_status')
             ->distinct()
@@ -116,8 +116,15 @@ class HomeController extends Controller
         $percentClosed = ($totalAduan > 0) ? round(($closed / $totalAduan) * 100, 2) : 0;
 
         // JUMLAH ADUAN BY 1ST & 2ND LEVEL
-        $aduan1stLevel = $aduanList->whereIn('aduan_status', '1ST LEVEL MAINTENANCE')->count();
-        $aduan2ndLevel = $aduanList->whereIn('aduan_status', ['IT SERVICES - 2ND LEVEL SUPPORT', '2ND LEVEL MAINTENANCE'])->count();
+        $selectedStaff = $this->getSelectedStaff();
+        $aduan1stLevel = $aduanList->filter(function ($aduan) use ($selectedStaff) {
+            return in_array($aduan->staff_duty, $selectedStaff);
+        })->count();
+
+        $aduan2ndLevel = $aduanList->filter(function ($aduan) use ($selectedStaff) {
+            return !in_array($aduan->staff_duty, $selectedStaff);
+        })->count();
+
         $total1st2ndLevel = $aduan1stLevel + $aduan2ndLevel;
         $percent1stLevel = ($total1st2ndLevel > 0) ? round(($aduan1stLevel / $total1st2ndLevel) * 100, 2) : 0;
         $percent2ndLevel = ($total1st2ndLevel > 0) ? round(($aduan2ndLevel / $total1st2ndLevel) * 100, 2) : 0;

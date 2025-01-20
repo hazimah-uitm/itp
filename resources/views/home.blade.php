@@ -361,18 +361,18 @@
         // Set a delay for form submission after user stops interacting
         let timeout;
         $('#campusFilter').change(function() {
-            clearTimeout(timeout);  // Clear the previous timeout
+            clearTimeout(timeout);  
             timeout = setTimeout(function() {
-                $('#searchForm').submit();  // Submit after delay
-            }, 1000);  // 1 second delay (adjust as necessary)
+                $('#searchForm').submit();  
+            }, 1000);  
         });
 
         // Handle change events for other filters using jQuery
         $('#staffDutyFilter, #complainentCategoryFilter, #categoryFilter, #aduanCategoryFilter, #monthFilter, #yearFilter').change(function() {
-            clearTimeout(timeout);  // Clear the previous timeout
+            clearTimeout(timeout);  
             timeout = setTimeout(function() {
-                $('#searchForm').submit();  // Submit after delay
-            }, 1000);  // 1 second delay (adjust as necessary)
+                $('#searchForm').submit(); 
+            }, 1000);  
         });
 
         // Reset button functionality
