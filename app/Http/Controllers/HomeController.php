@@ -16,7 +16,8 @@ class HomeController extends Controller
     {
         $month = $request->input('month', 'all'); // Default to 'all'
         $year = $request->input('year', 'all'); // Default to the current year
-        $campus = $request->input('campus');
+        $campus = $request->input('campus', []);
+
         $aduanStatus = $request->input('aduan_status');
         $complainentCategory = $request->input('complainent_category');
         $category = $request->input('category');
@@ -25,8 +26,8 @@ class HomeController extends Controller
 
         $query = Aduan::query();
 
-        if ($campus && $campus !== 'all') {
-            $query->where('campus', $campus);
+        if (!empty($campus)) {
+            $query->whereIn('campus', $campus);
         }
 
         if ($staffDuty && $staffDuty !== 'all') {
@@ -67,7 +68,7 @@ class HomeController extends Controller
     {
         $query = $this->applyFilters($request);
 
-        $aduanList = $query->whereIn('campus', ['Samarahan', 'Samarahan 2', 'Mukah'])->get();
+        $aduanList = $query->get();
 
         $staffDutyFilter = Aduan::select('staff_duty')
             ->whereIn('staff_duty', $this->getSelectedStaff()) // Filter specific values
@@ -90,11 +91,11 @@ class HomeController extends Controller
             ->orderBy('aduan_category', 'asc')
             ->pluck('aduan_category');
 
-        $campusFilter = Aduan::select('campus')
-            ->whereIn('campus', ['Samarahan', 'Samarahan 2', 'Mukah'])
+            $campusFilter = Aduan::select('campus')
             ->distinct()
             ->orderBy('campus', 'asc')
-            ->pluck('campus');
+            ->pluck('campus')
+            ->unique();        
 
         $aduanStatusFilter = Aduan::select('aduan_status')
             ->distinct()

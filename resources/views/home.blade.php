@@ -7,10 +7,9 @@
             <form action="{{ route('home') }}" method="GET" id="searchForm">
                 <div class="d-flex flex-wrap justify-content-end">
                     <div class="mb-2 ms-2 col-12 col-md-auto">
-                        <select name="campus" class="form-select ms-2 rounded" id="campusFilter">
-                            <option value="all" {{ request('campus', 'all') == 'all' ? 'selected' : '' }}>Semua Kampus</option>
+                        <select name="campus[]" class="form-select ms-2 rounded" id="campusFilter" multiple="multiple">
                             @foreach ($campusFilter as $campus)
-                            <option value="{{ $campus }}" {{ request('campus') == $campus ? 'selected' : '' }}>
+                            <option value="{{ $campus }}" {{ in_array($campus, request('campus', [])) ? 'selected' : '' }}>
                                 {{ $campus }}
                             </option>
                             @endforeach
@@ -353,45 +352,33 @@
 
 <!-- Filter -->
 <script>
-    document.addEventListener('DOMContentLoaded', function() {
-
-        document.getElementById('aduanStatusFilter').addEventListener('change', function() {
-            document.getElementById('searchForm').submit();
+    $(document).ready(function() {
+        $('#campusFilter').select2({
+            placeholder: "Pilih Kampus",
+            allowClear: true
         });
 
-        document.getElementById('campusFilter').addEventListener('change', function() {
-            document.getElementById('searchForm').submit();
+        // Set a delay for form submission after user stops interacting
+        let timeout;
+        $('#campusFilter').change(function() {
+            clearTimeout(timeout);  // Clear the previous timeout
+            timeout = setTimeout(function() {
+                $('#searchForm').submit();  // Submit after delay
+            }, 1000);  // 1 second delay (adjust as necessary)
         });
 
-        document.getElementById('staffDutyFilter').addEventListener('change', function() {
-            document.getElementById('searchForm').submit();
+        // Handle change events for other filters using jQuery
+        $('#staffDutyFilter, #complainentCategoryFilter, #categoryFilter, #aduanCategoryFilter, #monthFilter, #yearFilter').change(function() {
+            clearTimeout(timeout);  // Clear the previous timeout
+            timeout = setTimeout(function() {
+                $('#searchForm').submit();  // Submit after delay
+            }, 1000);  // 1 second delay (adjust as necessary)
         });
 
-        document.getElementById('complainentCategoryFilter').addEventListener('change', function() {
-            document.getElementById('searchForm').submit();
-        });
-
-        document.getElementById('categoryFilter').addEventListener('change', function() {
-            document.getElementById('searchForm').submit();
-        });
-
-        document.getElementById('aduanCategoryFilter').addEventListener('change', function() {
-            document.getElementById('searchForm').submit();
-        });
-
-        document.getElementById('monthFilter').addEventListener('change', function() {
-            document.getElementById('searchForm').submit();
-        });
-
-        document.getElementById('yearFilter').addEventListener('change', function() {
-            document.getElementById('searchForm').submit();
-        });
-
-        document.getElementById('resetButton').addEventListener('click', function() {
-            // Redirect to the base route to clear query parameters
+        // Reset button functionality
+        $('#resetButton').click(function() {
             window.location.href = "{{ route('home') }}";
         });
-
     });
 </script>
 
