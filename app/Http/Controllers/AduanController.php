@@ -30,6 +30,7 @@ class AduanController extends Controller
                         ->orWhere('campus', 'LIKE', "%$search%")
                         ->orWhere('aduan_status', 'LIKE', "%$search%")
                         ->orWhere('complainent_name', 'LIKE', "%$search%")
+                        ->orWhere('aduan_ict_ticket', 'LIKE', "%$search%")
                         ->orWhere('complainent_id', 'LIKE', "%$search%");
                 });
             }

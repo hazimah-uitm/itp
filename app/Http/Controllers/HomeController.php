@@ -146,10 +146,23 @@ class HomeController extends Controller
         $percentGuest = ($totalAduan > 0) ? round(($guest / $totalAduan) * 100, 2) : 0;
 
         // JUMLAH ADUAN MENGIKUT PIAGAM
-        $responseDaysLessThanOrEqual3 = $aduanList->where('response_days', '<=', 3)->count();
-        $responseDaysMoreThan3 = $aduanList->where('response_days', '>', 3)->count();
-        $percentResponseLessThanOrEqual3 = ($totalAduan > 0) ? round(($responseDaysLessThanOrEqual3 / $totalAduan) * 100, 2) : 0;
-        $percentResponseMoreThan3 = ($totalAduan > 0) ? round(($responseDaysMoreThan3 / $totalAduan) * 100, 2) : 0;
+        $responseDaysLessThanOrEqual3 = collect($aduanList)
+            ->filter(function ($aduan) {
+                return !is_null($aduan['response_days']) // Check if response_days is not null
+                    && $aduan['response_days'] <= 3
+                    && !in_array($aduan['aduan_status'], ['IT SERVICES - 2ND LEVEL SUPPORT', '2ND LEVEL MAINTENANCE', '1ST LEVEL MAINTENANCE']);
+            })
+            ->count();
+        $responseDaysMoreThan3 = collect($aduanList)
+            ->filter(function ($aduan) {
+                return !is_null($aduan['response_days']) // Check if response_days is not null
+                    && $aduan['response_days'] > 3
+                    && !in_array($aduan['aduan_status'], ['IT SERVICES - 2ND LEVEL SUPPORT', '2ND LEVEL MAINTENANCE', '1ST LEVEL MAINTENANCE']);
+            })
+            ->count();
+        $totalAduanCompleted = $responseDaysLessThanOrEqual3 + $responseDaysMoreThan3;
+        $percentResponseLessThanOrEqual3 = ($totalAduanCompleted > 0) ? round(($responseDaysLessThanOrEqual3 / $totalAduanCompleted) * 100, 2) : 0;
+        $percentResponseMoreThan3 = ($totalAduanCompleted > 0) ? round(($responseDaysMoreThan3 / $totalAduanCompleted) * 100, 2) : 0;
 
         // KATEGORI ADUAN AND SUBCATEGORY
         $aduanCategorySubcategoryCounts = $aduanList->groupBy('aduan_category')->map(function ($items) {
@@ -213,29 +226,37 @@ class HomeController extends Controller
         }
 
         // ADUAN BY KATEGORI PENGADU DAN RESPONSE DAYS
+        $excludeStatuses = ['IT SERVICES - 2ND LEVEL SUPPORT', '2ND LEVEL MAINTENANCE', '1ST LEVEL MAINTENANCE'];
+
         $complainantData = [
-            'STAFF' => [
-                '0' => $aduanList->where('complainent_category', 'STAFF')->where('response_days', 0)->count(),
-                '1' => $aduanList->where('complainent_category', 'STAFF')->where('response_days', 1)->count(),
-                '2' => $aduanList->where('complainent_category', 'STAFF')->where('response_days', 2)->count(),
-                '3' => $aduanList->where('complainent_category', 'STAFF')->where('response_days', 3)->count(),
-                '>3' => $aduanList->where('complainent_category', 'STAFF')->where('response_days', '>', 3)->count(),
-            ],
-            'STUDENT' => [
-                '0' => $aduanList->where('complainent_category', 'STUDENT')->where('response_days', 0)->count(),
-                '1' => $aduanList->where('complainent_category', 'STUDENT')->where('response_days', 1)->count(),
-                '2' => $aduanList->where('complainent_category', 'STUDENT')->where('response_days', 2)->count(),
-                '3' => $aduanList->where('complainent_category', 'STUDENT')->where('response_days', 3)->count(),
-                '>3' => $aduanList->where('complainent_category', 'STUDENT')->where('response_days', '>', 3)->count(),
-            ],
-            'GUEST' => [
-                '0' => $aduanList->where('complainent_category', 'GUEST')->where('response_days', 0)->count(),
-                '1' => $aduanList->where('complainent_category', 'GUEST')->where('response_days', 1)->count(),
-                '2' => $aduanList->where('complainent_category', 'GUEST')->where('response_days', 2)->count(),
-                '3' => $aduanList->where('complainent_category', 'GUEST')->where('response_days', 3)->count(),
-                '>3' => $aduanList->where('complainent_category', 'GUEST')->where('response_days', '>', 3)->count(),
-            ]
-        ];
+            'STAFF' => collect([0, 1, 2, 3, '>3'])->mapWithKeys(function ($days) use ($aduanList, $excludeStatuses) {
+                return [
+                    $days => $aduanList->where('complainent_category', 'STAFF')->filter(function ($item) use ($days, $excludeStatuses) {
+                        return $item->response_days !== null &&
+                            (($days === '>3' && $item->response_days > 3) || $item->response_days == $days) &&
+                            !in_array($item->aduan_status, $excludeStatuses);
+                    })->count(),
+                ];
+            }),
+            'STUDENT' => collect([0, 1, 2, 3, '>3'])->mapWithKeys(function ($days) use ($aduanList, $excludeStatuses) {
+                return [
+                    $days => $aduanList->where('complainent_category', 'STUDENT')->filter(function ($item) use ($days, $excludeStatuses) {
+                        return $item->response_days !== null &&
+                            (($days === '>3' && $item->response_days > 3) || $item->response_days == $days) &&
+                            !in_array($item->aduan_status, $excludeStatuses);
+                    })->count(),
+                ];
+            }),
+            'GUEST' => collect([0, 1, 2, 3, '>3'])->mapWithKeys(function ($days) use ($aduanList, $excludeStatuses) {
+                return [
+                    $days => $aduanList->where('complainent_category', 'GUEST')->filter(function ($item) use ($days, $excludeStatuses) {
+                        return $item->response_days !== null &&
+                            (($days === '>3' && $item->response_days > 3) || $item->response_days == $days) &&
+                            !in_array($item->aduan_status, $excludeStatuses);
+                    })->count(),
+                ];
+            }),
+        ];        
 
         // Calculate total complaints for each response day (combined for STAFF, STUDENT, and GUEST)
         $totalComplaints = [
@@ -334,11 +355,11 @@ class HomeController extends Controller
             'percentageData' => $percentageData,
             'categories' => $categories,
             'aduanMonthCategoryChart' => $aduanMonthCategoryChart,
-            'aduan1stLevel' => $aduan1stLevel,
-            'aduan2ndLevel' => $aduan2ndLevel,
+            'aduan1stLevel' => number_format($aduan1stLevel),
+            'aduan2ndLevel' => number_format($aduan2ndLevel),
             'percent1stLevel' => $percent1stLevel,
             'percent2ndLevel' => $percent2ndLevel,
-            'total1st2ndLevel' => $total1st2ndLevel,
+            'total1st2ndLevel' => number_format($total1st2ndLevel),
             'totalCountAllCategories' => number_format($totalCountAllCategories),
         ]);
     }
