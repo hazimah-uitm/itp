@@ -69,17 +69,17 @@
                             <td>{{ $aduan->staff_duty }}</td>
                         </tr>
                         <tr>
-                            <th>Catatan kepada Staf Bertugas</th>
+                            <th>Catatan Staf Bertugas</th>
                             <td>{!! nl2br(e($aduan->remark_staff_duty ?? '-')) !!}</td>
                         </tr>
                         <tr>
                             <th>Tarikh Aduan</th>
-                            <td>{{ \Carbon\Carbon::parse($aduan->date_applied)->format('F Y') }}
+                            <td>{{ \Carbon\Carbon::parse($aduan->date_applied)->format('d-m-Y') }}
                                 {{ \Carbon\Carbon::parse($aduan->time_applied)->format('h:i A') }}</td>
                         </tr>
                         <tr>
                             <th>Tarikh Selesai</th>
-                            <td>{{ \Carbon\Carbon::parse($aduan->date_completed)->format('F Y') }}
+                            <td>{{ \Carbon\Carbon::parse($aduan->date_completed)->format('d-m-Y') }}
                                 {{ \Carbon\Carbon::parse($aduan->time_completed)->format('h:i A') }}</td>
                         </tr>
                         <tr>
