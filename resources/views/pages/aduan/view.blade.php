@@ -70,7 +70,7 @@
                         </tr>
                         <tr>
                             <th>Catatan kepada Staf Bertugas</th>
-                            <td>{!! nl2br(e($remark_staff_duty ?? '-')) !!}</td>
+                            <td>{!! nl2br(e($aduan->remark_staff_duty ?? '-')) !!}</td>
                         </tr>
                         <tr>
                             <th>Tarikh Aduan</th>
