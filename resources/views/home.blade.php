@@ -348,6 +348,74 @@
             </div>
         </div>
     </div>
+
+    <div class="col-lg-12 col-md-12 col-sm-12">
+        <h4 class="text-center mb-4">SENARAI ADUAN</h4>
+        <div class="card">
+            <div class="card-body">
+                <div class="table-responsive mb-3">
+                    <table id="aduanTable" class="table table-sm table-striped table-hover" style="width: 100%;">
+                        <thead>
+                            <tr>
+                                <th>#</th>
+                                <th>No. Aduan</th>
+                                <th>Kategori</th>
+                                <th>Sub Kategory</th>
+                                <th>Pengadu</th>
+                                <th>Kampus</th>
+                                <th>Tempoh</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            @if (count($aduanList) > 0)
+                            @foreach($aduanList as $index => $aduan)
+                            <tr>
+                                <td>{{ $index + 1 }}</td>
+                                <td>{{ $aduan->aduan_ict_ticket }}</td>
+                                <td>{{ $aduan->category }}</td>
+                                <td>{{ $aduan->aduan_subcategory }}</td>
+                                <td>{{ $aduan->complainent_category }}</td>
+                                <td>{{ $aduan->campus }}</td>
+                                <td>{{ $aduan->response_days }}</td>
+                            </tr>
+                            @endforeach
+                            @else
+                            <tr>
+                                <td colspan="7">Tiada rekod</td>
+                            </tr>
+                            @endif
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+    <script>
+        $(document).ready(function() {
+            var table = $('#aduanTable').DataTable({
+                scrollY: "400px",
+                scrollCollapse: true,
+                paging: true,
+                autoWidth: false,
+                responsive: true,
+                fixedHeader: true, // Add this line for fixed headers
+                language: {
+                    paginate: {
+                        previous: "Prev",
+                        next: "Next",
+                    },
+                    search: "Cari:",
+                    lengthMenu: "Papar _MENU_ rekod setiap halaman",
+                    info: "Paparan _START_ hingga _END_ daripada _TOTAL_ rekod",
+                    infoEmpty: "Tiada rekod tersedia",
+                    zeroRecords: "Tiada padanan rekod ditemukan",
+                },
+            });
+
+            table.columns.adjust();
+        });
+    </script>
+
 </div>
 
 <!-- Filter -->
@@ -361,18 +429,18 @@
         // Set a delay for form submission after user stops interacting
         let timeout;
         $('#campusFilter').change(function() {
-            clearTimeout(timeout);  
+            clearTimeout(timeout);
             timeout = setTimeout(function() {
-                $('#searchForm').submit();  
-            }, 1000);  
+                $('#searchForm').submit();
+            }, 1000);
         });
 
         // Handle change events for other filters using jQuery
         $('#staffDutyFilter, #complainentCategoryFilter, #categoryFilter, #aduanCategoryFilter, #monthFilter, #yearFilter').change(function() {
-            clearTimeout(timeout);  
+            clearTimeout(timeout);
             timeout = setTimeout(function() {
-                $('#searchForm').submit(); 
-            }, 1000);  
+                $('#searchForm').submit();
+            }, 1000);
         });
 
         // Reset button functionality
@@ -746,5 +814,4 @@
         });
     });
 </script>
-
 @endsection

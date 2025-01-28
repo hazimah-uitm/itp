@@ -63,7 +63,6 @@ class HomeController extends Controller
         return $query;
     }
 
-
     public function index(Request $request)
     {
         $query = $this->applyFilters($request);
