@@ -117,12 +117,13 @@ class HomeController extends Controller
 
         // JUMLAH ADUAN BY 1ST & 2ND LEVEL
         $selectedStaff = $this->getSelectedStaff();
+
         $aduan1stLevel = $aduanList->filter(function ($aduan) use ($selectedStaff) {
-            return in_array($aduan->staff_duty, $selectedStaff);
+            return !is_null($aduan->staff_duty) && in_array($aduan->staff_duty, $selectedStaff);
         })->count();
 
         $aduan2ndLevel = $aduanList->filter(function ($aduan) use ($selectedStaff) {
-            return !in_array($aduan->staff_duty, $selectedStaff);
+            return !is_null($aduan->staff_duty) && !in_array($aduan->staff_duty, $selectedStaff);
         })->count();
 
         $total1st2ndLevel = $aduan1stLevel + $aduan2ndLevel;
@@ -148,14 +149,14 @@ class HomeController extends Controller
         // JUMLAH ADUAN MENGIKUT PIAGAM
         $responseDaysLessThanOrEqual3 = collect($aduanList)
             ->filter(function ($aduan) {
-                return !is_null($aduan['response_days']) // Check if response_days is not null
+                return !is_null($aduan['response_days']) 
                     && $aduan['response_days'] <= 3
                     && !in_array($aduan['aduan_status'], ['IT SERVICES - 2ND LEVEL SUPPORT', '2ND LEVEL MAINTENANCE', '1ST LEVEL MAINTENANCE']);
             })
             ->count();
         $responseDaysMoreThan3 = collect($aduanList)
             ->filter(function ($aduan) {
-                return !is_null($aduan['response_days']) // Check if response_days is not null
+                return !is_null($aduan['response_days'])
                     && $aduan['response_days'] > 3
                     && !in_array($aduan['aduan_status'], ['IT SERVICES - 2ND LEVEL SUPPORT', '2ND LEVEL MAINTENANCE', '1ST LEVEL MAINTENANCE']);
             })
@@ -171,18 +172,13 @@ class HomeController extends Controller
             });
         })->toArray();
 
-        // Calculate the total count for each category by summing the subcategory counts
         $categoryTotalCounts = [];
         foreach ($aduanCategorySubcategoryCounts as $category => $subcategories) {
             $categoryTotalCounts[$category] = array_sum($subcategories);
         }
-
-        // Sort categories by their total counts in descending order
         arsort($categoryTotalCounts);
-
-        // Now sort the subcategories within each category by count
         foreach ($aduanCategorySubcategoryCounts as &$categoryCounts) {
-            arsort($categoryCounts);  // Sort subcategories in descending order by count
+            arsort($categoryCounts); 
         }
 
         $allCategories = [];
@@ -192,7 +188,7 @@ class HomeController extends Controller
                     'category' => $category,
                     'subcategory' => $subcategory,
                     'count' => $count,
-                    'total_count' => $totalCount  // Include the total count for sorting
+                    'total_count' => $totalCount  
                 ];
             }
         }
@@ -256,7 +252,7 @@ class HomeController extends Controller
                     })->count(),
                 ];
             }),
-        ];        
+        ];
 
         // Calculate total complaints for each response day (combined for STAFF, STUDENT, and GUEST)
         $totalComplaints = [
