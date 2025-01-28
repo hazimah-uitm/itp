@@ -148,7 +148,7 @@ class HomeController extends Controller
         // JUMLAH ADUAN MENGIKUT PIAGAM
         $responseDaysLessThanOrEqual3 = collect($aduanList)
             ->filter(function ($aduan) {
-                return !is_null($aduan['response_days']) 
+                return !is_null($aduan['response_days'])
                     && $aduan['response_days'] <= 3
                     && !in_array($aduan['aduan_status'], ['IT SERVICES - 2ND LEVEL SUPPORT', '2ND LEVEL MAINTENANCE', '1ST LEVEL MAINTENANCE']);
             })
@@ -177,7 +177,7 @@ class HomeController extends Controller
         }
         arsort($categoryTotalCounts);
         foreach ($aduanCategorySubcategoryCounts as &$categoryCounts) {
-            arsort($categoryCounts); 
+            arsort($categoryCounts);
         }
 
         $allCategories = [];
@@ -187,7 +187,7 @@ class HomeController extends Controller
                     'category' => $category,
                     'subcategory' => $subcategory,
                     'count' => $count,
-                    'total_count' => $totalCount  
+                    'total_count' => $totalCount
                 ];
             }
         }
@@ -310,6 +310,27 @@ class HomeController extends Controller
             $aduanMonthCategoryChart[] = $monthData;
         }
 
+        //JUMLAH ADUAN X 1ST LEVEL STAFF
+        $aduanByStaff = $aduanList->groupBy('staff_duty')->map(function ($aduans) {
+            // Count total aduan for each staff
+            $totalAduan = $aduans->count();
+    
+            // Count aduan where response_days >= 3
+            $aduanMoreThan3Days = $aduans->where('response_days', '>=', 3)->count();
+    
+            // Count aduan where response_days < 3
+            $aduanLessThan3Days = $aduans->where('response_days', '<', 3)->count();
+    
+            return [
+                'total' => $totalAduan,
+                'moreThan3Days' => $aduanMoreThan3Days,
+                'lessThan3Days' => $aduanLessThan3Days
+            ];
+        });
+    
+        // Filter the results to show only the selected staff
+        $aduanBySelectedStaff = $aduanByStaff->only($selectedStaff);
+
         return view('home', [
             'aduanList' => $aduanList,
             'totalAduan' => number_format($totalAduan),
@@ -356,6 +377,7 @@ class HomeController extends Controller
             'percent2ndLevel' => $percent2ndLevel,
             'total1st2ndLevel' => number_format($total1st2ndLevel),
             'totalCountAllCategories' => number_format($totalCountAllCategories),
+            'aduanBySelectedStaff' => $aduanBySelectedStaff,
         ]);
     }
 

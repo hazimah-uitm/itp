@@ -179,38 +179,6 @@
     </div>
 
 
-    <!-- 1st & 2nd Level Cards -->
-    <h4 class="text-center mb-4">1ST & 2ND LEVEL</h4>
-    <div class="row justify-content-center">
-        <div class="col-lg-4 col-md-6 col-sm-12 mb-3" style="display: flex; align-items: stretch;">
-            <div class="bg-info text-white p-4 rounded shadow"
-                style="display: flex; flex-direction: column; justify-content: center; align-items: stretch; height: 100%; width: 100%;">
-                <h5 class="text-center fw-bold">JUMLAH 1ST & 2ND LEVEL</h5>
-                <h1 class="display-5 text-center">{{ $total1st2ndLevel }}</h1>
-            </div>
-        </div>
-
-        @php
-        $aduanLevels = [
-        ['label' => '1ST Level', 'value' => $aduan1stLevel, 'percent' => $percent1stLevel],
-        ['label' => '2ND Level', 'value' => $aduan2ndLevel, 'percent' => $percent2ndLevel],
-        ];
-        @endphp
-
-        @foreach ($aduanLevels as $aduanLevel)
-        <div class="col-lg-4 col-md-4 col-sm-12 mb-3" style="display: flex; align-items: stretch;">
-            <div class="card shadow border-0 rounded"
-                style="display: flex; flex-direction: column; justify-content: center; align-items: stretch; height: 100%; width: 100%;">
-                <div class="card-body d-flex flex-column justify-content-center align-items-center p-4">
-                    <h5 class="fw-bold text-primary text-center">{{ $aduanLevel['label'] }}</h5>
-                    <h1 class="display-5 text-center">{{ $aduanLevel['value'] }}</h1>
-                    <h6 class="text-muted text-center">{{ $aduanLevel['percent'] }}%</h6>
-                </div>
-            </div>
-        </div>
-        @endforeach
-    </div>
-
     <!-- Complainent Cards -->
     <div class="row justify-content-center">
         @php
@@ -415,6 +383,124 @@
             table.columns.adjust();
         });
     </script>
+
+    <!-- 1ST LEVEL STAFF -->
+    <div class="row">
+        <!-- Table Column -->
+        <div class="col-lg-8 col-md-12 col-sm-12">
+            <h4 class="text-center mb-4">JUMLAH ADUAN MENGIKUT 1ST LEVEL STAFF</h4>
+            <div class="card">
+                <div class="card-body">
+                    <div class="table-responsive mb-3">
+                        <table id="aduan1stLevelTable" class="table table-sm table-striped table-hover" style="width: 100%;">
+                            <thead>
+                                <tr>
+                                    <th>#</th>
+                                    <th>Nama Staf</th>
+                                    <th>
+                                        < 3 Hari</th>
+                                    <th>≥ 3 Hari</th>
+                                    <th>Jumlah Aduan</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                @php
+                                $grandTotalLessThan3Days = 0;
+                                $grandTotalMoreThan3Days = 0;
+                                $grandTotal = 0;
+                                @endphp
+
+                                @if (count($aduanBySelectedStaff) > 0)
+                                @foreach($aduanBySelectedStaff as $staff => $aduanCounts)
+                                <tr>
+                                    <td>{{ $loop->iteration }}</td>
+                                    <td>{{ $staff }}</td>
+                                    <td>{{ $aduanCounts['lessThan3Days'] }}</td>
+                                    <td>{{ $aduanCounts['moreThan3Days'] }}</td>
+                                    <td>{{ $aduanCounts['total'] }}</td>
+                                </tr>
+
+                                @php
+                                // Accumulate totals for grand total calculation
+                                $grandTotalLessThan3Days += $aduanCounts['lessThan3Days'];
+                                $grandTotalMoreThan3Days += $aduanCounts['moreThan3Days'];
+                                $grandTotal += $aduanCounts['total'];
+                                @endphp
+
+                                @endforeach
+                                @else
+                                <tr>
+                                    <td colspan="5">Tiada rekod</td>
+                                </tr>
+                                @endif
+                            </tbody>
+                            <tfoot>
+                                <tr>
+                                    <td colspan="2"><strong>Jumlah Keseluruhan</strong></td>
+                                    <td><strong>{{ $grandTotalLessThan3Days }}</strong></td>
+                                    <td><strong>{{ $grandTotalMoreThan3Days }}</strong></td>
+                                    <td><strong>{{ $grandTotal }}</strong></td>
+                                </tr>
+                            </tfoot>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-lg-4 col-md-12 col-sm-12">
+            <div class="bg-info text-white p-4 card shadow mb-3 border-0 rounded">
+                <div class="card-body d-flex flex-column justify-content-center align-items-center p-4">
+                    <h5 class="fw-bold text-dark text-center">JUMLAH 1ST & 2ND LEVEL</h5>
+                    <h1 class="display-5 text-center">{{ $total1st2ndLevel }}</h1>
+                </div>
+            </div>
+
+            <div class="card shadow mb-3 border-0 rounded">
+                <div class="card-body d-flex flex-column justify-content-center align-items-center p-4">
+                    <h5 class="fw-bold text-primary text-center">1ST Level</h5>
+                    <h1 class="display-5 text-center">{{ $aduan1stLevel }}</h1>
+                    <h6 class="text-muted text-center">{{ $percent1stLevel }}%</h6>
+                </div>
+            </div>
+
+            <div class="card shadow mb-3 border-0 rounded">
+                <div class="card-body d-flex flex-column justify-content-center align-items-center p-4">
+                    <h5 class="fw-bold text-primary text-center">2ND Level</h5>
+                    <h1 class="display-5 text-center">{{ $aduan2ndLevel }}</h1>
+                    <h6 class="text-muted text-center">{{ $percent2ndLevel }}%</h6>
+                </div>
+            </div>
+        </div>
+    </div>
+
+</div>
+
+</div>
+
+</div>
+<script>
+    $(document).ready(function() {
+        var table = $('#aduan1stLevelTable').DataTable({
+            paging: false, // Disable pagination
+            autoWidth: false,
+            responsive: true,
+            fixedHeader: true, // Keep fixed headers
+            info: false, // Disable info (record count)
+            language: {
+                paginate: {
+                    previous: "Prev",
+                    next: "Next",
+                },
+                search: "Cari:",
+                lengthMenu: "Papar _MENU_ rekod setiap halaman",
+                zeroRecords: "Tiada padanan rekod ditemukan",
+            },
+        });
+
+        table.columns.adjust();
+    });
+</script>
 
 </div>
 
