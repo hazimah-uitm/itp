@@ -7,7 +7,7 @@
                 <form action="{{ route('home') }}" method="GET" id="searchForm">
                     <div class="d-flex flex-wrap justify-content-end">
                         <div class="mb-2 ms-2 col-12 col-md-auto">
-                            <select name="campus[]" class="form-select ms-2 rounded" id="campusFilter" multiple="multiple">
+                            <select name="campus[]" class="form-select ms-2 rounded" id="campusFilter" multiple>
                                 @foreach ($campusFilter as $campus)
                                     <option value="{{ $campus }}"
                                         {{ in_array($campus, request('campus', [])) ? 'selected' : '' }}>
@@ -469,23 +469,17 @@
 
     <!-- Filter -->
     <script>
-        $(document).ready(function() {
-            $('#campusFilter').select2({
+        document.addEventListener("DOMContentLoaded", function() {
+            let campusSelect = new TomSelect("#campusFilter", {
+                plugins: ['remove_button'],
+                persist: false,
+                create: false,
                 placeholder: "Pilih Kampus",
-                allowClear: true
+                hideSelected: true,
             });
 
-            // Set a delay for form submission after user stops interacting
             let timeout;
-            $('#campusFilter').change(function() {
-                clearTimeout(timeout);
-                timeout = setTimeout(function() {
-                    $('#searchForm').submit();
-                }, 1000);
-            });
-
-            // Handle change events for other filters using jQuery
-            $('#staffDutyFilter, #complainentCategoryFilter, #categoryFilter, #aduanCategoryFilter, #monthFilter, #yearFilter')
+            $('#campusFilter, #staffDutyFilter, #complainentCategoryFilter, #categoryFilter, #aduanCategoryFilter, #monthFilter, #yearFilter')
                 .change(function() {
                     clearTimeout(timeout);
                     timeout = setTimeout(function() {
@@ -493,7 +487,6 @@
                     }, 1000);
                 });
 
-            // Reset button functionality
             $('#resetButton').click(function() {
                 window.location.href = "{{ route('home') }}";
             });
@@ -866,7 +859,6 @@
             });
         });
     </script>
-
 
     <script>
         $(document).ready(function() {
