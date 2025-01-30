@@ -316,10 +316,10 @@ class HomeController extends Controller
             $totalAduan = $aduans->count();
     
             // Count aduan where response_days >= 3
-            $aduanMoreThan3Days = $aduans->where('response_days', '>=', 3)->count();
+            $aduanMoreThan3Days = $aduans->where('response_days', '>', 3)->count();
     
             // Count aduan where response_days < 3
-            $aduanLessThan3Days = $aduans->where('response_days', '<', 3)->count();
+            $aduanLessThan3Days = $aduans->where('response_days', '<=', 3)->count();
     
             return [
                 'total' => $totalAduan,

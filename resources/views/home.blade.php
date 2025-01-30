@@ -391,8 +391,8 @@
                                         <th>#</th>
                                         <th>Nama Staf</th>
                                         <th>
-                                            < 3 Hari</th>
-                                        <th>≥ 3 Hari</th>
+                                            ≤ 3 Hari</th>
+                                        <th>> 3 Hari</th>
                                         <th>Jumlah Aduan</th>
                                     </tr>
                                 </thead>
