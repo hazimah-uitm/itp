@@ -2,107 +2,119 @@
 
 @section('content')
 <div class="container-fluid">
-    <div class="row mb-3">
-        <div class="col">
-            <form action="{{ route('home') }}" method="GET" id="searchForm">
-                <div class="row row-cols-auto g-2">
-                    <!-- Filters (Each column takes auto width and wraps when needed) -->
-                    <div class="col-lg-3 col-md-4 col-sm-6">
-                        <select name="campus[]" class="form-select rounded" id="campusFilter" multiple>
-                            @foreach ($campusFilter as $campus)
-                                <option value="{{ $campus }}" {{ in_array($campus, request('campus', [])) ? 'selected' : '' }}>
-                                    {{ $campus }}
+<div class="row mb-3">
+    <div class="col">
+        <form action="{{ route('home') }}" method="GET" id="searchForm">
+            <!-- Filter Button -->
+            <div class="d-flex justify-content-end mb-2">
+                <button class="btn btn-primary rounded" type="button" data-bs-toggle="collapse" data-bs-target="#filterSection" aria-expanded="false" aria-controls="filterSection">
+                    <i class="bx bx-filter"></i>
+                </button>
+            </div>
+
+            <!-- Collapsible Filter Section -->
+            <div class="collapse" id="filterSection">
+                <div class="card card-body">
+                    <div class="row row-cols-auto g-2">
+                        <div class="col-lg-3 col-md-4 col-sm-6">
+                            <select name="campus[]" class="form-select rounded" id="campusFilter" multiple>
+                                @foreach ($campusFilter as $campus)
+                                    <option value="{{ $campus }}" {{ in_array($campus, request('campus', [])) ? 'selected' : '' }}>
+                                        {{ $campus }}
+                                    </option>
+                                @endforeach
+                            </select>
+                        </div>
+                        <div class="col-lg-3 col-md-4 col-sm-6">
+                            <select name="month" class="form-select rounded" id="monthFilter">
+                                <option value="all" {{ request('month') == 'all' ? 'selected' : '' }}>Semua Bulan</option>
+                                @for ($m = 1; $m <= 12; $m++)
+                                    <option value="{{ $m }}" {{ request('month') == $m ? 'selected' : '' }}>
+                                        {{ \Carbon\Carbon::create()->month($m)->format('F') }}
+                                    </option>
+                                @endfor
+                            </select>
+                        </div>
+                        <div class="col-lg-3 col-md-4 col-sm-6">
+                            <select name="year" class="form-select rounded" id="yearFilter">
+                                <option value="all" {{ request('year') == 'all' ? 'selected' : '' }}>Semua Tahun</option>
+                                @for ($y = 2020; $y <= now()->year; $y++)
+                                    <option value="{{ $y }}" {{ request('year') == $y ? 'selected' : '' }}>
+                                        {{ $y }}
+                                    </option>
+                                @endfor
+                            </select>
+                        </div>
+                        <div class="col-lg-3 col-md-4 col-sm-6">
+                            <select name="complainent_category" class="form-select rounded" id="complainentCategoryFilter">
+                                <option value="all" {{ request('complainent_category', 'all') == 'all' ? 'selected' : '' }}>
+                                    Semua Kategori Pengadu
                                 </option>
-                            @endforeach
-                        </select>
-                    </div>
-                    <div class="col-lg-3 col-md-4 col-sm-6">
-                        <select name="month" class="form-select rounded" id="monthFilter">
-                            <option value="all" {{ request('month') == 'all' ? 'selected' : '' }}>Semua Bulan</option>
-                            @for ($m = 1; $m <= 12; $m++)
-                                <option value="{{ $m }}" {{ request('month') == $m ? 'selected' : '' }}>
-                                    {{ \Carbon\Carbon::create()->month($m)->format('F') }}
+                                @foreach ($complainentCategoryFilter as $category)
+                                    <option value="{{ $category }}" {{ request('complainent_category') == $category ? 'selected' : '' }}>
+                                        {{ $category }}
+                                    </option>
+                                @endforeach
+                            </select>
+                        </div>
+                        <div class="col-lg-3 col-md-4 col-sm-6">
+                            <select name="staff_duty" class="form-select rounded" id="staffDutyFilter">
+                                <option value="all" {{ request('staff_duty', 'all') == 'all' ? 'selected' : '' }}>Semua PIC</option>
+                                @foreach ($staffDutyFilter as $staffDuty)
+                                    <option value="{{ $staffDuty }}" {{ request('staff_duty') == $staffDuty ? 'selected' : '' }}>
+                                        {{ $staffDuty }}
+                                    </option>
+                                @endforeach
+                            </select>
+                        </div>
+                        <div class="col-lg-3 col-md-4 col-sm-6">
+                            <select name="category" class="form-select rounded" id="categoryFilter">
+                                <option value="all" {{ request('category', 'all') == 'all' ? 'selected' : '' }}>Semua Kategori</option>
+                                @foreach ($categoryFilter as $category)
+                                    <option value="{{ $category }}" {{ request('category') == $category ? 'selected' : '' }}>
+                                        {{ $category }}
+                                    </option>
+                                @endforeach
+                            </select>
+                        </div>
+                        <div class="col-lg-3 col-md-4 col-sm-6">
+                            <select name="aduan_category" class="form-select rounded" id="aduanCategoryFilter">
+                                <option value="all" {{ request('aduan_category', 'all') == 'all' ? 'selected' : '' }}>
+                                    Semua Kategori Aduan
                                 </option>
-                            @endfor
-                        </select>
-                    </div>
-                    <div class="col-lg-3 col-md-4 col-sm-6">
-                        <select name="year" class="form-select rounded" id="yearFilter">
-                            <option value="all" {{ request('year') == 'all' ? 'selected' : '' }}>Semua Tahun</option>
-                            @for ($y = 2020; $y <= now()->year; $y++)
-                                <option value="{{ $y }}" {{ request('year') == $y ? 'selected' : '' }}>
-                                    {{ $y }}
+                                @foreach ($aduanCategoryFilter as $category)
+                                    <option value="{{ $category }}" {{ request('aduan_category') == $category ? 'selected' : '' }}>
+                                        {{ $category }}
+                                    </option>
+                                @endforeach
+                            </select>
+                        </div>
+                        <div class="col-lg-3 col-md-4 col-sm-6">
+                            <select name="aduan_status" class="form-select rounded" id="aduanStatusFilter">
+                                <option value="all" {{ request('aduan_status', 'all') == 'all' ? 'selected' : '' }}>
+                                    Semua Aduan Status
                                 </option>
-                            @endfor
-                        </select>
-                    </div>
-                    <div class="col-lg-3 col-md-4 col-sm-6">
-                        <select name="complainent_category" class="form-select rounded" id="complainentCategoryFilter">
-                            <option value="all" {{ request('complainent_category', 'all') == 'all' ? 'selected' : '' }}>
-                                Semua Kategori Pengadu
-                            </option>
-                            @foreach ($complainentCategoryFilter as $category)
-                                <option value="{{ $category }}" {{ request('complainent_category') == $category ? 'selected' : '' }}>
-                                    {{ $category }}
-                                </option>
-                            @endforeach
-                        </select>
-                    </div>
-                    <div class="col-lg-3 col-md-4 col-sm-6">
-                        <select name="staff_duty" class="form-select rounded" id="staffDutyFilter">
-                            <option value="all" {{ request('staff_duty', 'all') == 'all' ? 'selected' : '' }}>Semua PIC</option>
-                            @foreach ($staffDutyFilter as $staffDuty)
-                                <option value="{{ $staffDuty }}" {{ request('staff_duty') == $staffDuty ? 'selected' : '' }}>
-                                    {{ $staffDuty }}
-                                </option>
-                            @endforeach
-                        </select>
-                    </div>
-                    <div class="col-lg-3 col-md-4 col-sm-6">
-                        <select name="category" class="form-select rounded" id="categoryFilter">
-                            <option value="all" {{ request('category', 'all') == 'all' ? 'selected' : '' }}>Semua Kategori</option>
-                            @foreach ($categoryFilter as $category)
-                                <option value="{{ $category }}" {{ request('category') == $category ? 'selected' : '' }}>
-                                    {{ $category }}
-                                </option>
-                            @endforeach
-                        </select>
-                    </div>
-                    <div class="col-lg-3 col-md-4 col-sm-6">
-                        <select name="aduan_category" class="form-select rounded" id="aduanCategoryFilter">
-                            <option value="all" {{ request('aduan_category', 'all') == 'all' ? 'selected' : '' }}>
-                                Semua Kategori Aduan
-                            </option>
-                            @foreach ($aduanCategoryFilter as $category)
-                                <option value="{{ $category }}" {{ request('aduan_category') == $category ? 'selected' : '' }}>
-                                    {{ $category }}
-                                </option>
-                            @endforeach
-                        </select>
-                    </div>
-                    <div class="col-lg-3 col-md-4 col-sm-6">
-                        <select name="aduan_status" class="form-select rounded" id="aduanStatusFilter">
-                            <option value="all" {{ request('aduan_status', 'all') == 'all' ? 'selected' : '' }}>
-                                Semua Aduan Status
-                            </option>
-                            @foreach ($aduanStatusFilter as $aduanStatus)
-                                <option value="{{ $aduanStatus }}" {{ request('aduan_status') == $aduanStatus ? 'selected' : '' }}>
-                                    {{ $aduanStatus }}
-                                </option>
-                            @endforeach
-                        </select>
-                    </div>
-                    
-                    <!-- Reset Button aligned to the right -->
-                    <div class="col-lg-12 text-end">
-                        <button type="button" class="btn btn-secondary rounded" id="resetButton">
-                            Reset
-                        </button>
+                                @foreach ($aduanStatusFilter as $aduanStatus)
+                                    <option value="{{ $aduanStatus }}" {{ request('aduan_status') == $aduanStatus ? 'selected' : '' }}>
+                                        {{ $aduanStatus }}
+                                    </option>
+                                @endforeach
+                            </select>
+                        </div>
+                        
+                        <!-- Reset Button aligned to the right -->
+                        <div class="col-lg-12 text-end">
+                            <button type="button" class="btn btn-secondary rounded" id="resetButton">
+                                Reset
+                            </button>
+                        </div>
                     </div>
                 </div>
-            </form>
-        </div>
+            </div>
+        </form>
     </div>
+</div>
+
 
 
     <div class="row mb-4 justify-content-center" style="display: flex; flex-wrap: wrap; align-items: stretch;">
