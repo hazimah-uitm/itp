@@ -21,7 +21,7 @@
                                     <button class="btn btn-light dropdown-toggle w-100 text-start d-flex justify-content-between align-items-center"
                                         type="button" id="campusDropdown" data-bs-toggle="dropdown" aria-expanded="false">
                                         <span id="campusDropdownLabel">Pilih Kampus</span>
-                                        <i class="bi bi-caret-down-fill"></i> 
+                                        <i class="bi bi-caret-down-fill"></i>
                                     </button>
                                     <ul class="dropdown-menu w-100 p-3" aria-labelledby="campusDropdown" style="max-height: 300px; overflow-y: auto;">
                                         @foreach ($campusFilter as $campus)
@@ -38,26 +38,57 @@
                                     </ul>
                                 </div>
                             </div>
+
                             <div class="col-lg-3 col-md-4 col-sm-6">
-                                <select name="month" class="form-select rounded" id="monthFilter">
-                                    <option value="all" {{ request('month') == 'all' ? 'selected' : '' }}>Semua Bulan</option>
-                                    @for ($m = 1; $m <= 12; $m++)
-                                        <option value="{{ $m }}" {{ request('month') == $m ? 'selected' : '' }}>
-                                        {{ \Carbon\Carbon::create()->month($m)->format('F') }}
-                                        </option>
-                                        @endfor
-                                </select>
+                                <div class="dropdown w-100">
+                                    <button class="btn btn-light dropdown-toggle w-100 text-start d-flex justify-content-between align-items-center"
+                                        type="button" id="monthDropdown" data-bs-toggle="dropdown" aria-expanded="false">
+                                        <span id="monthDropdownLabel">Pilih Bulan</span>
+                                        <i class="bi bi-caret-down-fill"></i>
+                                    </button>
+                                    <ul class="dropdown-menu w-100 p-3" aria-labelledby="monthDropdown" style="max-height: 300px; overflow-y: auto;">
+                                        @for ($m = 1; $m <= 12; $m++)
+                                            <li>
+                                            <div class="form-check">
+                                                <input type="checkbox" name="month[]" value="{{ $m }}"
+                                                    class="form-check-input month-checkbox" id="month-{{ $m }}"
+                                                    style="transform: scale(1.3); margin-right: 8px;"
+                                                    {{ in_array($m, request('month', [])) ? 'checked' : '' }}>
+                                                <label class="form-check-label" for="month-{{ $m }}">
+                                                    {{ \Carbon\Carbon::create()->month($m)->format('F') }}
+                                                </label>
+                                            </div>
+                                            </li>
+                                            @endfor
+                                    </ul>
+                                </div>
                             </div>
+
                             <div class="col-lg-3 col-md-4 col-sm-6">
-                                <select name="year" class="form-select rounded" id="yearFilter">
-                                    <option value="all" {{ request('year') == 'all' ? 'selected' : '' }}>Semua Tahun</option>
-                                    @for ($y = 2020; $y <= now()->year; $y++)
-                                        <option value="{{ $y }}" {{ request('year') == $y ? 'selected' : '' }}>
-                                            {{ $y }}
-                                        </option>
-                                        @endfor
-                                </select>
+                                <div class="dropdown w-100">
+                                    <button class="btn btn-light dropdown-toggle w-100 text-start d-flex justify-content-between align-items-center"
+                                        type="button" id="yearDropdown" data-bs-toggle="dropdown" aria-expanded="false">
+                                        <span id="yearDropdownLabel">Pilih Tahun</span>
+                                        <i class="bi bi-caret-down-fill"></i>
+                                    </button>
+                                    <ul class="dropdown-menu w-100 p-3" aria-labelledby="yearDropdown" style="max-height: 300px; overflow-y: auto;">
+                                        @for ($y = 2020; $y <= now()->year; $y++)
+                                            <li>
+                                                <div class="form-check">
+                                                    <input type="checkbox" name="year[]" value="{{ $y }}"
+                                                        class="form-check-input year-checkbox" id="year-{{ $y }}"
+                                                        style="transform: scale(1.3); margin-right: 8px;"
+                                                        {{ in_array($y, request('year', [])) ? 'checked' : '' }}>
+                                                    <label class="form-check-label" for="year-{{ $y }}">
+                                                    {{ \Carbon\Carbon::create()->year($y)->format('Y') }}
+                                                    </label>
+                                                </div>
+                                            </li>
+                                            @endfor
+                                    </ul>
+                                </div>
                             </div>
+
                             <div class="col-lg-3 col-md-4 col-sm-6">
                                 <select name="complainent_category" class="form-select rounded" id="complainentCategoryFilter">
                                     <option value="all" {{ request('complainent_category', 'all') == 'all' ? 'selected' : '' }}>
@@ -127,8 +158,6 @@
             </form>
         </div>
     </div>
-
-
 
     <div class="row mb-4 justify-content-center" style="display: flex; flex-wrap: wrap; align-items: stretch;">
         <!-- Main Rectangular Statistic (Jumlah Aduan) -->
@@ -212,7 +241,6 @@
         </div>
         @endforeach
     </div>
-
 
     <!-- Complainent Cards -->
     <div class="row justify-content-center">
@@ -496,7 +524,7 @@
         let timeout;
 
         // Detect changes in checkboxes and submit the form
-        document.querySelectorAll(".campus-checkbox").forEach(checkbox => {
+        document.querySelectorAll(".campus-checkbox, .month-checkbox, .year-checkbox").forEach(checkbox => {
             checkbox.addEventListener("change", function() {
                 clearTimeout(timeout);
                 timeout = setTimeout(function() {
@@ -507,7 +535,7 @@
 
         // Reset button to clear selections
         document.getElementById("resetButton").addEventListener("click", function() {
-            document.querySelectorAll(".campus-checkbox").forEach(checkbox => {
+            document.querySelectorAll(".campus-checkbox,.month-checkbox, .year-checkbox").forEach(checkbox => {
                 checkbox.checked = false;
             });
             document.getElementById("searchForm").submit();

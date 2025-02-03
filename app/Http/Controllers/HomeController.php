@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\Aduan;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\DB;
 
 class HomeController extends Controller
 {
@@ -14,8 +15,8 @@ class HomeController extends Controller
 
     private function applyFilters(Request $request)
     {
-        $month = $request->input('month', 'all'); // Default to 'all'
-        $year = $request->input('year', 'all'); // Default to the current year
+        $months = (array) $request->input('month', []);
+        $years = (array) $request->input('year', []);
         $campus = $request->input('campus', []);
 
         $aduanStatus = $request->input('aduan_status');
@@ -50,14 +51,12 @@ class HomeController extends Controller
             $query->where('aduan_category', $aduanCategory);
         }
 
-        // Apply the month filter if it's not 'all'
-        if ($month !== 'all') {
-            $query->whereMonth('date_applied', $month);
+        if (!empty($months) && !in_array('all', $months)) {
+            $query->whereIn(DB::raw('MONTH(date_applied)'), $months);
         }
 
-        // Apply year filter if not 'all'
-        if ($year !== 'all') {
-            $query->whereYear('date_applied', $year);
+        if (!empty($years) && !in_array('all', $years)) {
+            $query->whereIn(DB::raw('YEAR(date_applied)'), $years);
         }
 
         return $query;
