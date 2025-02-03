@@ -19,11 +19,11 @@ class HomeController extends Controller
         $years = (array) $request->input('year', []);
         $campus = $request->input('campus', []);
 
-        $aduanStatus = $request->input('aduan_status');
-        $complainentCategory = $request->input('complainent_category');
-        $category = $request->input('category');
-        $aduanCategory = $request->input('aduan_category');
-        $staffDuty = $request->input('staff_duty');
+        $aduanStatus = $request->input('aduan_status', []);
+        $complainentCategory = $request->input('complainent_category', []);
+        $category = $request->input('category', []);
+        $aduanCategory = $request->input('aduan_category', []);
+        $staffDuty = $request->input('staff_duty', []);
 
         $query = Aduan::query();
 
@@ -31,24 +31,24 @@ class HomeController extends Controller
             $query->whereIn('campus', $campus);
         }
 
-        if ($staffDuty && $staffDuty !== 'all') {
-            $query->where('staff_duty', $staffDuty);
+        if (!empty($staffDuty)) {
+            $query->whereIn('staff_duty', $staffDuty);
         }
 
-        if ($aduanStatus && $aduanStatus !== 'all') {
-            $query->where('aduan_status', $aduanStatus);
+        if (!empty($aduanStatus)) {
+            $query->whereIn('aduan_status', $aduanStatus);
         }
 
-        if ($complainentCategory && $complainentCategory !== 'all') {
-            $query->where('complainent_category', $complainentCategory);
+        if (!empty($complainentCategory)) {
+            $query->whereIn('complainent_category', $complainentCategory);
         }
 
-        if ($category && $category !== 'all') {
-            $query->where('category', $category);
+        if (!empty($category)) {
+            $query->whereIn('category', $category);
         }
 
-        if ($aduanCategory && $aduanCategory !== 'all') {
-            $query->where('aduan_category', $aduanCategory);
+        if (!empty($aduanCategory)) {
+            $query->whereIn('aduan_category', $aduanCategory);
         }
 
         if (!empty($months) && !in_array('all', $months)) {

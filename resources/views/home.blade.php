@@ -20,18 +20,18 @@
                                 <div class="dropdown w-100">
                                     <button class="btn btn-light dropdown-toggle w-100 text-start d-flex justify-content-between align-items-center"
                                         type="button" id="campusDropdown" data-bs-toggle="dropdown" aria-expanded="false">
-                                        <span id="campusDropdownLabel">Pilih Kampus</span>
+                                        <span id="campusDropdownLabel">Kampus</span>
                                         <i class="bi bi-caret-down-fill"></i>
                                     </button>
                                     <ul class="dropdown-menu w-100 p-3" aria-labelledby="campusDropdown" style="max-height: 300px; overflow-y: auto;">
                                         @foreach ($campusFilter as $campus)
                                         <li>
-                                            <div class="form-check">
+                                            <div class="form-check d-flex align-items-center">
                                                 <input type="checkbox" name="campus[]" value="{{ $campus }}"
-                                                    class="form-check-input campus-checkbox"
+                                                    class="form-check-input me-2 campus-checkbox"
                                                     id="campus-{{ $loop->index }}" style="transform: scale(1.3); margin-right: 8px;"
                                                     {{ in_array($campus, request('campus', [])) ? 'checked' : '' }}>
-                                                <label class="form-check-label" for="campus-{{ $loop->index }}">{{ $campus }}</label>
+                                                <label class="form-check-label w-100" for="campus-{{ $loop->index }}">{{ $campus }}</label>
                                             </div>
                                         </li>
                                         @endforeach
@@ -43,18 +43,18 @@
                                 <div class="dropdown w-100">
                                     <button class="btn btn-light dropdown-toggle w-100 text-start d-flex justify-content-between align-items-center"
                                         type="button" id="monthDropdown" data-bs-toggle="dropdown" aria-expanded="false">
-                                        <span id="monthDropdownLabel">Pilih Bulan</span>
+                                        <span id="monthDropdownLabel">Bulan</span>
                                         <i class="bi bi-caret-down-fill"></i>
                                     </button>
                                     <ul class="dropdown-menu w-100 p-3" aria-labelledby="monthDropdown" style="max-height: 300px; overflow-y: auto;">
                                         @for ($m = 1; $m <= 12; $m++)
                                             <li>
-                                            <div class="form-check">
+                                            <div class="form-check d-flex align-items-center">
                                                 <input type="checkbox" name="month[]" value="{{ $m }}"
-                                                    class="form-check-input month-checkbox" id="month-{{ $m }}"
+                                                    class="form-check-input me-2 month-checkbox" id="month-{{ $m }}"
                                                     style="transform: scale(1.3); margin-right: 8px;"
                                                     {{ in_array($m, request('month', [])) ? 'checked' : '' }}>
-                                                <label class="form-check-label" for="month-{{ $m }}">
+                                                <label class="form-check-label w-100" for="month-{{ $m }}">
                                                     {{ \Carbon\Carbon::create()->month($m)->format('F') }}
                                                 </label>
                                             </div>
@@ -68,19 +68,19 @@
                                 <div class="dropdown w-100">
                                     <button class="btn btn-light dropdown-toggle w-100 text-start d-flex justify-content-between align-items-center"
                                         type="button" id="yearDropdown" data-bs-toggle="dropdown" aria-expanded="false">
-                                        <span id="yearDropdownLabel">Pilih Tahun</span>
+                                        <span id="yearDropdownLabel">Tahun</span>
                                         <i class="bi bi-caret-down-fill"></i>
                                     </button>
                                     <ul class="dropdown-menu w-100 p-3" aria-labelledby="yearDropdown" style="max-height: 300px; overflow-y: auto;">
                                         @for ($y = 2020; $y <= now()->year; $y++)
                                             <li>
-                                                <div class="form-check">
+                                                <div class="form-check d-flex align-items-center">
                                                     <input type="checkbox" name="year[]" value="{{ $y }}"
-                                                        class="form-check-input year-checkbox" id="year-{{ $y }}"
+                                                        class="form-check-input me-2 year-checkbox" id="year-{{ $y }}"
                                                         style="transform: scale(1.3); margin-right: 8px;"
                                                         {{ in_array($y, request('year', [])) ? 'checked' : '' }}>
-                                                    <label class="form-check-label" for="year-{{ $y }}">
-                                                    {{ \Carbon\Carbon::create()->year($y)->format('Y') }}
+                                                    <label class="form-check-label w-100" for="year-{{ $y }}">
+                                                        {{ \Carbon\Carbon::create()->year($y)->format('Y') }}
                                                     </label>
                                                 </div>
                                             </li>
@@ -90,60 +90,119 @@
                             </div>
 
                             <div class="col-lg-3 col-md-4 col-sm-6">
-                                <select name="complainent_category" class="form-select rounded" id="complainentCategoryFilter">
-                                    <option value="all" {{ request('complainent_category', 'all') == 'all' ? 'selected' : '' }}>
-                                        Semua Kategori Pengadu
-                                    </option>
-                                    @foreach ($complainentCategoryFilter as $category)
-                                    <option value="{{ $category }}" {{ request('complainent_category') == $category ? 'selected' : '' }}>
-                                        {{ $category }}
-                                    </option>
-                                    @endforeach
-                                </select>
+                                <div class="dropdown w-100">
+                                    <button class="btn btn-light dropdown-toggle w-100 text-start d-flex justify-content-between align-items-center"
+                                        type="button" id="complainentCategoryDropdown" data-bs-toggle="dropdown" aria-expanded="false">
+                                        <span id="complainentCategoryDropdownLabel">Kategori Pengadu</span>
+                                        <i class="bi bi-caret-down-fill"></i>
+                                    </button>
+                                    <ul class="dropdown-menu w-100 p-3" aria-labelledby="complainentCategoryDropdown" style="max-height: 300px; overflow-y: auto;">
+                                        @foreach ($complainentCategoryFilter as $complainentCategory)
+                                        <li>
+                                            <div class="form-check d-flex align-items-center">
+                                                <input type="checkbox" name="complainent_category[]" value="{{ $complainentCategory }}"
+                                                    class="form-check-input me-2 complainentCategory-checkbox"
+                                                    id="complainentCategory-{{ $loop->index }}" style="transform: scale(1.3); margin-right: 8px;"
+                                                    {{ in_array($complainentCategory, request('complainent_category', [])) ? 'checked' : '' }}>
+                                                <label class="form-check-label w-100" for="complainentCategory-{{ $loop->index }}">{{ $complainentCategory }}</label>
+                                            </div>
+                                        </li>
+                                        @endforeach
+                                    </ul>
+                                </div>
                             </div>
+
                             <div class="col-lg-3 col-md-4 col-sm-6">
-                                <select name="staff_duty" class="form-select rounded" id="staffDutyFilter">
-                                    <option value="all" {{ request('staff_duty', 'all') == 'all' ? 'selected' : '' }}>Semua PIC</option>
-                                    @foreach ($staffDutyFilter as $staffDuty)
-                                    <option value="{{ $staffDuty }}" {{ request('staff_duty') == $staffDuty ? 'selected' : '' }}>
-                                        {{ $staffDuty }}
-                                    </option>
-                                    @endforeach
-                                </select>
+                                <div class="dropdown w-100">
+                                    <button class="btn btn-light dropdown-toggle w-100 text-start d-flex justify-content-between align-items-center"
+                                        type="button" id="staffDutyDropdown" data-bs-toggle="dropdown" aria-expanded="false">
+                                        <span id="staffDutyDropdownLabel" class="text-truncate">PIC</span>
+                                        <i class="bi bi-caret-down-fill"></i>
+                                    </button>
+
+                                    <ul class="dropdown-menu w-100 p-3" aria-labelledby="staffDutyDropdown" style="max-height: 300px; overflow-y: auto;">
+                                        @foreach ($staffDutyFilter as $staffDuty)
+                                        <li>
+                                            <div class="form-check d-flex align-items-center">
+                                                <input type="checkbox" name="staff_duty[]" value="{{ $staffDuty }}"
+                                                    class="form-check-input me-2 staffDuty-checkbox"
+                                                    id="staffDuty-{{ $loop->index }}" style="transform: scale(1.3); margin-right: 8px;"
+                                                    {{ in_array($staffDuty, request('staff_duty', [])) ? 'checked' : '' }}>
+                                                <label class="form-check-label w-100" for="staffDuty-{{ $loop->index }}">{{ $staffDuty }}</label>
+                                            </div>
+                                        </li>
+                                        @endforeach
+                                    </ul>
+                                </div>
                             </div>
+
                             <div class="col-lg-3 col-md-4 col-sm-6">
-                                <select name="category" class="form-select rounded" id="categoryFilter">
-                                    <option value="all" {{ request('category', 'all') == 'all' ? 'selected' : '' }}>Semua Kategori</option>
-                                    @foreach ($categoryFilter as $category)
-                                    <option value="{{ $category }}" {{ request('category') == $category ? 'selected' : '' }}>
-                                        {{ $category }}
-                                    </option>
-                                    @endforeach
-                                </select>
+                                <div class="dropdown w-100">
+                                    <button class="btn btn-light dropdown-toggle w-100 text-start d-flex justify-content-between align-items-center"
+                                        type="button" id="categoryDropdown" data-bs-toggle="dropdown" aria-expanded="false">
+                                        <span id="categoryDropdownLabel">Kategori</span>
+                                        <i class="bi bi-caret-down-fill"></i>
+                                    </button>
+                                    <ul class="dropdown-menu w-100 p-3" aria-labelledby="categoryDropdown" style="max-height: 300px; overflow-y: auto;">
+                                        @foreach ($categoryFilter as $category)
+                                        <li>
+                                            <div class="form-check d-flex align-items-center">
+                                                <input type="checkbox" name="category[]" value="{{ $category }}"
+                                                    class="form-check-input me-2 category-checkbox"
+                                                    id="category-{{ $loop->index }}" style="transform: scale(1.3); margin-right: 8px;"
+                                                    {{ in_array($category, request('category', [])) ? 'checked' : '' }}>
+                                                <label class="form-check-label w-100" for="category-{{ $loop->index }}">{{ $category }}</label>
+                                            </div>
+                                        </li>
+                                        @endforeach
+                                    </ul>
+                                </div>
                             </div>
+
                             <div class="col-lg-3 col-md-4 col-sm-6">
-                                <select name="aduan_category" class="form-select rounded" id="aduanCategoryFilter">
-                                    <option value="all" {{ request('aduan_category', 'all') == 'all' ? 'selected' : '' }}>
-                                        Semua Kategori Aduan
-                                    </option>
-                                    @foreach ($aduanCategoryFilter as $category)
-                                    <option value="{{ $category }}" {{ request('aduan_category') == $category ? 'selected' : '' }}>
-                                        {{ $category }}
-                                    </option>
-                                    @endforeach
-                                </select>
+                                <div class="dropdown w-100">
+                                    <button class="btn btn-light dropdown-toggle w-100 text-start d-flex justify-content-between align-items-center"
+                                        type="button" id="aduanCategoryDropdown" data-bs-toggle="dropdown" aria-expanded="false">
+                                        <span id="aduanCategoryDropdownLabel">Aduan ICT</span>
+                                        <i class="bi bi-caret-down-fill"></i>
+                                    </button>
+                                    <ul class="dropdown-menu w-100 p-3" aria-labelledby="aduanCategoryDropdown" style="max-height: 300px; overflow-y: auto;">
+                                        @foreach ($aduanCategoryFilter as $aduanCategory)
+                                        <li>
+                                            <div class="form-check d-flex align-items-center">
+                                                <input type="checkbox" name="aduan_category[]" value="{{ $aduanCategory }}"
+                                                    class="form-check-input me-2 aduanCategory-checkbox"
+                                                    id="aduanCategory-{{ $loop->index }}" style="transform: scale(1.3); margin-right: 8px;"
+                                                    {{ in_array($aduanCategory, request('aduan_category', [])) ? 'checked' : '' }}>
+                                                <label class="form-check-label w-100" for="aduanCategory-{{ $loop->index }}">{{ $aduanCategory }}</label>
+                                            </div>
+                                        </li>
+                                        @endforeach
+                                    </ul>
+                                </div>
                             </div>
+
                             <div class="col-lg-3 col-md-4 col-sm-6">
-                                <select name="aduan_status" class="form-select rounded" id="aduanStatusFilter">
-                                    <option value="all" {{ request('aduan_status', 'all') == 'all' ? 'selected' : '' }}>
-                                        Semua Aduan Status
-                                    </option>
-                                    @foreach ($aduanStatusFilter as $aduanStatus)
-                                    <option value="{{ $aduanStatus }}" {{ request('aduan_status') == $aduanStatus ? 'selected' : '' }}>
-                                        {{ $aduanStatus }}
-                                    </option>
-                                    @endforeach
-                                </select>
+                                <div class="dropdown w-100">
+                                    <button class="btn btn-light dropdown-toggle w-100 text-start d-flex justify-content-between align-items-center"
+                                        type="button" id="aduanStatusDropdown" data-bs-toggle="dropdown" aria-expanded="false">
+                                        <span id="aduanStatusDropdownLabel">Aduan Status</span>
+                                        <i class="bi bi-caret-down-fill"></i>
+                                    </button>
+                                    <ul class="dropdown-menu w-100 p-3" aria-labelledby="aduanStatusDropdown" style="max-height: 300px; overflow-y: auto;">
+                                        @foreach ($aduanStatusFilter as $aduanStatus)
+                                        <li>
+                                            <div class="form-check d-flex align-items-center">
+                                                <input type="checkbox" name="aduan_status[]" value="{{ $aduanStatus }}"
+                                                    class="form-check-input me-2 aduanStatus-checkbox"
+                                                    id="aduanStatus-{{ $loop->index }}" style="transform: scale(1.3); margin-right: 8px;"
+                                                    {{ in_array($aduanStatus, request('aduan_status', [])) ? 'checked' : '' }}>
+                                                <label class="form-check-label w-100" for="aduanStatus-{{ $loop->index }}">{{ $aduanStatus }}</label>
+                                            </div>
+                                        </li>
+                                        @endforeach
+                                    </ul>
+                                </div>
                             </div>
 
                             <!-- Reset Button aligned to the right -->
@@ -524,7 +583,7 @@
         let timeout;
 
         // Detect changes in checkboxes and submit the form
-        document.querySelectorAll(".campus-checkbox, .month-checkbox, .year-checkbox").forEach(checkbox => {
+        document.querySelectorAll(".campus-checkbox, .month-checkbox, .year-checkbox, .complainentCategory-checkbox, .staffDuty-checkbox, .category-checkbox, .aduanCategory-checkbox, .aduanStatus-checkbox").forEach(checkbox => {
             checkbox.addEventListener("change", function() {
                 clearTimeout(timeout);
                 timeout = setTimeout(function() {
@@ -535,11 +594,52 @@
 
         // Reset button to clear selections
         document.getElementById("resetButton").addEventListener("click", function() {
-            document.querySelectorAll(".campus-checkbox,.month-checkbox, .year-checkbox").forEach(checkbox => {
+            document.querySelectorAll(".campus-checkbox,.month-checkbox, .year-checkbox, .complainentCategory-checkbox, .staffDuty-checkbox, .category-checkbox, .aduanCategory-checkbox, .aduanStatus-checkbox").forEach(checkbox => {
                 checkbox.checked = false;
             });
             document.getElementById("searchForm").submit();
         });
+
+        function updateDropdownLabel(dropdownId, labelId, checkboxClass, defaultText) {
+            const checkboxes = document.querySelectorAll(`.${checkboxClass}`);
+            const selectedValues = [];
+
+            checkboxes.forEach(checkbox => {
+                if (checkbox.checked) {
+                    selectedValues.push(checkbox.nextElementSibling.innerText.trim());
+                }
+            });
+
+            const label = document.getElementById(labelId);
+            if (selectedValues.length > 0) {
+                // If more than one item is selected, show the format "Pilih PIC (2)"
+                label.textContent = `${defaultText} (${selectedValues.length})`;
+            } else {
+                label.textContent = defaultText;
+            }
+        }
+
+        function attachListeners(dropdownId, labelId, checkboxClass, defaultText) {
+            const checkboxes = document.querySelectorAll(`.${checkboxClass}`);
+            checkboxes.forEach(checkbox => {
+                checkbox.addEventListener("change", function() {
+                    updateDropdownLabel(dropdownId, labelId, checkboxClass, defaultText);
+                });
+            });
+
+            // Initial update on page load
+            updateDropdownLabel(dropdownId, labelId, checkboxClass, defaultText);
+        }
+
+        // Apply to each filter
+        attachListeners("campusDropdown", "campusDropdownLabel", "campus-checkbox", "Kampus");
+        attachListeners("monthDropdown", "monthDropdownLabel", "month-checkbox", "Bulan");
+        attachListeners("yearDropdown", "yearDropdownLabel", "year-checkbox", "Tahun");
+        attachListeners("complainentCategoryDropdown", "complainentCategoryDropdownLabel", "complainentCategory-checkbox", "Kategori Pengadu");
+        attachListeners("staffDutyDropdown", "staffDutyDropdownLabel", "staffDuty-checkbox", "PIC");
+        attachListeners("categoryDropdown", "categoryDropdownLabel", "category-checkbox", "Kategori");
+        attachListeners("aduanCategoryDropdown", "aduanCategoryDropdownLabel", "aduanCategory-checkbox", "Aduan ICT");
+        attachListeners("aduanStatusDropdown", "aduanStatusDropdownLabel", "aduanStatus-checkbox", "Status Aduan");
     });
 </script>
 
