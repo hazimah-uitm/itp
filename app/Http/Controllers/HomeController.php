@@ -313,20 +313,20 @@ class HomeController extends Controller
         $aduanByStaff = $aduanList->groupBy('staff_duty')->map(function ($aduans) {
             // Count total aduan for each staff
             $totalAduan = $aduans->count();
-    
+
             // Count aduan where response_days >= 3
             $aduanMoreThan3Days = $aduans->where('response_days', '>', 3)->count();
-    
+
             // Count aduan where response_days < 3
             $aduanLessThan3Days = $aduans->where('response_days', '<=', 3)->count();
-    
+
             return [
                 'total' => $totalAduan,
                 'moreThan3Days' => $aduanMoreThan3Days,
                 'lessThan3Days' => $aduanLessThan3Days
             ];
         });
-    
+
         // Filter the results to show only the selected staff
         $aduanBySelectedStaff = $aduanByStaff->only($selectedStaff);
 

@@ -269,7 +269,7 @@
         <hr class="w-50 mx-auto border-primary">
     </div>
 
-    <div class="row row-cols-lg-6 row-cols-md-3 row-cols-sm-1 g-3">
+    <div class="row row-cols-lg-6 row-cols-md-3 row-cols-sm-1 g-3 mb-4">
         <!-- Main Statistic Card -->
         <div class="col-lg-4 col-md-6 col-sm-12">
             <div class="bg-primary text-white p-4 rounded shadow-lg text-center d-flex flex-column justify-content-center h-100">
@@ -290,55 +290,17 @@
 
         @foreach ($cards as $card)
         <div class="col">
-    <div class="card shadow-lg border-start border-4 border-{{ $card['color'] }} rounded-3 h-100"> 
-        <div class="card-body d-flex flex-column justify-content-center text-center p-3">
-            
-            <!-- Icon & Label Side by Side -->
-            <div class="d-flex align-items-center justify-content-center">
-                <i class="fa fa-{{ $card['icon'] }} fa-lg text-{{ $card['color'] }} me-2"></i> 
-                <h6 class="fw-bold mb-0">{{ $card['label'] }}</h6>
-            </div>
-
-            <!-- Main Value -->
-            <h2 class="fw-bold my-2">{{ $card['value'] }}</h2> 
-
-            <!-- Progress Bar -->
-            <div class="progress w-75 mx-auto" style="height: 6px; border-radius: 5px;">
-                <div class="progress-bar bg-{{ $card['color'] }}" style="width: {{ $card['percent'] }}%;"></div>
-            </div>
-
-            <!-- Percentage -->
-            <h6 class="text-muted mt-2">{{ $card['percent'] }}%</h6> 
-        </div>
-    </div>
-</div>
-
-        @endforeach
-    </div>
-
-
-
-    <!-- Campus Cards -->
-    <h4 class="text-center mt-3">KAMPUS</h4>
-    <div class="row row-cols-lg-3 row-cols-md-3 row-cols-sm-1 g-3">
-        @php
-        $campuses = [
-        ['label' => 'SAMARAHAN', 'value' => $samarahan, 'percent' => $percentSamarahan],
-        ['label' => 'SAMARAHAN 2', 'value' => $samarahan2, 'percent' => $percentSamarahan2],
-        ['label' => 'MUKAH', 'value' => $mukah, 'percent' => $percentMukah],
-        ];
-        @endphp
-
-        @foreach ($campuses as $campus)
-        <div class="col">
-            <div class="card shadow border-0 rounded">
-                <div class="card-body text-center p-4">
-                    <h5 class="fw-bold text-primary">{{ $campus['label'] }}</h5>
-                    <h1 class="display-4 fw-bold">{{ $campus['value'] }}</h1>
-                    <div class="progress w-75 mx-auto" style="height: 8px;">
-                        <div class="progress-bar bg-primary" style="width: {{ $campus['percent'] }}%;"></div>
+            <div class="card shadow-lg border-start border-4 border-{{ $card['color'] }} rounded-3 h-100">
+                <div class="card-body d-flex flex-column justify-content-center text-center p-3">
+                    <div class="d-flex align-items-center justify-content-center">
+                        <i class="fa fa-{{ $card['icon'] }} fa-lg text-{{ $card['color'] }} me-2"></i>
+                        <h6 class="fw-bold mb-0">{{ $card['label'] }}</h6>
                     </div>
-                    <small class="text-muted">{{ $campus['percent'] }}%</small>
+                    <h2 class="fw-bold my-2">{{ $card['value'] }}</h2>
+                    <div class="progress w-75 mx-auto" style="height: 6px; border-radius: 5px;">
+                        <div class="progress-bar bg-{{ $card['color'] }}" style="width: {{ $card['percent'] }}%;"></div>
+                    </div>
+                    <h6 class="text-muted mt-2">{{ $card['percent'] }}%</h6>
                 </div>
             </div>
         </div>
@@ -348,62 +310,63 @@
     <!-- Complainent Cards -->
     <div class="row justify-content-center">
         @php
-        $Complainents = [
-        ['label' => 'STAFF', 'value' => $staff, 'percent' => $percentStaff],
-        ['label' => 'STUDENT', 'value' => $student, 'percent' => $percentStudent],
-        ['label' => 'GUEST', 'value' => $guest, 'percent' => $percentGuest],
+        $complainents = [
+        ['label' => 'STAFF', 'value' => $staff],
+        ['label' => 'STUDENT', 'value' => $student],
+        ['label' => 'GUEST', 'value' => $guest],
+        ];
+
+        $responseDays = [
+        ['label' => '≤ 3 DAYS', 'value' => $responseDaysLessThanOrEqual3],
+        ['label' => '> 3 DAYS', 'value' => $responseDaysMoreThan3],
         ];
         @endphp
 
-        <div class="col-lg-6 col-md-12 col-sm-12">
-            <h4 class="text-center mb-4">PENGADU</h4>
-            <div class="row">
-                @foreach ($Complainents as $complainent)
-                <div class="col-lg-4 col-md-6 col-sm-12 mb-3 d-flex">
-                    <div class="card shadow border-0 rounded w-100 d-flex" style="min-height: 200px;">
-                        <div class="card-body d-flex flex-column justify-content-center align-items-center p-4">
-                            <h5 class="fw-bold text-primary text-center">{{ $complainent['label'] }}</h5>
-                            <h1 class="display-5 text-center">{{ $complainent['value'] }}</h1>
-                            <h6 class="text-muted text-center">{{ $complainent['percent'] }}%</h6>
-                        </div>
-                    </div>
+        <!-- Campus Doughnut Chart -->
+        <div class="col-lg-4 col-md-6 col-sm-12 mb-4">
+            <div class="card">
+                <div class="card-header text-center text-white h6" style="background-color: #03244c;">
+                    KAMPUS
                 </div>
-                @endforeach
+                <div class="card-body text-center">
+                    <canvas id="campusChart" style="max-height: 305px; max-width: 750px;"></canvas>
+                    <p id="noDataMessage" style="display: none; text-align: center; width: 100%;">Tiada rekod</p>
+                </div>
             </div>
         </div>
 
-        <div class="col-lg-6 col-md-12 col-sm-12">
-            <h4 class="text-center mb-4">MASA TINDAK BALAS SELESAI (HARI)</h4>
-            <!-- Response Days Statistics -->
-            <div class="row">
-                <div class="col-lg-6 col-md-6 col-sm-12 mb-3 d-flex">
-                    <div class="card shadow border-0 rounded w-100 d-flex" style="min-height: 200px;">
-                        <div class="card-body d-flex flex-column justify-content-center align-items-center p-4">
-                            <h5 class="fw-bold text-primary text-center"> ≤ 3 DAYS </h5>
-                            <h1 class="display-5 text-center">{{ $responseDaysLessThanOrEqual3 }}</h1>
-                            <h6 class="text-muted text-center">{{ $percentResponseLessThanOrEqual3 }}%</h6>
-                        </div>
-                    </div>
+        <!-- Complainant Doughnut Chart -->
+        <div class="col-lg-4 col-md-6 col-sm-12 mb-4">
+            <div class="card">
+                <div class="card-header text-center text-white h6" style="background-color: #03244c;">
+                    PENGADU
                 </div>
+                <div class="card-body text-center">
+                    <canvas id="complainentChart" style="max-height: 305px; max-width: 750px;"></canvas>
+                </div>
+            </div>
+        </div>
 
-                <div class="col-lg-6 col-md-6 col-sm-12 mb-3 d-flex">
-                    <div class="card shadow border-0 rounded w-100 d-flex" style="min-height: 200px;">
-                        <div class="card-body d-flex flex-column justify-content-center align-items-center p-4">
-                            <h5 class="fw-bold text-primary text-center">> 3 DAYS</h5>
-                            <h1 class="display-5 text-center">{{ $responseDaysMoreThan3 }}</h1>
-                            <h6 class="text-muted text-center">{{ $percentResponseMoreThan3 }}%</h6>
-                        </div>
-                    </div>
+        <!-- Response Days Doughnut Chart -->
+        <div class="col-lg-4 col-md-6 col-sm-12 mb-4">
+            <div class="card">
+                <div class="card-header text-center text-white h6" style="background-color: #03244c;">
+                    MASA TINDAK BALAS SELESAI (HARI)
+                </div>
+                <div class="card-body text-center">
+                    <canvas id="responseDaysChart" style="max-height: 305px; max-width: 750px;"></canvas>
                 </div>
             </div>
         </div>
     </div>
 
     <!-- Kategori Aduan -->
-    <h4 class="text-center mb-4">KATEGORI ADUAN</h4>
     <div class="row">
         <div class="col-lg-7 col-md-12 col-sm-12">
             <div class="card">
+                <div class="card-header text-center text-white h6" style="background-color: #03244c;">
+                    KATEGORI ADUAN
+                </div>
                 <div class="card-body d-flex flex-column justify-content-center">
                     <div class="row justify-content-center flex-grow-1">
                         <!-- Canvas for the chart -->
@@ -417,6 +380,9 @@
 
         <div class="col-lg-5 col-md-12 col-sm-12">
             <div class="card">
+                <div class="card-header text-center text-white h6" style="background-color: #03244c;">
+                    SENARAI KATEGORI DAN SUBKATEGORI ADUAN
+                </div>
                 <div class="card-body">
                     <div class="row justify-content-center">
                         <div class="table-responsive">
@@ -466,9 +432,10 @@
     <!-- Jumlah aduan x kategori pengadu x tempoh respon -->
     <div class="row">
         <div class="col-lg-6 col-md-12 col-sm-12">
-            <h4 class="text-center mb-4">JUMLAH ADUAN MENGIKUT KATEGORI PENGADU & TEMPOH TINDAK BALAS SELESAI (HARI)
-            </h4>
             <div class="card">
+                <div class="card-header text-center text-white text-uppercase h6" style="background-color: #03244c;">
+                    Jumlah Aduan Mengikut Kategori Pengadu & Respons (Hari)
+                </div>
                 <div class="card-body d-flex flex-column justify-content-center">
                     <div class="row justify-content-center flex-grow-1">
                         <canvas id="complainantChart" width="500" height="350"></canvas>
@@ -477,8 +444,10 @@
             </div>
         </div>
         <div class="col-lg-6 col-md-12 col-sm-12">
-            <h4 class="text-center mb-4">JUMLAH ADUAN BULANAN MENGIKUT KATEGORI ADUAN</h4>
             <div class="card">
+                <div class="card-header text-center text-white h6" style="background-color: #03244c;">
+                    JUMLAH ADUAN BULANAN MENGIKUT KATEGORI ADUAN
+                </div>
                 <div class="card-body d-flex flex-column justify-content-center">
                     <div class="row justify-content-center flex-grow-1">
                         <canvas id="aduanMonthCatChart" width="500" height="350"></canvas>
@@ -488,54 +457,14 @@
         </div>
     </div>
 
-    <div class="col-lg-12 col-md-12 col-sm-12">
-        <h4 class="text-center mb-4">SENARAI ADUAN</h4>
-        <div class="card">
-            <div class="card-body">
-                <div class="table-responsive mb-3">
-                    <table id="aduanTable" class="table table-sm table-striped table-hover" style="width: 100%;">
-                        <thead>
-                            <tr>
-                                <th>#</th>
-                                <th>No. Aduan</th>
-                                <th>Kategori</th>
-                                <th>Sub Kategori</th>
-                                <th>Pengadu</th>
-                                <th>Kampus</th>
-                                <th>Tempoh (Hari)</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            @if (count($aduanList) > 0)
-                            @foreach ($aduanList as $index => $aduan)
-                            <tr>
-                                <td>{{ $index + 1 }}</td>
-                                <td>{{ $aduan->aduan_ict_ticket }}</td>
-                                <td>{{ $aduan->category }}</td>
-                                <td>{{ $aduan->aduan_subcategory }}</td>
-                                <td>{{ $aduan->complainent_category }}</td>
-                                <td>{{ $aduan->campus }}</td>
-                                <td>{{ $aduan->response_days }}</td>
-                            </tr>
-                            @endforeach
-                            @else
-                            <tr>
-                                <td colspan="7">Tiada rekod</td>
-                            </tr>
-                            @endif
-                        </tbody>
-                    </table>
-                </div>
-            </div>
-        </div>
-    </div>
-
     <!-- 1ST LEVEL STAFF -->
     <div class="row">
         <!-- Table Column -->
         <div class="col-lg-8 col-md-12 col-sm-12">
-            <h4 class="text-center mb-4">JUMLAH ADUAN MENGIKUT 1ST LEVEL STAFF</h4>
             <div class="card">
+                <div class="card-header text-center text-white h6" style="background-color: #03244c;">
+                    JUMLAH ADUAN MENGIKUT 1ST LEVEL STAFF
+                </div>
                 <div class="card-body">
                     <div class="table-responsive mb-3">
                         <table id="aduan1stLevelTable" class="table table-sm table-striped table-hover"
@@ -595,26 +524,88 @@
         </div>
 
         <div class="col-lg-4 col-md-12 col-sm-12">
+            <!-- Total 1st & 2nd Level Card -->
             <div class="bg-info text-white p-4 card shadow mb-3 border-0 rounded">
                 <div class="card-body d-flex flex-column justify-content-center align-items-center p-4">
-                    <h5 class="fw-bold text-dark text-center">JUMLAH 1ST & 2ND LEVEL</h5>
+                    <h5 class="fw-bold text-dark text-center text-uppercase">JUMLAH 1ST & 2ND LEVEL</h5>
                     <h1 class="display-5 text-center">{{ $total1st2ndLevel }}</h1>
                 </div>
             </div>
 
+            <!-- 1st Level Card -->
             <div class="card shadow mb-3 border-0 rounded">
                 <div class="card-body d-flex flex-column justify-content-center align-items-center p-4">
-                    <h5 class="fw-bold text-primary text-center">1ST Level</h5>
+                    <h5 class="fw-bold text-primary text-center text-uppercase">1ST Level</h5>
                     <h1 class="display-5 text-center">{{ $aduan1stLevel }}</h1>
-                    <h6 class="text-muted text-center">{{ $percent1stLevel }}%</h6>
+
+                    <!-- Progress Bar for 1st Level -->
+                    <div class="w-100 mt-3">
+                        <div class="progress">
+                            <div class="progress-bar" role="progressbar" style="width: {{ $percent1stLevel }}%;" aria-valuenow="{{ $percent1stLevel }}" aria-valuemin="0" aria-valuemax="100"></div>
+                        </div>
+                    </div>
+                    <h5 class="text-muted text-center">{{ $percent1stLevel }}%</h5>
                 </div>
             </div>
 
+            <!-- 2nd Level Card -->
             <div class="card shadow mb-3 border-0 rounded">
                 <div class="card-body d-flex flex-column justify-content-center align-items-center p-4">
-                    <h5 class="fw-bold text-primary text-center">2ND Level</h5>
+                    <h5 class="fw-bold text-primary text-center text-uppercase">2ND Level</h5>
                     <h1 class="display-5 text-center">{{ $aduan2ndLevel }}</h1>
-                    <h6 class="text-muted text-center">{{ $percent2ndLevel }}%</h6>
+
+                    <!-- Progress Bar for 2nd Level -->
+                    <div class="w-100 mt-3">
+                        <div class="progress">
+                            <div class="progress-bar" role="progressbar" style="width: {{ $percent2ndLevel }}%;" aria-valuenow="{{ $percent2ndLevel }}" aria-valuemin="0" aria-valuemax="100"></div>
+                        </div>
+                    </div>
+
+                    <h5 class="text-muted text-center mt-3">{{ $percent2ndLevel }}%</h5>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="col-lg-12 col-md-12 col-sm-12">
+        <div class="card">
+            <div class="card-header text-center text-white h6" style="background-color: #03244c;">
+                SENARAI ADUAN
+            </div>
+            <div class="card-body">
+                <div class="table-responsive mb-3">
+                    <table id="aduanTable" class="table table-sm table-striped table-hover" style="width: 100%;">
+                        <thead>
+                            <tr>
+                                <th>#</th>
+                                <th>No. Aduan</th>
+                                <th>Kategori</th>
+                                <th>Sub Kategori</th>
+                                <th>Pengadu</th>
+                                <th>Kampus</th>
+                                <th>Tempoh (Hari)</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            @if (count($aduanList) > 0)
+                            @foreach ($aduanList as $index => $aduan)
+                            <tr>
+                                <td>{{ $index + 1 }}</td>
+                                <td>{{ $aduan->aduan_ict_ticket }}</td>
+                                <td>{{ $aduan->category }}</td>
+                                <td>{{ $aduan->aduan_subcategory }}</td>
+                                <td>{{ $aduan->complainent_category }}</td>
+                                <td>{{ $aduan->campus }}</td>
+                                <td>{{ $aduan->response_days }}</td>
+                            </tr>
+                            @endforeach
+                            @else
+                            <tr>
+                                <td colspan="7">Tiada rekod</td>
+                            </tr>
+                            @endif
+                        </tbody>
+                    </table>
                 </div>
             </div>
         </div>
@@ -691,6 +682,201 @@
             "Aduan ICT");
         attachListeners("aduanStatusDropdown", "aduanStatusDropdownLabel", "aduanStatus-checkbox",
             "Status Aduan");
+    });
+</script>
+
+
+<!-- Campus -->
+<script>
+    // Use the passed data from PHP
+    const campuses = <?php echo json_encode([
+                            ['label' => 'SAMARAHAN', 'value' => (int) str_replace(',', '', $samarahan)],
+                            ['label' => 'SAMARAHAN 2', 'value' => (int) str_replace(',', '', $samarahan2)],
+                            ['label' => 'MUKAH', 'value' => (int) str_replace(',', '', $mukah)]
+                        ]); ?>;
+
+
+    // Check if campuses data is null or empty, set default values if so
+    const safeCampuses = campuses && campuses.length > 0 ? campuses : [{
+        label: 'No Data',
+        value: 0
+    }];
+
+    // Dynamically adjust the content visibility based on data availability
+    const campusCard = document.getElementById('campusCard');
+    const noDataMessage = document.getElementById('noDataMessage');
+    const campusChart = document.getElementById('campusChart');
+
+    if (safeCampuses.length === 1 && safeCampuses[0].value === 0) {
+        // When there's no data, show "No Data Available" and hide the chart
+        campusChart.style.display = 'none'; // Hide the canvas
+        noDataMessage.style.display = 'block'; // Show the "No Data" message
+    } else {
+        // Display the chart when there is data and hide the "No Data" message
+        campusChart.style.display = 'block'; // Show the chart
+        noDataMessage.style.display = 'none'; // Hide the "No Data" message
+    }
+
+    // Prepare labels and data for the chart
+    const kampusLabels = safeCampuses.map(item => item.label);
+    const kampusData = safeCampuses.map(item => item.value);
+
+    // Doughnut Chart Configuration
+    const kampusCtx = document.getElementById('campusChart').getContext('2d');
+    new Chart(kampusCtx, {
+        type: 'doughnut',
+        data: {
+            labels: kampusLabels,
+            datasets: [{
+                label: 'Kampus Statistik',
+                data: kampusData,
+                backgroundColor: [
+                    '#007bff', '#28a745', '#ffc107'
+                ],
+                hoverBackgroundColor: [
+                    '#0056b3', '#1e7e34', '#d39e00'
+                ]
+            }]
+        },
+        options: {
+            responsive: true,
+            maintainAspectRatio: false, // Disable maintaining aspect ratio
+            plugins: {
+                legend: {
+                    position: 'bottom',
+                },
+                tooltip: {
+                    callbacks: {
+                        label: function(context) {
+                            const total = context.dataset.data.reduce((sum, value) => sum + value, 0);
+                            const percentage = ((context.raw / total) * 100).toFixed(2);
+                            return `${context.label}: ${context.raw} (${percentage}%)`;
+                        }
+                    }
+                },
+                datalabels: {
+                    color: '#000', // Text color
+                    font: {
+                        weight: 'bold',
+                        size: 12
+                    },
+                    formatter: (value, context) => {
+                        const total = context.chart.data.datasets[0].data.reduce((sum, val) => sum + val, 0);
+                        const percentage = ((value / total) * 100).toFixed(2);
+                        return `${value} \n (${percentage}%)`; // Display both total and percentage
+                    }
+                }
+            }
+        },
+        plugins: [ChartDataLabels]
+    });
+</script>
+
+<!-- Complainent Category -->
+<script>
+    const complainentData = <?php echo json_encode($complainents); ?>;
+
+    const complainentLabels = complainentData.map(item => item.label);
+    const complainentValues = complainentData.map(item => parseFloat(item.value.replace(/[^0-9.-]+/g, "")));
+
+    // Doughnut Chart Configuration
+    const complainentCtx = document.getElementById('complainentChart').getContext('2d');
+    new Chart(complainentCtx, {
+        type: 'doughnut',
+        data: {
+            labels: complainentLabels,
+            datasets: [{
+                label: 'Pengadu Statistik',
+                data: complainentValues,
+                backgroundColor: ['#007bff', '#28a745', '#ffc107'],
+                hoverBackgroundColor: ['#0056b3', '#1e7e34', '#d39e00']
+            }]
+        },
+        options: {
+            responsive: true,
+            maintainAspectRatio: false,
+            plugins: {
+                legend: {
+                    position: 'bottom',
+                },
+                tooltip: {
+                    callbacks: {
+                        label: function(context) {
+                            const total = context.dataset.data.reduce((sum, value) => sum + value, 0);
+                            const percentage = ((context.raw / total) * 100).toFixed(2);
+                            return `${context.label}: ${context.raw} (${percentage}%)`;
+                        }
+                    }
+                },
+                datalabels: {
+                    color: '#000',
+                    font: {
+                        weight: 'bold',
+                        size: 12
+                    },
+                    formatter: (value, context) => {
+                        const total = context.chart.data.datasets[0].data.reduce((sum, val) => sum + val, 0);
+                        const percentage = ((value / total) * 100).toFixed(2);
+                        return `${value} \n (${percentage}%)`; // Display both total and percentage
+                    }
+                }
+            }
+        },
+        plugins: [ChartDataLabels]
+    });
+</script>
+
+<!-- Response Days -->
+<script>
+    const responseDaysData = <?php echo json_encode($responseDays); ?>;
+
+    const responseDaysLabels = responseDaysData.map(item => item.label);
+    const responseDaysValues = responseDaysData.map(item => parseFloat(item.value.replace(/[^0-9.-]+/g, ""))); // Convert to number
+
+    // Doughnut Chart Configuration
+    const responseDaysCtx = document.getElementById('responseDaysChart').getContext('2d');
+    new Chart(responseDaysCtx, {
+        type: 'doughnut',
+        data: {
+            labels: responseDaysLabels,
+            datasets: [{
+                label: 'Masa Tindak Balas Statistik',
+                data: responseDaysValues,
+                backgroundColor: ['#007bff', '#ffc107'],
+                hoverBackgroundColor: ['#0056b3', '#d39e00']
+            }]
+        },
+        options: {
+            responsive: true,
+            maintainAspectRatio: false,
+            plugins: {
+                legend: {
+                    position: 'bottom',
+                },
+                tooltip: {
+                    callbacks: {
+                        label: function(context) {
+                            const total = context.dataset.data.reduce((sum, value) => sum + value, 0);
+                            const percentage = ((context.raw / total) * 100).toFixed(2);
+                            return `${context.label}: ${context.raw} (${percentage}%)`;
+                        }
+                    }
+                },
+                datalabels: {
+                    color: '#000',
+                    font: {
+                        weight: 'bold',
+                        size: 12
+                    },
+                    formatter: (value, context) => {
+                        const total = context.chart.data.datasets[0].data.reduce((sum, val) => sum + val, 0);
+                        const percentage = ((value / total) * 100).toFixed(2);
+                        return `${value} \n (${percentage}%)`; // Display both total and percentage
+                    }
+                }
+            }
+        },
+        plugins: [ChartDataLabels]
     });
 </script>
 
