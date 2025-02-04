@@ -265,7 +265,7 @@
     </div>
 
     <div class="text-center mb-4">
-        <h5 class="fw-bold text-uppercase mb-1">Analisa Aduan & Perkhidmatan - Operasi Bahagian Infostruktur UiTM Cawangan Sarawak</h5>
+        <h5 class="fw-bold mb-1">ANALISA ADUAN & PERKHIDMATAN - OPERASI BAHAGIAN INFOSTRUKTUR UiTM CAWANGAN SARAWAK</h5>
         <hr class="w-50 mx-auto border-primary">
     </div>
 
@@ -365,7 +365,7 @@
         <div class="col-lg-7 col-md-12 col-sm-12">
             <div class="card">
                 <div class="card-header text-center text-white h6" style="background-color: #03244c;">
-                    KATEGORI ADUAN
+                    TOP 10 KATEGORI ADUAN
                 </div>
                 <div class="card-body d-flex flex-column justify-content-center">
                     <div class="row justify-content-center flex-grow-1">
