@@ -370,6 +370,8 @@
                     <div class="row justify-content-center flex-grow-1">
                         <!-- Canvas for the chart -->
                         <canvas id="aduanChart" style="max-height: 400px; max-width: 100%;"></canvas>
+                        <!-- Fallback text for 'No Data' -->
+                        <p id="noDataMessage" style="display: none; text-align: center; width: 100%;">Tiada rekod</p>
                     </div>
                 </div>
             </div>
@@ -541,7 +543,7 @@
                             <div class="progress-bar" role="progressbar" style="width: {{ $percent1stLevel }}%;" aria-valuenow="{{ $percent1stLevel }}" aria-valuemin="0" aria-valuemax="100"></div>
                         </div>
                     </div>
-                    <h5 class="text-muted text-center">{{ $percent1stLevel }}%</h5>
+                    <h5 class="text-muted text-center mt-3">{{ $percent1stLevel }}%</h5>
                 </div>
             </div>
 
