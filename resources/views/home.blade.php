@@ -330,7 +330,6 @@
                 </div>
                 <div class="card-body text-center">
                     <canvas id="campusChart" style="max-height: 305px; max-width: 750px;"></canvas>
-                    <p id="noDataMessage" style="display: none; text-align: center; width: 100%;">Tiada rekod</p>
                 </div>
             </div>
         </div>
@@ -371,8 +370,6 @@
                     <div class="row justify-content-center flex-grow-1">
                         <!-- Canvas for the chart -->
                         <canvas id="aduanChart" style="max-height: 400px; max-width: 100%;"></canvas>
-                        <!-- Fallback text for 'No Data' -->
-                        <p id="noDataMessage" style="display: none; text-align: center; width: 100%;">Tiada rekod</p>
                     </div>
                 </div>
             </div>
@@ -704,17 +701,14 @@
 
     // Dynamically adjust the content visibility based on data availability
     const campusCard = document.getElementById('campusCard');
-    const noDataMessage = document.getElementById('noDataMessage');
     const campusChart = document.getElementById('campusChart');
 
     if (safeCampuses.length === 1 && safeCampuses[0].value === 0) {
         // When there's no data, show "No Data Available" and hide the chart
         campusChart.style.display = 'none'; // Hide the canvas
-        noDataMessage.style.display = 'block'; // Show the "No Data" message
     } else {
         // Display the chart when there is data and hide the "No Data" message
         campusChart.style.display = 'block'; // Show the chart
-        noDataMessage.style.display = 'none'; // Hide the "No Data" message
     }
 
     // Prepare labels and data for the chart
