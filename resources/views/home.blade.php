@@ -6,10 +6,16 @@
         <div class="col">
             <form action="{{ route('home') }}" method="GET" id="searchForm">
                 <!-- Filter Button -->
-                <div class="d-flex justify-content-end mb-2">
+                <div class="d-flex justify-content-end mb-2 gap-2">
+                    <!-- Filter Button -->
                     <button class="btn btn-primary rounded" type="button" data-bs-toggle="collapse"
                         data-bs-target="#filterSection" aria-expanded="false" aria-controls="filterSection">
                         <i class="bx bx-filter"></i>
+                    </button>
+
+                    <!-- Export Chart Button -->
+                    <button class="btn btn-info rounded">
+                        <i class="bx bx-export"></i>
                     </button>
                 </div>
 
@@ -1292,4 +1298,41 @@
         table.columns.adjust();
     });
 </script>
+
+<script>
+    async function exportAllCharts() {
+        const {
+            jsPDF
+        } = window.jspdf;
+        const pdf = new jsPDF('portrait');
+
+        // Get all chart canvas elements
+        const chartIds = ["complainantChart", "aduanMonthCatChart"]; // Add more chart IDs if needed
+
+        let yPosition = 10; // Initial Y position in PDF
+
+        for (let i = 0; i < chartIds.length; i++) {
+            const canvasElement = document.getElementById(chartIds[i]);
+
+            if (canvasElement) {
+                const canvas = await html2canvas(canvasElement);
+                const imgData = canvas.toDataURL('image/png');
+                const imgWidth = 180; // Adjust width based on PDF size
+                const imgHeight = (canvas.height * imgWidth) / canvas.width;
+
+                // If new page is needed
+                if (yPosition + imgHeight > 280) {
+                    pdf.addPage();
+                    yPosition = 10;
+                }
+
+                pdf.addImage(imgData, 'PNG', 15, yPosition, imgWidth, imgHeight);
+                yPosition += imgHeight + 10; // Move to the next position
+            }
+        }
+
+        pdf.save('All_Charts.pdf');
+    }
+</script>
+
 @endsection
