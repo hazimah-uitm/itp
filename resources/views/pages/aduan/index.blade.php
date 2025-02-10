@@ -85,8 +85,7 @@
         </div>
 
         <div class="row mb-3">
-            <div class="col-lg-12 d-flex justify-content-end align-items-center">
-                <!-- Import Button and Form -->
+            <div class="col-lg-12 d-flex justify-content-end align-items-center gap-2">
                 <form action="{{ route('aduan.import') }}" method="POST" enctype="multipart/form-data"
                     class="d-flex align-items-center">
                     {{ csrf_field() }}
@@ -95,9 +94,18 @@
                     </div>
                     <button type="submit" class="btn btn-info ms-2">Import</button>
                 </form>
+
+                <form action="{{ route('aduan.export') }}" method="GET">
+                    <input type="hidden" name="search" value="{{ request('search') }}">
+                    <input type="hidden" name="month" value="{{ request('month', 'all') }}">
+                    <input type="hidden" name="year" value="{{ request('year', 'all') }}">
+                    <input type="hidden" name="campus" value="{{ request('campus') }}">
+                    <input type="hidden" name="aduan_status" value="{{ request('aduan_status') }}">
+
+                    <button type="submit" class="btn btn-primary">Export to Excel</button>
+                </form>
             </div>
         </div>
-
 
         <div class="table-responsive">
             <table class="table table-sm table-striped table-hover">

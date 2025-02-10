@@ -2,7 +2,7 @@
 
 namespace App\Http\Controllers;
 
-use App\Imports\AduanExport;
+use App\Exports\AduanExport;
 use App\Imports\AduanImport;
 use App\Models\Aduan;
 use Carbon\Carbon;
@@ -95,7 +95,7 @@ class AduanController extends Controller
     
     public function export(Request $request)
     {
-        return Excel::download(new AduanExport, 'Aduan-ICT.xlsx');
+        return Excel::download(new AduanExport($request), 'Aduan-ICT.xlsx');
     }
 
     public function create()
