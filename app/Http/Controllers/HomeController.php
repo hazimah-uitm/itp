@@ -225,50 +225,54 @@ class HomeController extends Controller
         $complainantData = [
             'STAFF' => collect([0, 1, 2, 3, '>3'])->mapWithKeys(function ($days) use ($aduanList, $excludeStatuses) {
                 return [
-                    $days => $aduanList->where('complainent_category', 'STAFF')->filter(function ($item) use ($days, $excludeStatuses) {
-                        return $item->response_days !== null &&
-                            (($days === '>3' && $item->response_days > 3) || $item->response_days == $days) &&
-                            !in_array($item->aduan_status, $excludeStatuses);
+                    (string) $days => $aduanList->where('complainent_category', 'STAFF')->filter(function ($item) use ($days, $excludeStatuses) {
+                        if ($item->response_days === null || in_array($item->aduan_status, $excludeStatuses)) {
+                            return false;
+                        }
+                        return ($days === '>3' && $item->response_days > 3) || ($days !== '>3' && $item->response_days == $days);
                     })->count(),
                 ];
             }),
             'STUDENT' => collect([0, 1, 2, 3, '>3'])->mapWithKeys(function ($days) use ($aduanList, $excludeStatuses) {
                 return [
-                    $days => $aduanList->where('complainent_category', 'STUDENT')->filter(function ($item) use ($days, $excludeStatuses) {
-                        return $item->response_days !== null &&
-                            (($days === '>3' && $item->response_days > 3) || $item->response_days == $days) &&
-                            !in_array($item->aduan_status, $excludeStatuses);
+                    (string) $days => $aduanList->where('complainent_category', 'STUDENT')->filter(function ($item) use ($days, $excludeStatuses) {
+                        if ($item->response_days === null || in_array($item->aduan_status, $excludeStatuses)) {
+                            return false;
+                        }
+                        return ($days === '>3' && $item->response_days > 3) || ($days !== '>3' && $item->response_days == $days);
                     })->count(),
                 ];
             }),
             'GUEST' => collect([0, 1, 2, 3, '>3'])->mapWithKeys(function ($days) use ($aduanList, $excludeStatuses) {
                 return [
-                    $days => $aduanList->where('complainent_category', 'GUEST')->filter(function ($item) use ($days, $excludeStatuses) {
-                        return $item->response_days !== null &&
-                            (($days === '>3' && $item->response_days > 3) || $item->response_days == $days) &&
-                            !in_array($item->aduan_status, $excludeStatuses);
+                    (string) $days => $aduanList->where('complainent_category', 'GUEST')->filter(function ($item) use ($days, $excludeStatuses) {
+                        if ($item->response_days === null || in_array($item->aduan_status, $excludeStatuses)) {
+                            return false;
+                        }
+                        return ($days === '>3' && $item->response_days > 3) || ($days !== '>3' && $item->response_days == $days);
                     })->count(),
                 ];
             }),
         ];
 
         // Calculate total complaints for each response day (combined for STAFF, STUDENT, and GUEST)
-        $totalComplaints = [
-            '0' => $complainantData['STAFF']['0'] + $complainantData['STUDENT']['0'] + $complainantData['GUEST']['0'],
-            '1' => $complainantData['STAFF']['1'] + $complainantData['STUDENT']['1'] + $complainantData['GUEST']['1'],
-            '2' => $complainantData['STAFF']['2'] + $complainantData['STUDENT']['2'] + $complainantData['GUEST']['2'],
-            '3' => $complainantData['STAFF']['3'] + $complainantData['STUDENT']['3'] + $complainantData['GUEST']['3'],
-            '>3' => $complainantData['STAFF']['>3'] + $complainantData['STUDENT']['>3'] + $complainantData['GUEST']['>3']
-        ];
+        $totalComplaints = collect([0, 1, 2, 3, '>3'])->mapWithKeys(function ($days) use ($complainantData) {
+            return [
+                (string) $days => $complainantData['STAFF'][(string) $days] +
+                    $complainantData['STUDENT'][(string) $days] +
+                    $complainantData['GUEST'][(string) $days]
+            ];
+        })->toArray();
+
+        $grandTotalComplaints = array_sum($totalComplaints);
 
         // Calculate the percentage for each response day
-        $percentageData = [
-            '0' => ($totalAduan > 0) ? round(($totalComplaints['0'] / $totalAduan) * 100, 2) : 0,
-            '1' => ($totalAduan > 0) ? round(($totalComplaints['1'] / $totalAduan) * 100, 2) : 0,
-            '2' => ($totalAduan > 0) ? round(($totalComplaints['2'] / $totalAduan) * 100, 2) : 0,
-            '3' => ($totalAduan > 0) ? round(($totalComplaints['3'] / $totalAduan) * 100, 2) : 0,
-            '>3' => ($totalAduan > 0) ? round(($totalComplaints['>3'] / $totalAduan) * 100, 2) : 0,
-        ];
+        $percentageData = collect([0, 1, 2, 3, '>3'])->mapWithKeys(function ($days) use ($grandTotalComplaints, $totalComplaints) {
+            return [
+                (string) $days => ($grandTotalComplaints > 0) ? round(($totalComplaints[(string) $days] / $grandTotalComplaints) * 100, 2) : 0,
+            ];
+        })->toArray();
+
 
         // Prepare data for stacked bar chart
         $aduanByMonthAndCategory = $query
