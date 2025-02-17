@@ -266,7 +266,7 @@
     </div>
 
     <div class="text-center mb-5">
-        <h4 class="fw-bold text-uppercase mb-4">Analisa Prestasi Perkhidmatan ICT BAHAGIAN INFOSTRUKTUR UiTM CAWANGAN SARAWAK</h4>
+        <h4 class="fw-bold mb-4">ANALISA PRESTASI PERKHIDMATAN ICT BAHAGIAN INFOSTRUKTUR UiTM CAWANGAN SARAWAK</h4>
 
         <!-- Styled border with centered Sumber Units -->
         <div class="position-relative w-50 mx-auto">
