@@ -265,9 +265,17 @@
         </div>
     </div>
 
-    <div class="text-center mb-4">
-        <h5 class="fw-bold mb-1">ANALISA ADUAN & PERKHIDMATAN - OPERASI BAHAGIAN INFOSTRUKTUR UiTM CAWANGAN SARAWAK</h5>
-        <hr class="w-50 mx-auto border-primary">
+    <div class="text-center mb-5">
+        <h4 class="fw-bold text-uppercase mb-4">Analisa Prestasi Perkhidmatan ICT BAHAGIAN INFOSTRUKTUR UiTM CAWANGAN SARAWAK</h4>
+
+        <!-- Styled border with centered Sumber Units -->
+        <div class="position-relative w-50 mx-auto">
+            <hr class="border-primary opacity-75">
+
+            <div class="position-absolute top-50 start-50 translate-middle bg-white px-4 d-flex align-items-center shadow-sm rounded-pill border border-primary">
+            <span class="text-muted small fst-italic">Sumber &nbsp;</span><img src="{{ asset('public/assets/images/units.png') }}" alt="Sumber Unit Logo" style="height: 25px; margin-right: 8px;">
+            </div>
+        </div>
     </div>
 
     <div class="row row-cols-lg-6 row-cols-md-3 row-cols-sm-1 g-3 mb-4">

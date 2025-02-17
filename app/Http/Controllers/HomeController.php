@@ -149,14 +149,14 @@ class HomeController extends Controller
             ->filter(function ($aduan) {
                 return !is_null($aduan['response_days'])
                     && $aduan['response_days'] <= 3
-                    && !in_array($aduan['aduan_status'], ['IT SERVICES - 2ND LEVEL SUPPORT', '2ND LEVEL MAINTENANCE', '1ST LEVEL MAINTENANCE']);
+                    && !in_array($aduan['aduan_status'], ['IT SERVICES - 2ND LEVEL SUPPORT', '2ND LEVEL MAINTENANCE', '1ST LEVEL MAINTENANCE', 'VENDOR MAINTENANCE']);
             })
             ->count();
         $responseDaysMoreThan3 = collect($aduanList)
             ->filter(function ($aduan) {
                 return !is_null($aduan['response_days'])
                     && $aduan['response_days'] > 3
-                    && !in_array($aduan['aduan_status'], ['IT SERVICES - 2ND LEVEL SUPPORT', '2ND LEVEL MAINTENANCE', '1ST LEVEL MAINTENANCE']);
+                    && !in_array($aduan['aduan_status'], ['IT SERVICES - 2ND LEVEL SUPPORT', '2ND LEVEL MAINTENANCE', '1ST LEVEL MAINTENANCE', 'VENDOR MAINTENANCE']);
             })
             ->count();
         $totalAduanCompleted = $responseDaysLessThanOrEqual3 + $responseDaysMoreThan3;
@@ -220,7 +220,7 @@ class HomeController extends Controller
         }
 
         // ADUAN BY KATEGORI PENGADU DAN RESPONSE DAYS
-        $excludeStatuses = ['IT SERVICES - 2ND LEVEL SUPPORT', '2ND LEVEL MAINTENANCE', '1ST LEVEL MAINTENANCE'];
+        $excludeStatuses = ['IT SERVICES - 2ND LEVEL SUPPORT', '2ND LEVEL MAINTENANCE', '1ST LEVEL MAINTENANCE', 'VENDOR MAINTENANCE'];
 
         $complainantData = [
             'STAFF' => collect([0, 1, 2, 3, '>3'])->mapWithKeys(function ($days) use ($aduanList, $excludeStatuses) {
