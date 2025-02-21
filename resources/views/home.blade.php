@@ -273,7 +273,7 @@
             <hr class="border-primary opacity-75">
 
             <div class="position-absolute top-50 start-50 translate-middle bg-white px-4 d-flex align-items-center shadow-sm rounded-pill border border-primary">
-            <span class="text-muted small fst-italic">Sumber &nbsp;</span><img src="{{ asset('public/assets/images/units.png') }}" alt="Sumber Unit Logo" style="height: 25px; margin-right: 8px;">
+                <span class="text-muted small fst-italic">Sumber &nbsp;</span><img src="{{ asset('public/assets/images/units.png') }}" alt="Sumber Unit Logo" style="height: 25px; margin-right: 8px;">
             </div>
         </div>
     </div>
@@ -368,6 +368,34 @@
         </div>
     </div>
 
+    <!-- Jumlah aduan x tahun-->
+    <div class="row">
+        <div class="col-lg-5 col-md-12 col-sm-12">
+            <div class="card">
+                <div class="card-header text-center text-white text-uppercase h6" style="background-color: #03244c;">
+                    Jumlah Aduan Tahunan
+                </div>
+                <div class="card-body d-flex flex-column justify-content-center">
+                    <div class="row justify-content-center flex-grow-1">
+                        <canvas id="aduanYearChart" width="500" height="380"></canvas>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="col-lg-7 col-md-12 col-sm-12">
+            <div class="card">
+                <div class="card-header text-center text-white h6" style="background-color: #03244c;">
+                    JUMLAH ADUAN BULANAN MENGIKUT KATEGORI ADUAN
+                </div>
+                <div class="card-body d-flex flex-column justify-content-center">
+                    <div class="row justify-content-center flex-grow-1">
+                        <canvas id="aduanMonthCatChart" width="500" height="266"></canvas>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
     <!-- Kategori Aduan -->
     <div class="row">
         <div class="col-lg-7 col-md-12 col-sm-12">
@@ -437,28 +465,17 @@
         </div>
     </div>
 
+
     <!-- Jumlah aduan x kategori pengadu x tempoh respon -->
     <div class="row">
-        <div class="col-lg-6 col-md-12 col-sm-12">
+        <div class="col-lg-12 col-md-12 col-sm-12">
             <div class="card">
                 <div class="card-header text-center text-white text-uppercase h6" style="background-color: #03244c;">
                     Jumlah Aduan Mengikut Kategori Pengadu & Respons (Hari)
                 </div>
                 <div class="card-body d-flex flex-column justify-content-center">
                     <div class="row justify-content-center flex-grow-1">
-                        <canvas id="complainantChart" width="500" height="350"></canvas>
-                    </div>
-                </div>
-            </div>
-        </div>
-        <div class="col-lg-6 col-md-12 col-sm-12">
-            <div class="card">
-                <div class="card-header text-center text-white h6" style="background-color: #03244c;">
-                    JUMLAH ADUAN BULANAN MENGIKUT KATEGORI ADUAN
-                </div>
-                <div class="card-body d-flex flex-column justify-content-center">
-                    <div class="row justify-content-center flex-grow-1">
-                        <canvas id="aduanMonthCatChart" width="500" height="350"></canvas>
+                        <canvas id="complainantChart" width="300" height="200"></canvas>
                     </div>
                 </div>
             </div>
@@ -995,6 +1012,78 @@
             plugins: [ChartDataLabels]
         });
     }
+</script>
+
+
+<!-- Aduan Year -->
+<script>
+    document.addEventListener("DOMContentLoaded", function() {
+        var ctx = document.getElementById('aduanYearChart').getContext('2d');
+        var aduanByYear = <?php echo json_encode($aduanByYear); ?>;
+
+        // Create gradient
+        var gradient = ctx.createLinearGradient(0, 0, 0, 400);
+        gradient.addColorStop(0, 'rgba(54, 162, 235, 0.5)'); // Blue (stronger at top)
+        gradient.addColorStop(1, 'rgba(54, 162, 235, 0)'); // Transparent at bottom
+
+        new Chart(ctx, {
+            type: 'line',
+            data: {
+                labels: Object.keys(aduanByYear),
+                datasets: [{
+                    label: 'Jumlah Aduan',
+                    data: Object.values(aduanByYear),
+                    backgroundColor: gradient, // Gradient fill
+                    borderColor: 'rgba(54, 162, 235, 1)', // Solid blue line
+                    borderWidth: 2,
+                    pointBackgroundColor: 'rgba(0, 0, 0, 1)', // Black dots
+                    pointBorderColor: '#fff',
+                    pointBorderWidth: 2,
+                    pointRadius: 4,
+                    pointHoverRadius: 6,
+                    fill: true, // Fill area under line
+                    tension: 0 // **Straight line**
+                }]
+            },
+            options: {
+                responsive: true,
+                scales: {
+                    x: {
+                        ticks: {
+                            maxTicksLimit: 10 // Adjust the number of labels shown
+                        }
+                    },
+                    y: {
+                        beginAtZero: true,
+                        ticks: {
+                            padding: 10 // Adds space around y-axis numbers
+                        }
+                    }
+                },
+                plugins: {
+                    legend: {
+                        display: false
+                    },
+                    tooltip: {
+                        enabled: true
+                    },
+                    datalabels: {
+                        anchor: 'end',
+                        align: 'top',
+                        offset: 8, // Adjust label position
+                        clip: false, // Prevent label cutoff
+                        formatter: (value) => value,
+                        color: '#000',
+                        font: {
+                            weight: 'bold',
+                            size: 12
+                        }
+                    }
+                }
+            },
+            plugins: [ChartDataLabels] // Enable data labels
+        });
+    });
 </script>
 
 <!-- Jumlah aduan x pengadu x respon day -->

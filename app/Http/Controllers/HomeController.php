@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\Aduan;
 use Illuminate\Http\Request;
+use Illuminate\Support\Carbon;
 use Illuminate\Support\Facades\DB;
 
 class HomeController extends Controller
@@ -313,6 +314,12 @@ class HomeController extends Controller
             $aduanMonthCategoryChart[] = $monthData;
         }
 
+        // TAHUN X ADUAN
+        $aduanByYear = $aduanList->groupBy(function ($item) {
+            return Carbon::parse($item->date_applied)->format('Y');
+        })->map->count();
+        
+
         //JUMLAH ADUAN X 1ST LEVEL STAFF
         $aduanByStaff = $aduanList->groupBy('staff_duty')->map(function ($aduans) {
             // Count total aduan for each staff
@@ -381,6 +388,7 @@ class HomeController extends Controller
             'total1st2ndLevel' => number_format($total1st2ndLevel),
             'totalCountAllCategories' => number_format($totalCountAllCategories),
             'aduanBySelectedStaff' => $aduanBySelectedStaff,
+            'aduanByYear' => $aduanByYear,
         ]);
     }
 
